@@ -12,12 +12,12 @@
 			.toString(36)
 			.substring(2, 9 + 2),
 		loading = true,
-        visible = false,
+		visible = false,
 		code = 'us',
-        first = '',
-        last = '',
-        tel = '',
-        v_code = '';
+		first = '',
+		last = '',
+		tel = '',
+		v_code = '';
 
 	var valid: boolean,
 		checked = false,
@@ -26,70 +26,75 @@
 		alert = false,
 		msg = '',
 		err = true,
-        disabled = true;
+		disabled = true;
 
 	var isValid = (email: string) => {
-		var regExp =
-			/^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-		return regExp.test(email);
-	},
-    toast = (message: any, error: boolean) => {
-		msg = message;
-		err = error;
-		alert = true;
-		setTimeout(() => (alert = false), 4400);
-	},
-    validateEmail = () => {
-		if (!isValid(e_mail)) {
-			disabled = true;
-			valid = false;
-		} else {
-			disabled = false;
-			valid = true;
-		}
-	},
-    toggle = () => {
-		const password = document.querySelector('#pass')!,
-			type = password.getAttribute('type') === 'password' ? 'text' : 'password';
-		password.setAttribute('type', type);
-		visible = !visible;
-	},
-    intl = () => {
-		var input = document.querySelector('#phone')!;
-		intlTelInput(input, {
-			customPlaceholder: function (selectedCountryPlaceholder: string, selectedCountryData: any) {
-				return 'e.g. ' + selectedCountryPlaceholder;
-			},
-			initialCountry: 'auto',
-			geoIpLookup: (success: any, failure: any) => {
-				fetch('https://ipinfo.io/json?token=d0ff16221e0afb')
-					.then((response) => response.json())
-					.then((resp) => {
-						code = resp.country;
-						success(code);
-						return;
-					});
-				success(code);
-			},
-			autoPlaceholder: 'aggressive',
-			separateDialCode: true,
-			utilsScript: '../../../node_modules/intl-tel-input/build/js/utils.js'
-		});
-	},
-    onboard = async () => {
-        if(!checked || first = '' || last = '' || tel = '') {
-            toast('Fill all the fields', true);
-            return;
-        }
-        try {
-            const req = Api.post('/onboard', JSON.stringify({email: e_mail, name: `${first} ${last}`, tel: tel }))
-        } catch(error) {
-           loadGif = false;
-			//@ts-ignore
-			toast(error.message, true);
+			var regExp =
+				/^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+			return regExp.test(email);
+		},
+		toast = (message: any, error: boolean) => {
+			msg = message;
+			err = error;
+			alert = true;
 			setTimeout(() => (alert = false), 4400);
-        }
-    };
+		},
+		validateEmail = () => {
+			if (!isValid(e_mail)) {
+				disabled = true;
+				valid = false;
+			} else {
+				disabled = false;
+				valid = true;
+			}
+		},
+		toggle = () => {
+			const password = document.querySelector('#pass')!,
+				type = password.getAttribute('type') === 'password' ? 'text' : 'password';
+			password.setAttribute('type', type);
+			visible = !visible;
+		},
+		intl = () => {
+			var input = document.querySelector('#phone')!;
+			intlTelInput(input, {
+				customPlaceholder: function (selectedCountryPlaceholder: string, selectedCountryData: any) {
+					return 'e.g. ' + selectedCountryPlaceholder;
+				},
+				initialCountry: 'auto',
+				geoIpLookup: (success: any, failure: any) => {
+					fetch('https://ipinfo.io/json?token=d0ff16221e0afb')
+						.then((response) => response.json())
+						.then((resp) => {
+							code = resp.country;
+							success(code);
+							return;
+						});
+					success(code);
+				},
+				autoPlaceholder: 'aggressive',
+				separateDialCode: true,
+				utilsScript: '../../../node_modules/intl-tel-input/build/js/utils.js'
+			});
+		},
+		onboard = async () => {
+			if (!checked || first == '' || last == '' || tel == '') {
+				toast('Fill all the fields', true);
+				loadGif = false;
+				return;
+			}
+			try {
+				const req = await Api.post(
+					'/onboard',
+					JSON.stringify({ email: e_mail, name: `${first} ${last}`, tel: tel })
+				);
+				console.log(req)
+			} catch (error) {
+				loadGif = false;
+				//@ts-ignore
+				toast(error.message, true);
+				setTimeout(() => (alert = false), 4400);
+			}
+		};
 
 	onMount(() => {
 		loading = false;
@@ -261,71 +266,70 @@
 												class="hak0fbu font-nunito  border-solid px-8 py-4 rounded-lg font-medium bg-gray-50 border-2 border-gray-300 placeholder-gray-500 text-sm focus:outline-none focus:bg-white"
 												type="tel"
 												id="phone"
-                                                bind:value={tel}
+												bind:value={tel}
 											/>
 										</div>
 										<div class="w-full my-3 py-1">
-                                                <div class="relative">
-                                                    <input
-                                                        on:keyup={validateEmail}
-                                                        transition:fade={{
-                                                            delay: 200,
-                                                            duration: 1000,
-                                                            easing: cubicIn
-                                                        }}
-                                                        class="hak0fbu transition duration-300 appearance-none block border-solid focus:ring-0 px-8 py-4 rounded-lg font-medium bg-gray-50 border-2 border-gray-300 text-sm focus:outline-none focus:bg-white {valid
-                                                            ? 'focus:border-green-600'
-                                                            : 'focus:border-red-600'} peer"
-                                                        type="email"
-                                                        aria-describedby="email_help"
-                                                        placeholder=" "
-                                                        bind:value={e_mail}
-                                                        id={emailId}
-                                                        spellcheck="false"
-                                                    />
-                                                    <label
-                                                        for={emailId}
-                                                        class="absolute font-bold text-[15px] font-nunito text-slate-800 {valid ? 'peer-focus:text-green-600' : 'peer-focus:text-red-600'} duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-[0] bg-gray-50 px-2 peer-focus:px-2 peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4 left-1"
-                                                        >Your Email</label
-                                                    >
-                                            </div>
+											<div class="relative">
+												<input
+													on:keyup={validateEmail}
+													transition:fade={{
+														delay: 200,
+														duration: 1000,
+														easing: cubicIn
+													}}
+													class="hak0fbu transition duration-300 appearance-none block border-solid focus:ring-0 px-8 py-4 rounded-lg font-medium bg-gray-50 border-2 border-gray-300 text-sm focus:outline-none focus:bg-white {valid
+														? 'focus:border-green-600'
+														: 'focus:border-red-600'} peer"
+													type="email"
+													aria-describedby="email_help"
+													placeholder=" "
+													bind:value={e_mail}
+													id={emailId}
+													spellcheck="false"
+												/>
+												<label
+													for={emailId}
+													class="absolute font-bold text-[15px] font-nunito text-slate-800 {valid
+														? 'peer-focus:text-green-600'
+														: 'peer-focus:text-red-600'} duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-[0] bg-gray-50 px-2 peer-focus:px-2 peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4 left-1"
+													>Your Email</label
+												>
+											</div>
 										</div>
-                                        <button
-									on:click={() => (
-										(loadGif = true),
-                                        (onboard)
-									)}
-									{disabled}
-									transition:fade={{
-										delay: 200,
-										duration: 1000,
-										easing: cubicIn
-									}}
-									class="mt-5 tracking-wide font-semibold bg-black/90 text-gray-100 hak0fbu py-4 shadow rounded-lg hover:bg-black transition-all duration-300 ease-in-out flex items-center justify-center border border-solid border-slate-300 focus:shadow-outline focus:outline-none"
-								>
-									<span class="mr-3"> Next </span>
-									<svg
-										class="ml-4 w-6 h-6 inline-block align-middle overflow-hidden {loadGif
-											? 'hidden'
-											: ''}"
-										viewBox="0 0 24 24"
-										aria-hidden="true"
-										focusable="false"
-										fill="none"
-										xmlns="http://www.w3.org/2000/svg"
-										stroke="currentColor"
-										stroke-linecap="round"
-										stroke-linejoin="round"
-										><line x1="5" x2="19" y1="12" y2="12" /><polyline
-											points="12 5 19 12 12 19"
-										/></svg
-									>
-									{#if loadGif}
-										<div class="ml-3">
-											<img class="w-5 h-5" src="/gif.gif" srcset="/gif.gif 2x" alt="" />
-										</div>
-									{/if}
-								</button>
+										<button
+											on:click={() => ((loadGif = true), onboard())}
+											{disabled}
+											transition:fade={{
+												delay: 200,
+												duration: 1000,
+												easing: cubicIn
+											}}
+											class="mt-5 tracking-wide font-semibold bg-black/90 text-gray-100 hak0fbu py-4 shadow rounded-lg hover:bg-black transition-all duration-300 ease-in-out flex items-center justify-center border border-solid border-slate-300 focus:shadow-outline focus:outline-none"
+										>
+											<span class="mr-3"> Next </span>
+											<svg
+												class="ml-4 w-6 h-6 inline-block align-middle overflow-hidden {loadGif
+													? 'hidden'
+													: ''}"
+												viewBox="0 0 24 24"
+												aria-hidden="true"
+												focusable="false"
+												fill="none"
+												xmlns="http://www.w3.org/2000/svg"
+												stroke="currentColor"
+												stroke-linecap="round"
+												stroke-linejoin="round"
+												><line x1="5" x2="19" y1="12" y2="12" /><polyline
+													points="12 5 19 12 12 19"
+												/></svg
+											>
+											{#if loadGif}
+												<div class="ml-3">
+													<img class="w-5 h-5" src="/gif.gif" srcset="/gif.gif 2x" alt="" />
+												</div>
+											{/if}
+										</button>
 									</div>
 								{/if}
 							</div>
