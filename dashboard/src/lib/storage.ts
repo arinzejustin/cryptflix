@@ -4,7 +4,7 @@
  * @returns The value of the key in localStorage.
  */
 export function getStorage(key: string) {
-    return JSON.parse(localStorage.getItem(key)!)
+	return JSON.parse(localStorage.getItem(key)!);
 }
 
 /**
@@ -13,7 +13,7 @@ export function getStorage(key: string) {
  * @returns The value of the key in sessionStorage.
  */
 export function getSession(key: string) {
-    return JSON.parse(sessionStorage.getItem(key)!)
+	return JSON.parse(sessionStorage.getItem(key)!);
 }
 
 /**
@@ -25,22 +25,38 @@ export function getSession(key: string) {
  * @param {string} [sameSite=Strict] - 'Strict'
  * @param {string} [domain] - The domain of the cookie.
  */
-export function setCookie(name: string, cookie: string, expires: number, path: string = '/', sameSite: string = 'Strict', domain: string = '') {
-    function encode({ s }: { s: string; }): string {
-        return encodeURIComponent(s);
-    }
+export function setCookie(
+	name: string,
+	cookie: string,
+	expires: number,
+	path: string = '/',
+	sameSite: string = 'Strict',
+	domain: string = ''
+) {
+	function encode({ s }: { s: string }): string {
+		return encodeURIComponent(s);
+	}
 
-    function stringifyCookieValue({ value }: { value: string; }): string {
-        return encode({ s: value });
-    }
+	function stringifyCookieValue({ value }: { value: string }): string {
+		return encode({ s: value });
+	}
 
-    function time(minutes: number, seconds: number, milliseconds: number): Date {
-        var date = new Date();
-        date.setTime(date.getTime() + (1 * 30 * 24 * minutes * seconds * milliseconds));
-        return date;
-    }
+	function time(minutes: number, seconds: number, milliseconds: number): Date {
+		var date = new Date();
+		date.setTime(date.getTime() + 1 * 30 * 24 * minutes * seconds * milliseconds);
+		return date;
+	}
 
-    document.cookie = [encode({ s: `${name}` }), '=', stringifyCookieValue({ value: `${cookie}` }), '; expires=' + time(60, 60, expires).toUTCString(), '; path=' + `${path}`, '; domain=' + `${domain}`, '; secure=' + true, '; sameSite=' + `${sameSite}`].join('');
+	document.cookie = [
+		encode({ s: `${name}` }),
+		'=',
+		stringifyCookieValue({ value: `${cookie}` }),
+		'; expires=' + time(60, 60, expires).toUTCString(),
+		'; path=' + `${path}`,
+		'; domain=' + `${domain}`,
+		'; secure=' + true,
+		'; sameSite=' + `${sameSite}`
+	].join('');
 }
 
 /**
@@ -49,7 +65,7 @@ export function setCookie(name: string, cookie: string, expires: number, path: s
  * @param {any} value - any
  */
 export function setStorage(key: string, value: any) {
-    localStorage.setItem(key, JSON.stringify(value))
+	localStorage.setItem(key, JSON.stringify(value));
 }
 
 /**
@@ -58,18 +74,18 @@ export function setStorage(key: string, value: any) {
  * @returns A function that returns a string or undefined.
  */
 export function getCookie(name: string): string | undefined {
-    function getCookie(cookiename: any): string | undefined {
-        const name = `${cookiename}=`;
-        const decoded = decodeURIComponent(document.cookie);
-        const arr = decoded.split('; ');
-        let res;
-        arr.forEach(val => {
-            if (val.indexOf(name) === 0) res = val.substring(name.length);
-        })
-        return res
-    }
-    var cookie = getCookie(name);
-    return cookie;
+	function getCookie(cookiename: any): string | undefined {
+		const name = `${cookiename}=`;
+		const decoded = decodeURIComponent(document.cookie);
+		const arr = decoded.split('; ');
+		let res;
+		arr.forEach((val) => {
+			if (val.indexOf(name) === 0) res = val.substring(name.length);
+		});
+		return res;
+	}
+	var cookie = getCookie(name);
+	return cookie;
 }
 
 /**
@@ -77,8 +93,8 @@ export function getCookie(name: string): string | undefined {
  * @param key - string
  */
 export var deleteStorage = async (key: string): Promise<void> => {
-    localStorage.removeItem(key)
-}
+	localStorage.removeItem(key);
+};
 
 /**
  * This function takes a key and a value, and sets the value in session storage.
@@ -86,7 +102,7 @@ export var deleteStorage = async (key: string): Promise<void> => {
  * @param {any} value - any
  */
 export function setSession(key: string, value: any) {
-    sessionStorage.setItem(key, JSON.stringify(value))
+	sessionStorage.setItem(key, JSON.stringify(value));
 }
 
 /**
@@ -94,19 +110,23 @@ export function setSession(key: string, value: any) {
  * @param key - string
  */
 export var deleteSession = async (key: string): Promise<void> => {
-    sessionStorage.removeItem(key)
-}
+	sessionStorage.removeItem(key);
+};
 
 /**
  * It checks if the user is logged in, if so, it returns the token, if not, it returns null.
  * @returns A string of the JWT and CSRF token.
  */
 export function getJWT() {
-    if (getCookie('token') != undefined || getCookie('crsf') != undefined || getCookie('verification-code') != undefined) {
-        const token = getCookie('token'),
-            crsf = getCookie('crsf'),
-            verification = getCookie('verification-code')
-        return token + '/' + crsf + '/' + verification
-    }
-    return null
+	if (
+		getCookie('token') != undefined ||
+		getCookie('crsf') != undefined ||
+		getCookie('verification-code') != undefined
+	) {
+		const token = getCookie('token'),
+			crsf = getCookie('crsf'),
+			verification = getCookie('verification-code');
+		return token + '/' + crsf + '/' + verification;
+	}
+	return null;
 }

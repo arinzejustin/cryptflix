@@ -1,3 +1,3 @@
 <div>
-    <p>hello</p>
+	<p class="text-red-700">hello</p>
 </div>

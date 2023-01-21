@@ -2,6 +2,4 @@
 	import { page } from '$app/stores';
 </script>
 
-<header>
-	
-</header>
+<header />
