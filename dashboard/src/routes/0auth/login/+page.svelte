@@ -1,3 +1,5 @@
 <div>
-	<p class="text-red-700">hello</p>
+	<div class="rounded-lg border border-slate-400 bg-white py-2">
+        div>
+    </div>
 </div>
