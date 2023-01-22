@@ -1,3 +1,21 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@layer utilities {
+    .w-9\/10 {
+        @apply w-[90%] !important;
+    }
+}
+
+*, ::before, ::after {
+    border-style: none;
+}
+
+html, body {
+    @apply font-nunito;
+}
+
+.hak0fbu {
+    @apply w-full;
+}

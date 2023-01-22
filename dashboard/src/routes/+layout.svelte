@@ -1,9 +1,10 @@
 <script>
 	import './styles.css';
+	import '../../node_modules/svelte-material-ui/bare.css'
 </script>
 
 <div>
-	<main class="[--app:100%]">
+	<cryptflixinvest-app class="[--app:100%]">
 		<slot />
-	</main>
+	</cryptflixinvest-app>
 </div>
