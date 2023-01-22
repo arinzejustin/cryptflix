@@ -3,6 +3,7 @@
 	import { cubicIn, cubicOut } from 'svelte/easing';
 	import { goto } from '$app/navigation';
 	import Alert from '$lib/Alert.svelte'
+	import Api from '$lib/api'
 
 	let emailId = Math.random()
 		.toString(36)
@@ -37,29 +38,14 @@
 		}
 	}
 
-	var login = () => {
+	var login = async () => {
 		emailGif = true;
-		fetch('https://fff.vom/login', {
-			method: 'POST',
-			body: JSON.stringify({
-				email: e_mail,
-				pass: passcode
-			}),
-			credentials: 'include'
-		})
-			.then((res) => res.json())
-			.then((data) => {
-				if (data.valid == true) {
-					return;
-				}
-			})
-			.catch((error) => {
-				console.table(error)
-				emailGif = false;
-				alert = true
-				message = 'Hello';
-				setTimeout(() => alert = false, 2800)
-			});
+		try {
+			const req = await Api.post('/login', JSON.stringify({email: e_mail, pass: passcode}))
+			console.log(req)
+		} catch (error) {
+			console.log(error)
+		}
 	};
 </script>
 
