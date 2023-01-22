@@ -2,6 +2,7 @@
 	import { fade, slide } from 'svelte/transition';
 	import { cubicIn, cubicOut } from 'svelte/easing';
 	import { goto } from '$app/navigation';
+	import Alert from '$lib/Alert.svelte'
 
 	let emailId = Math.random()
 		.toString(36)
@@ -15,7 +16,10 @@
 		disabled = true,
 		e_mail: string = '',
 		passcode: string = '',
-		pass = false;
+		pass = false,
+		alert = false,
+		message = '',
+		err = true;
 
 	var isValid = (email: string) => {
 		var regExp =
@@ -35,7 +39,7 @@
 
 	var login = () => {
 		emailGif = true;
-		fetch('', {
+		fetch('https://fff.vom/login', {
 			method: 'POST',
 			body: JSON.stringify({
 				email: e_mail,
@@ -50,9 +54,11 @@
 				}
 			})
 			.catch((error) => {
+				console.table(error)
 				emailGif = false;
-				valid = false;
-				console.error('Error:', error);
+				alert = true
+				message = 'Hello';
+				setTimeout(() => alert = false, 2800)
 			});
 	};
 </script>
@@ -62,6 +68,7 @@
 </svelte:head>
 
 <cryptflixinvest-login class="md:mx-10">
+	<Alert alert={alert} message={message} error={err} />
 	<a href="https://www.litscoin.com" class="my-3 mt-14 md:mt-6 flex md:hidden items-center">
 		<div class="ml-3">
 			<span class="uppercase font-bold text-black text-2xl">Litscoin App</span>
