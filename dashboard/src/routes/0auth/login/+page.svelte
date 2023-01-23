@@ -69,14 +69,12 @@
 
 <cryptflixinvest-login class="md:mx-10">
 	<Alert {alert} message={msg} error={err} onClose={() => (alert = false)} />
-	<a href="/" class="my-3 mt-14 md:mt-6 flex md:hidden items-center">
-		<div class="ml-3">
-			<span class="uppercase font-bold text-black text-2xl">App logo</span>
-		</div>
-	</a>
 	<div class="pg9a5nd hak0fbu">
-		<div class="jonfdgct mx-4 sm:mx-20 sm:my-5 border md:border-none border-solid border-slate-300">
-			<div class="lg:w-1/2 xl:w-5/12 px-2 py-6 sm:p-12">
+		<div class="jonfdgct mx-4 sm:mx-20 sm:my-5 md:shadow-2xl md:rounded-xl md:mt-2">
+			<div class="lg:w-1/2 xl:w-5/12 px-2 py-6 sm:p-12 flex flex-col justify-center">
+				<div class="intro-x mb-6 md:mb-4 flex items-center justify-center">
+					<img alt="school" class="w-32 h-32" src="/logo.png" />
+				</div>
 				<div class="my-6 lg:my-2.5 _0itw21asd">
 					<h1 class="text-xl lg:text-2xl xl:text-3xl font-bold text-center">
 						SIGN IN TO YOUR ACCOUNT
@@ -292,7 +290,7 @@
 											>
 												{#if visible}
 													<path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
-													<circle cx="12" cy="12" r="3"></circle>
+													<circle cx="12" cy="12" r="3" />
 												{:else}
 													<path
 														d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"
@@ -386,7 +384,7 @@
 		@apply container mx-auto;
 	}
 	.jonfdgct {
-		@apply max-w-screen-xl m-2 bg-white shadow-2xl rounded-xl flex justify-center flex-1;
+		@apply max-w-screen-xl m-2 bg-white flex justify-center flex-1;
 	}
 	._0itw21asd {
 		@apply flex flex-col items-center;

@@ -12,14 +12,19 @@
     }
 }
 
-*, ::before, ::after {
+*,
+::before,
+::after {
     border-style: none;
 }
 
-html, body {
+html,
+body {
     @apply font-nunito;
 }
 
 .hak0fbu {
     @apply w-full;
 }
+
+/*  */
