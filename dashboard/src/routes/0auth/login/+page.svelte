@@ -11,7 +11,8 @@
 
 	let googleGif = false,
 		emailGif = false,
-		appleGif = false;
+		appleGif = false,
+		visible = false;
 
 	var valid: boolean,
 		a = true,
@@ -46,12 +47,19 @@
 			console.log(req);
 		} catch (error) {
 			emailGif = false;
-			alert = true
-			err = true
+			alert = true;
+			err = true;
 			//@ts-ignore
-			msg = error.message
-			setTimeout(() => alert = false, 2900)
+			msg = error.message;
+			setTimeout(() => (alert = false), 4400);
 		}
+	};
+
+	var toggle = () => {
+		const password = document.querySelector('#pass')!,
+			type = password.getAttribute('type') === 'password' ? 'text' : 'password';
+		password.setAttribute('type', type);
+		visible = !visible;
 	};
 </script>
 
@@ -60,10 +68,10 @@
 </svelte:head>
 
 <cryptflixinvest-login class="md:mx-10">
-	<Alert alert={alert} message={msg} error={err} onClose={() => (alert = false)} />
-	<a href="https://www.litscoin.com" class="my-3 mt-14 md:mt-6 flex md:hidden items-center">
+	<Alert {alert} message={msg} error={err} onClose={() => (alert = false)} />
+	<a href="/" class="my-3 mt-14 md:mt-6 flex md:hidden items-center">
 		<div class="ml-3">
-			<span class="uppercase font-bold text-black text-2xl">Litscoin App</span>
+			<span class="uppercase font-bold text-black text-2xl">App logo</span>
 		</div>
 	</a>
 	<div class="pg9a5nd hak0fbu">
@@ -196,7 +204,7 @@
 										duration: 1000,
 										easing: cubicIn
 									}}
-									class="hak0fbu border-solid px-8 py-4 rounded-lg font-medium bg-gray-100 border border-gray-200 placeholder-gray-500 text-sm focus:outline-none focus:bg-white {valid
+									class="hak0fbu border-solid px-8 py-4 rounded-lg font-medium bg-gray-50 border border-gray-300 placeholder-gray-500 text-sm focus:outline-none focus:bg-white {valid
 										? 'focus:border-green-600'
 										: 'focus:border-red-600'}"
 									type="email"
@@ -255,16 +263,44 @@
 										easing: cubicIn
 									}}
 								>
-									<input
-										on:keyup={() => (valid = true)}
-										class="hak0fbu border-solid px-8 py-4 rounded-lg font-medium bg-gray-100 border border-gray-200 placeholder-gray-500 text-sm focus:outline-none focus:bg-white {valid
-											? 'focus:border-green-600'
-											: 'focus:border-red-600'}"
-										type="password"
-										placeholder="Your Passcode"
-										bind:value={passcode}
-										spellcheck="false"
-									/>
+									<div class="flex items-center justify-center w-full gap-0 mt-4">
+										<input
+											on:keyup={() => (valid = true)}
+											class="hak0fbu border-solid px-8 py-4 rounded-l-lg font-medium bg-gray-50 border border-gray-300 placeholder-gray-500 text-sm focus:outline-none focus:bg-white {valid
+												? 'focus:border-green-600'
+												: 'focus:border-red-600'}"
+											type="password"
+											id="pass"
+											placeholder="Your Passcode"
+											bind:value={passcode}
+											spellcheck="false"
+										/>
+										<div
+											class="flex items-center shadow justify-center border border-solid border-slate-300 bg-gray-300 p-3.5 rounded-r-lg"
+										>
+											<svg
+												on:click={toggle}
+												viewBox="0 0 24 24"
+												aria-hidden="true"
+												focusable="false"
+												fill="none"
+												xmlns="http://www.w3.org/2000/svg"
+												stroke="currentColor"
+												stroke-linecap="round"
+												stroke-linejoin="round"
+												class="StyledIconBase-sc-ea9ulj-0 bhLQRR w-6 h-6 cursor-pointer"
+											>
+												{#if visible}
+													<path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
+													<circle cx="12" cy="12" r="3"></circle>
+												{:else}
+													<path
+														d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"
+													/><line x1="1" x2="23" y1="1" y2="23" />
+												{/if}
+											</svg>
+										</div>
+									</div>
 									<div class="intro-y flex items-center justify-center mt-5">
 										<a
 											class="transition p-4 w-full theme-text-app font-medium rounded-lg flex items-center justify-around hover:bg-yellow-100"

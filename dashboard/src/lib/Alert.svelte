@@ -1,6 +1,5 @@
 <script lang="ts">
-	import { slide, scale, fade } from 'svelte/transition';
-	import { quintOut } from 'svelte/easing';
+	import { scale, fade } from 'svelte/transition';
 	export let alert = false,
 		message = '',
 		error = false,
@@ -72,7 +71,7 @@
 <style>
 	.animate::before {
 		content: '';
-		animation: border_anim 3s linear forwards;
+		animation: border_anim 4.5s linear forwards;
 	}
 	@keyframes border_anim {
 		0% {
