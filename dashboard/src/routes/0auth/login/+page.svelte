@@ -4,6 +4,7 @@
 	import { goto } from '$app/navigation';
 	import Alert from '$lib/Alert.svelte';
 	import Api from '$lib/api';
+	import { onMount } from 'svelte';
 
 	let emailId = Math.random()
 		.toString(36)
@@ -12,7 +13,8 @@
 	let googleGif = false,
 		emailGif = false,
 		appleGif = false,
-		visible = false;
+		visible = false,
+		slider = false;
 
 	var valid: boolean,
 		a = true,
@@ -61,6 +63,12 @@
 		password.setAttribute('type', type);
 		visible = !visible;
 	};
+
+	onMount(() => {
+		setInterval(() => {
+			slider = !slider;
+		}, 4000);
+	});
 </script>
 
 <svelte:head>
@@ -70,14 +78,14 @@
 <cryptflixinvest-login class="md:mx-10">
 	<Alert {alert} message={msg} error={err} onClose={() => (alert = false)} />
 	<div class="pg9a5nd hak0fbu">
-		<div class="jonfdgct mx-4 sm:mx-20 sm:my-5 md:shadow-2xl md:rounded-xl md:mt-2">
+		<div class="jonfdgct mx-4 sm:mx-20 sm:my-5 md:mt-2">
 			<div class="lg:w-1/2 xl:w-5/12 px-2 py-6 sm:p-12 flex flex-col justify-center">
 				<div class="intro-x mb-6 md:mb-4 flex items-center justify-center">
 					<img alt="school" class="w-32 h-32" src="/logo.png" />
 				</div>
 				<div class="my-6 lg:my-2.5 _0itw21asd">
 					<h1 class="text-xl lg:text-2xl xl:text-3xl font-bold text-center">
-						SIGN IN TO YOUR ACCOUNT
+						SIGN INTO YOUR ACCOUNT
 					</h1>
 					<div class="hak0fbu flex-1 mt-8">
 						<div class="_0itw21asd font-open">
@@ -365,11 +373,30 @@
 					</div>
 				</div>
 			</div>
-			<div class="flex-1 bg-indigo-50 text-center hidden md:flex rounded-r-xl">
+			<div class="flex-1 text-center hidden md:flex rounded-r-xl">
 				<div
-					class="my-4 mx-10 xl:my-6 xl:mx-12  rounded-full hak0fbu bg-contain bg-center bg-no-repeat"
-					style="background-image: url('/15848031292911696601-undraw_designer_life_w96d.svg');"
-				/>
+					class="my-4 mx-10 relative xl:my-6 xl:mx-12  rounded-full hak0fbu bg-contain bg-center bg-no-repeat"
+					style="background-image: url('/773m32QMjm9Yg4QxsDxl.png');"
+				>
+					<div class="absolute top-20 right-[18%]">
+						<h1 class="uppercase font-open text-5xl text-slate-700">
+							We are
+							<div class="inline-block h-[1.5em] overflow-hidden align-middle ms-slider">
+								<ul class="ms-slider__words list-none p-0 m-0 inline-block">
+									<li class="ms-slider__word slider-1 leading-[1.3em] text-left block font-nunito font-black">
+										Committed
+									</li>
+									<li class="ms-slider__word slider-3 leading-[1.3em] text-left block font-nunito font-black">tested</li>
+									<li class="ms-slider__word slider-2 leading-[1.3em] text-left block font-nunito font-black">Trusted</li>
+									<!-- This last word needs to duplicate the first one to ensure a smooth infinite animation -->
+									<li class="ms-slider__word slider-1 leading-[1.3em] text-left block font-nunito font-black">
+										Committed
+									</li>
+								</ul>
+							</div>
+						</h1>
+					</div>
+				</div>
 			</div>
 		</div>
 	</div>
@@ -388,5 +415,65 @@
 	}
 	._0itw21asd {
 		@apply flex flex-col items-center;
+	}
+	.slider-1 {
+		@apply text-black;
+	}
+	.slider-2 {
+		@apply theme-text-app;
+	}
+	.slider-3 {
+		@apply text-teal-600;
+	}
+	.ms-slider {
+		-webkit-mask-image: linear-gradient(transparent, white, white, white, transparent);
+		mask-image: linear-gradient(transparent, white, white, white, transparent);
+		mask-type: luminance;
+		mask-mode: alpha;
+	}
+	.ms-slider__words {
+		-webkit-animation-name: wordSlider;
+		animation-name: wordSlider;
+		-webkit-animation-timing-function: ease-out;
+		animation-timing-function: ease-out;
+		-webkit-animation-iteration-count: infinite;
+		animation-iteration-count: infinite;
+		-webkit-animation-duration: 7s;
+		animation-duration: 7s;
+	}
+	@-webkit-keyframes wordSlider {
+		0%,
+		27% {
+			transform: translateY(0%);
+		}
+		33%,
+		60% {
+			transform: translateY(-25%);
+		}
+		66%,
+		93% {
+			transform: translateY(-50%);
+		}
+		100% {
+			transform: translateY(-75%);
+		}
+	}
+
+	@keyframes wordSlider {
+		0%,
+		27% {
+			transform: translateY(0%);
+		}
+		33%,
+		60% {
+			transform: translateY(-25%);
+		}
+		66%,
+		93% {
+			transform: translateY(-50%);
+		}
+		100% {
+			transform: translateY(-75%);
+		}
 	}
 </style>
