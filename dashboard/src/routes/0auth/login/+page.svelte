@@ -4,7 +4,6 @@
 	import { goto } from '$app/navigation';
 	import Alert from '$lib/Alert.svelte';
 	import Api from '$lib/api';
-	import { onMount } from 'svelte';
 
 	let emailId = Math.random()
 		.toString(36)
@@ -64,11 +63,19 @@
 		visible = !visible;
 	};
 
-	onMount(() => {
-		setInterval(() => {
-			slider = !slider;
-		}, 4000);
-	});
+	var auth = (e: Event, {google = false, apple = false}) => {
+		e.preventDefault()
+		googleGif = google;
+		appleGif = apple;
+		alert = true;
+		err = true;
+		msg = 'Authentication Failed'
+		setTimeout(() => {
+			alert = false;
+			googleGif = false;
+		appleGif = false;
+		}, 4000)
+	}
 </script>
 
 <svelte:head>
@@ -89,7 +96,9 @@
 					</h1>
 					<div class="hak0fbu flex-1 mt-8">
 						<div class="_0itw21asd font-open">
-							<button
+							<button on:click={(event) => {
+								auth(event, { google: true });
+							}}
 								class="hak0fbu border border-solid border-slate-300 max-w-xs font-bold shadow-sm rounded-lg py-3 bg-indigo-100 text-gray-800 flex items-center justify-center transition-all duration-300 ease-in-out focus:outline-none hover:shadow focus:shadow-sm focus:shadow-outline"
 							>
 								<div class="bg-white p-2 rounded-full">
@@ -119,7 +128,9 @@
 									</div>
 								{/if}
 							</button>
-							<button
+							<button on:click={(event) => {
+								auth(event, { apple: true });
+							}}
 								class="hak0fbu max-w-xs mt-4 font-bold shadow-sm rounded-lg py-3 bg-black text-gray-50 flex items-center justify-center transition-all duration-300 ease-in-out focus:outline-none hover:shadow focus:shadow-sm focus:shadow-outline"
 							>
 								<div class="bg-white p-2 rounded-full">
