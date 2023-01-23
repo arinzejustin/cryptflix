@@ -2,24 +2,25 @@
 	import { fade, slide } from 'svelte/transition';
 	import { cubicIn, cubicOut } from 'svelte/easing';
 	import { goto } from '$app/navigation';
-	import Alert from '$lib/Alert.svelte'
-	import Api from '$lib/api'
+	import Alert from '$lib/Alert.svelte';
+	import Api from '$lib/api';
 
 	let emailId = Math.random()
 		.toString(36)
 		.substring(2, 9 + 2);
 
 	let googleGif = false,
-		emailGif = false;
+		emailGif = false,
+		appleGif = false;
 
-	let valid: boolean,
+	var valid: boolean,
 		a = true,
 		disabled = true,
 		e_mail: string = '',
 		passcode: string = '',
 		pass = false,
 		alert = false,
-		message = '',
+		msg = '',
 		err = true;
 
 	var isValid = (email: string) => {
@@ -41,10 +42,15 @@
 	var login = async () => {
 		emailGif = true;
 		try {
-			const req = await Api.post('/login', JSON.stringify({email: e_mail, pass: passcode}))
-			console.log(req)
+			const req = await Api.post('/login', JSON.stringify({ email: e_mail, pass: passcode }));
+			console.log(req);
 		} catch (error) {
-			console.log(error)
+			emailGif = false;
+			alert = true
+			err = true
+			//@ts-ignore
+			msg = error.message
+			setTimeout(() => alert = false, 2900)
 		}
 	};
 </script>
@@ -54,7 +60,7 @@
 </svelte:head>
 
 <cryptflixinvest-login class="md:mx-10">
-	<Alert alert={alert} message={message} error={err} />
+	<Alert alert={alert} message={msg} error={err} onClose={() => (alert = false)} />
 	<a href="https://www.litscoin.com" class="my-3 mt-14 md:mt-6 flex md:hidden items-center">
 		<div class="ml-3">
 			<span class="uppercase font-bold text-black text-2xl">Litscoin App</span>
@@ -119,7 +125,7 @@
 									>
 								</div>
 								<span class="ml-4 font-open"> Sign in with Apple </span>
-								{#if googleGif}
+								{#if appleGif}
 									<div class="ml-3 t-g">
 										<img class="w-5 h-5" src="/gif.gif" srcset="/gif.gif 2x" alt="" />
 									</div>
@@ -137,7 +143,7 @@
 
 						<div class="mb-8 {pass ? 'hidden' : ''}">
 							<p class="text-left float-right mb-6 text-[15px] text-slate-600">
-								Don't have an account yet ? <a href="/0auth/onboard" class="text-yellow-500">
+								Don't have an account yet ? <a href="/0auth/onboard" class="theme-text-app">
 									Register</a
 								>
 							</p>
@@ -218,17 +224,19 @@
 								>
 									<span class="mr-3"> Next </span>
 									<svg
-										class="ml-4 {emailGif ? 'hidden' : ''}"
+										class="ml-4 w-6 h-6 inline-block align-middle overflow-hidden {emailGif
+											? 'hidden'
+											: ''}"
+										viewBox="0 0 24 24"
+										aria-hidden="true"
+										focusable="false"
+										fill="none"
 										xmlns="http://www.w3.org/2000/svg"
-										width="1.2em"
-										height="1.2em"
-										viewBox="0 0 32 32"
-										><rect x="0" y="0" width="32" height="32" fill="none" stroke="none" /><path
-											fill="currentColor"
-											d="m16 8l-1.43 1.393L20.15 15H8v2h12.15l-5.58 5.573L16 24l8-8l-8-8z"
-										/><path
-											fill="currentColor"
-											d="M16 30a14 14 0 1 1 14-14a14.016 14.016 0 0 1-14 14Zm0-26a12 12 0 1 0 12 12A12.014 12.014 0 0 0 16 4Z"
+										stroke="currentColor"
+										stroke-linecap="round"
+										stroke-linejoin="round"
+										><line x1="5" x2="19" y1="12" y2="12" /><polyline
+											points="12 5 19 12 12 19"
 										/></svg
 									>
 									{#if emailGif}
@@ -240,65 +248,77 @@
 							{/if}
 
 							{#if pass}
-								<input
-									on:keyup={() => (valid = true)}
+								<div
 									transition:slide={{
 										delay: 200,
 										duration: 1000,
 										easing: cubicIn
 									}}
-									class="hak0fbu border-solid px-8 py-4 rounded-lg font-medium bg-gray-100 border border-gray-200 placeholder-gray-500 text-sm focus:outline-none focus:bg-white {valid
-										? 'focus:border-green-600'
-										: 'focus:border-red-600'}"
-									type="password"
-									placeholder="Your Passcode"
-									bind:value={passcode}
-									spellcheck="false"
-								/>
-								<button
-									on:click={login}
-									transition:slide={{
-										delay: 200,
-										duration: 1000,
-										easing: cubicIn
-									}}
-									class="mt-5 tracking-wide font-semibold bg-black/90 text-gray-100 hak0fbu py-4 shadow rounded-lg hover:bg-black transition-all duration-300 ease-in-out flex items-center justify-center border border-solid border-slate-300 focus:shadow-outline focus:outline-none"
 								>
-									<span class="mr-3"> Sign In </span>
-									{#if emailGif}
-										<div class="ml-3">
-											<img class="w-5 h-5" src="/gif.gif" srcset="/gif.gif 2x" alt="" />
-										</div>
-									{/if}
-								</button>
-								<button
-									on:click={() => ((pass = false), (a = false))}
-									transition:slide={{
-										delay: 200,
-										duration: 1000,
-										easing: cubicIn
-									}}
-									class="mt-5 tracking-wide font-semibold bg-transparent text-gray-800 hak0fbu py-5 shadow rounded-lg hover:text-white hover:bg-black transition-all duration-300 ease-in-out flex items-center justify-center border border-solid border-slate-700 focus:shadow-outline focus:outline-none"
-								>
-									<svg
-										class="mr-3"
-										xmlns="http://www.w3.org/2000/svg"
-										width="1.3em"
-										height="1.3em"
-										viewBox="0 0 32 32"
-										><rect x="0" y="0" width="32" height="32" fill="none" stroke="none" /><g
-											transform="rotate(180 16 16)"
-											><path
-												fill="currentColor"
-												d="m16 8l-1.43 1.393L20.15 15H8v2h12.15l-5.58 5.573L16 24l8-8l-8-8z"
-											/><path
-												fill="currentColor"
-												d="M16 30a14 14 0 1 1 14-14a14.016 14.016 0 0 1-14 14Zm0-26a12 12 0 1 0 12 12A12.014 12.014 0 0 0 16 4Z"
-											/></g
-										></svg
+									<input
+										on:keyup={() => (valid = true)}
+										class="hak0fbu border-solid px-8 py-4 rounded-lg font-medium bg-gray-100 border border-gray-200 placeholder-gray-500 text-sm focus:outline-none focus:bg-white {valid
+											? 'focus:border-green-600'
+											: 'focus:border-red-600'}"
+										type="password"
+										placeholder="Your Passcode"
+										bind:value={passcode}
+										spellcheck="false"
+									/>
+									<div class="intro-y flex items-center justify-center mt-5">
+										<a
+											class="transition p-4 w-full theme-text-app font-medium rounded-lg flex items-center justify-around hover:bg-yellow-100"
+											href="/0auth/forgot-password"
+											>Forgot Password <svg
+												viewBox="0 0 24 24"
+												aria-hidden="true"
+												focusable="false"
+												fill="none"
+												xmlns="http://www.w3.org/2000/svg"
+												stroke="currentColor"
+												stroke-linecap="round"
+												stroke-linejoin="round"
+												class="inline-block overflow-hidden align-middle w-6 h-6"
+												><line x1="5" x2="19" y1="12" y2="12" /><polyline
+													points="12 5 19 12 12 19"
+												/></svg
+											></a
+										>
+									</div>
+									<button
+										on:click={login}
+										class="mt-5 tracking-wide font-semibold bg-black/90 text-gray-100 hak0fbu py-4 shadow rounded-lg hover:bg-black transition-all duration-300 ease-in-out flex items-center justify-center border border-solid border-slate-300 focus:shadow-outline focus:outline-none"
 									>
-									<span class="ml-3"> Back </span>
-								</button>
+										<span class="mr-3"> Login </span>
+										{#if emailGif}
+											<div class="ml-3">
+												<img class="w-5 h-5" src="/gif.gif" srcset="/gif.gif 2x" alt="" />
+											</div>
+										{/if}
+									</button>
+									<button
+										on:click={() => ((pass = false), (a = false))}
+										class="mt-5 tracking-wide font-semibold bg-transparent text-gray-800 hak0fbu py-4 shadow rounded-lg hover:text-white hover:bg-black transition-all duration-300 ease-in-out flex items-center justify-center border border-solid border-slate-700 focus:shadow-outline focus:outline-none"
+									>
+										<svg
+											class="mr-3 w-6 h-6 inline-block align-middle overflow-hidden"
+											viewBox="0 0 24 24"
+											aria-hidden="true"
+											focusable="false"
+											fill="none"
+											xmlns="http://www.w3.org/2000/svg"
+											stroke="currentColor"
+											stroke-linecap="round"
+											stroke-linejoin="round"
+											><g transform="rotate(180 12 12)"
+												><line x1="5" x2="19" y1="12" y2="12" /><polyline
+													points="12 5 19 12 12 19"
+												/></g
+											></svg
+										>
+										<span class="ml-3"> Back </span>
+									</button>
+								</div>
 							{/if}
 
 							<p class="mt-6 text-sm text-gray-600 text-center">

@@ -6,6 +6,10 @@
     .w-9\/10 {
         @apply w-[90%] !important;
     }
+
+    .theme-text-app {
+        @apply text-[#daa12f] !important;
+    }
 }
 
 *, ::before, ::after {
