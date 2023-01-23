@@ -431,7 +431,7 @@
 		@apply text-black;
 	}
 	.slider-2 {
-		@apply theme-text-app;
+		@apply text-[#daa12f];
 	}
 	.slider-3 {
 		@apply text-teal-600;
