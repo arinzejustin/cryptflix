@@ -4,6 +4,8 @@
 	import { goto } from '$app/navigation';
 	import Alert from '$lib/Alert.svelte';
 	import Api from '$lib/api';
+	import Checkbox from '@smui/checkbox';
+	import FormField from '@smui/form-field';
 
 	let emailId = Math.random()
 		.toString(36)
@@ -13,7 +15,7 @@
 		emailGif = false,
 		appleGif = false,
 		visible = false,
-		slider = false;
+		checked = true;
 
 	var valid: boolean,
 		a = true,
@@ -31,6 +33,13 @@
 		return regExp.test(email);
 	};
 
+	var toast = (message: any, error: boolean) => {
+		msg = message;
+		err = error;
+		alert = true;
+		setTimeout(() => alert = false, 4400)
+	}
+
 	function validateEmail() {
 		if (!isValid(e_mail)) {
 			disabled = true;
@@ -42,16 +51,17 @@
 	}
 
 	var login = async () => {
+		if (!checked) {
+			toast('Fill all the fields', true)
+			return;
+		}
 		emailGif = true;
 		try {
 			const req = await Api.post('/login', JSON.stringify({ email: e_mail, pass: passcode }));
 			console.log(req);
 		} catch (error) {
 			emailGif = false;
-			alert = true;
-			err = true;
-			//@ts-ignore
-			msg = error.message;
+			toast(error.message, true)
 			setTimeout(() => (alert = false), 4400);
 		}
 	};
@@ -63,19 +73,16 @@
 		visible = !visible;
 	};
 
-	var auth = (e: Event, {google = false, apple = false}) => {
-		e.preventDefault()
+	var auth = (e: Event, { google = false, apple = false }) => {
+		e.preventDefault();
 		googleGif = google;
 		appleGif = apple;
-		alert = true;
-		err = true;
-		msg = 'Authentication Failed'
+		toast('Authentication Failed', true)
 		setTimeout(() => {
-			alert = false;
 			googleGif = false;
-		appleGif = false;
-		}, 4000)
-	}
+			appleGif = false;
+		}, 4000);
+	};
 </script>
 
 <svelte:head>
@@ -96,9 +103,10 @@
 					</h1>
 					<div class="hak0fbu flex-1 mt-8">
 						<div class="_0itw21asd font-open">
-							<button on:click={(event) => {
-								auth(event, { google: true });
-							}}
+							<button
+								on:click={(event) => {
+									auth(event, { google: true });
+								}}
 								class="hak0fbu border border-solid border-slate-300 max-w-xs font-bold shadow-sm rounded-lg py-3 bg-indigo-100 text-gray-800 flex items-center justify-center transition-all duration-300 ease-in-out focus:outline-none hover:shadow focus:shadow-sm focus:shadow-outline"
 							>
 								<div class="bg-white p-2 rounded-full">
@@ -128,9 +136,10 @@
 									</div>
 								{/if}
 							</button>
-							<button on:click={(event) => {
-								auth(event, { apple: true });
-							}}
+							<button
+								on:click={(event) => {
+									auth(event, { apple: true });
+								}}
 								class="hak0fbu max-w-xs mt-4 font-bold shadow-sm rounded-lg py-3 bg-black text-gray-50 flex items-center justify-center transition-all duration-300 ease-in-out focus:outline-none hover:shadow focus:shadow-sm focus:shadow-outline"
 							>
 								<div class="bg-white p-2 rounded-full">
@@ -167,7 +176,7 @@
 						</div>
 
 						<div class="mb-8 {pass ? 'hidden' : ''}">
-							<p class="text-left float-right mb-6 text-[15px] text-slate-600">
+							<p class="text-center float-none mb-6 text-[15px] text-slate-600">
 								Don't have an account yet ? <a href="/0auth/onboard" class="theme-text-app">
 									Register</a
 								>
@@ -185,33 +194,35 @@
 									}}
 									class="mt-5 {pass
 										? 'hidden'
-										: ''} tracking-wide font-semibold bg-black/90 text-gray-50 hak0fbu py-4 rounded-lg hover:bg-black transition-all duration-300 ease-in-out flex items-center justify-center focus:shadow-outline focus:outline-none"
+										: ''} tracking-wide font-semibold bg-black/[0.85] text-gray-50 hak0fbu py-4 rounded-lg hover:bg-black transition-all duration-300 ease-in-out flex items-center justify-center focus:shadow-outline focus:outline-none"
 								>
-									<svg
-										class="w-6 h-6 -ml-3"
-										xmlns="http://www.w3.org/2000/svg"
-										aria-hidden="true"
-										role="img"
-										preserveAspectRatio="xMidYMid meet"
-										viewBox="0 0 512 512"
-										><rect x="0" y="0" width="512" height="512" fill="none" stroke="none" /><path
-											fill="#96A9B2"
-											d="M511.824 425.007c1.941-5.245-220.916-173.519-220.916-173.519c-27.9-20.589-42.574-20.913-70.164 0c0 0-222.532 168.138-220.659 173.311l-.045.038c.023.045.06.076.091.117a48.482 48.482 0 0 0 8.119 14.157c1.473 1.786 3.248 3.282 4.955 4.837l-.083.064c.136.121.317.177.453.298c7.235 6.454 16.359 10.634 26.495 11.827c.159.019.287.102.446.121h.612c1.541.147 3.006.517 4.584.517h420.721c20.717 0 38.269-13.028 45.241-31.291c.083-.136.211-.234.287-.374l-.137-.103z"
-										/><path
-											fill="#B9C5C6"
-											d="M256.133 232.176L1.216 423.364V152.515c0-26.4 21.397-47.797 47.797-47.797h414.24c26.4 0 47.797 21.397 47.797 47.797v270.849L256.133 232.176z"
-										/><path
-											fill="#EDECE6"
-											d="m4.189 135.896l217.645 170.949c27.47 20.271 41.918 20.591 69.083 0L508.22 136.167c-3.77-6.834-9.414-12.233-15.869-16.538l2.989-2.342c-7.295-6.641-16.62-10.946-26.971-12.058l-424.455.015c-10.322 1.097-19.662 5.417-26.942 12.043l2.967 2.313c-6.38 4.245-11.972 9.551-15.75 16.296z"
-										/><path
-											fill="#DCE2E2"
-											d="M4.118 136.254C2.207 141.419 221.63 307.099 221.63 307.099c27.47 20.271 41.918 20.591 69.083 0c0 0 219.103-165.546 217.258-170.64l.045-.037c-.022-.045-.059-.074-.089-.115a47.732 47.732 0 0 0-7.994-13.939c-1.45-1.759-3.198-3.231-4.878-4.763l.082-.063c-.134-.119-.312-.175-.446-.294c-7.124-6.354-16.107-10.47-26.086-11.645c-.156-.019-.283-.1-.439-.119h-.602c-1.517-.145-2.96-.509-4.514-.509H48.81c-20.398 0-37.68 12.828-44.543 30.809c-.082.134-.208.231-.283.368l.134.102z"
-										/><path
-											fill="#597B91"
-											d="M291.401 154.645h-38.632a6.155 6.155 0 0 0-6.155 6.155v21.722a6.155 6.155 0 0 0 6.155 6.155h31.415a6.155 6.155 0 0 1 6.155 6.155v11.616a6.155 6.155 0 0 1-6.155 6.155h-31.415a6.155 6.155 0 0 0-6.155 6.155v23.578a6.155 6.155 0 0 0 6.155 6.155h41.316a6.155 6.155 0 0 1 6.155 6.155v12.441a6.155 6.155 0 0 1-6.155 6.155h-75.76a6.155 6.155 0 0 1-6.155-6.155V136.461a6.155 6.155 0 0 1 6.155-6.155h74.81c3.749 0 6.627 3.322 6.092 7.033l-1.733 12.028a6.156 6.156 0 0 1-6.093 5.278z"
-										/></svg
-									>
-									<span class="ml-4">E-mail</span>
+									<div class="bg-white p-2 rounded-full">
+										<svg
+											class="w-5 h-5"
+											xmlns="http://www.w3.org/2000/svg"
+											aria-hidden="true"
+											role="img"
+											preserveAspectRatio="xMidYMid meet"
+											viewBox="0 0 512 512"
+											><rect x="0" y="0" width="512" height="512" fill="none" stroke="none" /><path
+												fill="#96A9B2"
+												d="M511.824 425.007c1.941-5.245-220.916-173.519-220.916-173.519c-27.9-20.589-42.574-20.913-70.164 0c0 0-222.532 168.138-220.659 173.311l-.045.038c.023.045.06.076.091.117a48.482 48.482 0 0 0 8.119 14.157c1.473 1.786 3.248 3.282 4.955 4.837l-.083.064c.136.121.317.177.453.298c7.235 6.454 16.359 10.634 26.495 11.827c.159.019.287.102.446.121h.612c1.541.147 3.006.517 4.584.517h420.721c20.717 0 38.269-13.028 45.241-31.291c.083-.136.211-.234.287-.374l-.137-.103z"
+											/><path
+												fill="#B9C5C6"
+												d="M256.133 232.176L1.216 423.364V152.515c0-26.4 21.397-47.797 47.797-47.797h414.24c26.4 0 47.797 21.397 47.797 47.797v270.849L256.133 232.176z"
+											/><path
+												fill="#EDECE6"
+												d="m4.189 135.896l217.645 170.949c27.47 20.271 41.918 20.591 69.083 0L508.22 136.167c-3.77-6.834-9.414-12.233-15.869-16.538l2.989-2.342c-7.295-6.641-16.62-10.946-26.971-12.058l-424.455.015c-10.322 1.097-19.662 5.417-26.942 12.043l2.967 2.313c-6.38 4.245-11.972 9.551-15.75 16.296z"
+											/><path
+												fill="#DCE2E2"
+												d="M4.118 136.254C2.207 141.419 221.63 307.099 221.63 307.099c27.47 20.271 41.918 20.591 69.083 0c0 0 219.103-165.546 217.258-170.64l.045-.037c-.022-.045-.059-.074-.089-.115a47.732 47.732 0 0 0-7.994-13.939c-1.45-1.759-3.198-3.231-4.878-4.763l.082-.063c-.134-.119-.312-.175-.446-.294c-7.124-6.354-16.107-10.47-26.086-11.645c-.156-.019-.283-.1-.439-.119h-.602c-1.517-.145-2.96-.509-4.514-.509H48.81c-20.398 0-37.68 12.828-44.543 30.809c-.082.134-.208.231-.283.368l.134.102z"
+											/><path
+												fill="#597B91"
+												d="M291.401 154.645h-38.632a6.155 6.155 0 0 0-6.155 6.155v21.722a6.155 6.155 0 0 0 6.155 6.155h31.415a6.155 6.155 0 0 1 6.155 6.155v11.616a6.155 6.155 0 0 1-6.155 6.155h-31.415a6.155 6.155 0 0 0-6.155 6.155v23.578a6.155 6.155 0 0 0 6.155 6.155h41.316a6.155 6.155 0 0 1 6.155 6.155v12.441a6.155 6.155 0 0 1-6.155 6.155h-75.76a6.155 6.155 0 0 1-6.155-6.155V136.461a6.155 6.155 0 0 1 6.155-6.155h74.81c3.749 0 6.627 3.322 6.092 7.033l-1.733 12.028a6.156 6.156 0 0 1-6.093 5.278z"
+											/></svg
+										>
+									</div>
+									<span class="ml-4">Sign in with e-mail</span>
 								</button>
 							{:else}
 								<input
@@ -373,13 +384,15 @@
 									</button>
 								</div>
 							{/if}
-
-							<p class="mt-6 text-sm text-gray-600 text-center">
+							<div class="flex flex-row justify-start align-middle items-center">
+							<Checkbox bind:checked class="mr-1"/>
+							<p on:click={() => (checked = !checked)} class="mt-6 text-sm text-gray-600 text-center ml-4">
 								I agree to abide by cryptflixinvest's
 								<a href="/" class="border-b border-gray-500 border-dotted"> Terms of Service </a>
 								and
 								<a href="/" class="border-b border-gray-500 border-dotted"> Privacy Policy </a>
 							</p>
+						</div>
 						</div>
 					</div>
 				</div>
@@ -394,13 +407,25 @@
 							We are
 							<div class="inline-block h-[1.5em] overflow-hidden align-middle ms-slider">
 								<ul class="ms-slider__words list-none p-0 m-0 inline-block">
-									<li class="ms-slider__word slider-1 leading-[1.3em] text-left block font-nunito font-black">
+									<li
+										class="ms-slider__word slider-1 leading-[1.3em] text-left block font-nunito font-black"
+									>
 										Committed
 									</li>
-									<li class="ms-slider__word slider-3 leading-[1.3em] text-left block font-nunito font-black">tested</li>
-									<li class="ms-slider__word slider-2 leading-[1.3em] text-left block font-nunito font-black">Trusted</li>
+									<li
+										class="ms-slider__word slider-3 leading-[1.3em] text-left block font-nunito font-black"
+									>
+										tested
+									</li>
+									<li
+										class="ms-slider__word slider-2 leading-[1.3em] text-left block font-nunito font-black"
+									>
+										Trusted
+									</li>
 									<!-- This last word needs to duplicate the first one to ensure a smooth infinite animation -->
-									<li class="ms-slider__word slider-1 leading-[1.3em] text-left block font-nunito font-black">
+									<li
+										class="ms-slider__word slider-1 leading-[1.3em] text-left block font-nunito font-black"
+									>
 										Committed
 									</li>
 								</ul>

@@ -17,7 +17,7 @@
 				<!-- svelte-ignore a11y-click-events-have-key-events -->
 				<svg
 					on:click={onClose}
-					class="text-slate-400 dark:text-slate-50 w-4 h-4 font-extrabold"
+					class="text-slate-400 cursor-pointer dark:text-slate-50 w-4 h-4 font-extrabold"
 					xmlns="http://www.w3.org/2000/svg"
 					width="1em"
 					height="1em"
