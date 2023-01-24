@@ -26,3 +26,7 @@ body {
 .hak0fbu {
     @apply w-full;
 }
+
+.iti {
+    @apply w-full !important;
+}

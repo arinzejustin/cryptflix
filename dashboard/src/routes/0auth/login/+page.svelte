@@ -6,7 +6,7 @@
 	import Api from '$lib/api';
 	import Checkbox from '@smui/checkbox';
 
-	let emailId = Math.random()
+	let geneId = Math.random()
 		.toString(36)
 		.substring(2, 9 + 2);
 
@@ -30,16 +30,14 @@
 		var regExp =
 			/^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
 		return regExp.test(email);
-	};
-
-	var toast = (message: any, error: boolean) => {
+	},
+	 toast = (message: any, error: boolean) => {
 		msg = message;
 		err = error;
 		alert = true;
 		setTimeout(() => (alert = false), 4400);
-	};
-
-	function validateEmail() {
+	},
+	validateEmail = () => {
 		if (!isValid(e_mail)) {
 			disabled = true;
 			valid = false;
@@ -47,9 +45,8 @@
 			disabled = false;
 			valid = true;
 		}
-	}
-
-	var login = async () => {
+	},
+	login = async () => {
 		if (!checked) {
 			toast('Fill all the fields', true);
 			return;
@@ -64,16 +61,14 @@
 			toast(error.message, true);
 			setTimeout(() => (alert = false), 4400);
 		}
-	};
-
-	var toggle = () => {
-		const password = document.querySelector('#pass')!,
+	},
+	toggle = () => {
+		const password = document.querySelector(`#${geneId}`)!,
 			type = password.getAttribute('type') === 'password' ? 'text' : 'password';
 		password.setAttribute('type', type);
 		visible = !visible;
-	};
-
-	var auth = (e: Event, { google = false, apple = false }) => {
+	},
+	auth = (e: Event, { google = false, apple = false }) => {
 		e.preventDefault();
 		googleGif = google;
 		appleGif = apple;
@@ -227,22 +222,32 @@
 									<span class="ml-4">Sign in with e-mail</span>
 								</button>
 							{:else}
-								<input
-									on:keyup={validateEmail}
-									transition:fade={{
-										delay: 200,
-										duration: 1000,
-										easing: cubicIn
-									}}
-									class="hak0fbu border-solid px-8 py-4 rounded-lg font-medium bg-gray-50 border border-gray-300 placeholder-gray-500 text-sm focus:outline-none focus:bg-white {valid
-										? 'focus:border-green-600'
-										: 'focus:border-red-600'}"
-									type="email"
-									placeholder="Your Email Address"
-									bind:value={e_mail}
-									id={emailId}
-									spellcheck="false"
-								/>
+								<div>
+									<div class="relative">
+										<input
+											on:keyup={validateEmail}
+											transition:fade={{
+												delay: 200,
+												duration: 1000,
+												easing: cubicIn
+											}}
+											class="hak0fbu transition duration-300 appearance-none block border-solid focus:ring-0 px-8 py-4 rounded-lg font-medium bg-gray-50 border-2 border-gray-300 text-sm focus:outline-none focus:bg-white {valid
+												? 'focus:border-green-600'
+												: 'focus:border-red-600'} peer"
+											type="email"
+											aria-describedby="email_help"
+											placeholder=" "
+											bind:value={e_mail}
+											id={geneId}
+											spellcheck="false"
+										/>
+										<label
+											for={geneId}
+											class=" {a ? 'hidden' : ''} absolute text-sm text-slate-800 {valid ? 'peer-focus:text-green-600' : 'peer-focus:text-red-600'} duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-[0] bg-gray-50 px-2 peer-focus:px-2 peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4 left-1"
+											>Your Email</label
+										>
+									</div>
+								</div>
 								<button
 									on:click={() => (
 										(emailGif = true),
@@ -294,22 +299,32 @@
 									}}
 								>
 									<div class="flex items-center justify-center w-full gap-0 mt-4">
+										<div class="w-full">
+											<div class="relative">
 										<input
 											on:keyup={() => (valid = true)}
-											class="hak0fbu border-solid px-8 py-4 rounded-l-lg font-medium bg-gray-50 border border-gray-300 placeholder-gray-500 text-sm focus:outline-none focus:bg-white {valid
+											class="hak0fbu border-solid px-8 py-4 rounded-l-lg font-medium bg-gray-50 border-2 transition duration-300 border-gray-300 placeholder-gray-500 text-sm focus:outline-none focus:bg-white {valid
 												? 'focus:border-green-600'
-												: 'focus:border-red-600'}"
+												: 'focus:border-red-600'} peer appearance-none"
 											type="password"
-											id="pass"
-											placeholder="Your Passcode"
+											id={geneId}
+											placeholder=" "
 											bind:value={passcode}
 											spellcheck="false"
 										/>
-										<div
-											class="flex items-center shadow justify-center border border-solid border-slate-300 bg-gray-300 p-3.5 rounded-r-lg"
+										<label
+											for='{geneId}'
+											class=" {pass ? 'absolute' : 'relative'} text-sm text-slate-800 {valid ? 'peer-focus:text-green-600' : 'peer-focus:text-red-600'} duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-[0] bg-gray-50 px-2 peer-focus:px-2 peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4 left-1"
+											>Passcode</label
+										>	
+									</div>
+								</div>
+										<!-- svelte-ignore a11y-click-events-have-key-events -->
+										<div 
+										on:click={toggle}
+											class="flex items-center shadow justify-center border-2 border-solid border-slate-300 bg-gray-300 p-3.5 rounded-r-lg"
 										>
 											<svg
-												on:click={toggle}
 												viewBox="0 0 24 24"
 												aria-hidden="true"
 												focusable="false"
