@@ -5,7 +5,6 @@
 	import Alert from '$lib/Alert.svelte';
 	import Api from '$lib/api';
 	import Checkbox from '@smui/checkbox';
-	import FormField from '@smui/form-field';
 
 	let emailId = Math.random()
 		.toString(36)
@@ -37,8 +36,8 @@
 		msg = message;
 		err = error;
 		alert = true;
-		setTimeout(() => alert = false, 4400)
-	}
+		setTimeout(() => (alert = false), 4400);
+	};
 
 	function validateEmail() {
 		if (!isValid(e_mail)) {
@@ -52,7 +51,7 @@
 
 	var login = async () => {
 		if (!checked) {
-			toast('Fill all the fields', true)
+			toast('Fill all the fields', true);
 			return;
 		}
 		emailGif = true;
@@ -61,7 +60,8 @@
 			console.log(req);
 		} catch (error) {
 			emailGif = false;
-			toast(error.message, true)
+			//@ts-ignore
+			toast(error.message, true);
 			setTimeout(() => (alert = false), 4400);
 		}
 	};
@@ -77,11 +77,13 @@
 		e.preventDefault();
 		googleGif = google;
 		appleGif = apple;
-		toast('Authentication Failed', true)
 		setTimeout(() => {
-			googleGif = false;
-			appleGif = false;
-		}, 4000);
+			toast('Authentication Failed', true);
+			setTimeout(() => {
+				googleGif = false;
+				appleGif = false;
+			}, 4000);
+		}, 3000);
 	};
 </script>
 
@@ -385,14 +387,18 @@
 								</div>
 							{/if}
 							<div class="flex flex-row justify-start align-middle items-center">
-							<Checkbox bind:checked class="mr-1"/>
-							<p on:click={() => (checked = !checked)} class="mt-6 text-sm text-gray-600 text-center ml-4">
-								I agree to abide by cryptflixinvest's
-								<a href="/" class="border-b border-gray-500 border-dotted"> Terms of Service </a>
-								and
-								<a href="/" class="border-b border-gray-500 border-dotted"> Privacy Policy </a>
-							</p>
-						</div>
+								<Checkbox bind:checked class="mr-1" />
+								<!-- svelte-ignore a11y-click-events-have-key-events -->
+								<p
+									on:click={() => (checked = !checked)}
+									class="mt-6 text-sm text-gray-600 text-center ml-4"
+								>
+									I agree to abide by cryptflixinvest's
+									<a href="/" class="border-b border-gray-500 border-dotted"> Terms of Service </a>
+									and
+									<a href="/" class="border-b border-gray-500 border-dotted"> Privacy Policy </a>
+								</p>
+							</div>
 						</div>
 					</div>
 				</div>
