@@ -22,8 +22,8 @@
 		register = true,
 		verification = false,
 		profile = false,
-		complete = false;
-	v_code = '';
+		complete = false,
+		resendGif = false;
 
 	var valid: boolean,
 		checked = false,
@@ -34,8 +34,7 @@
 		err = true,
 		disabled = true,
 		gravatar = '',
-		showTrailingIcons = true;
-	disabled = true;
+	times = 0;
 
 	var isValid = (email: string) => {
 			var regExp =
@@ -99,26 +98,43 @@
 				if (req.saved == true) register = true;
 				toast(req.message, false);
 				loadGif = false;
-				setTimeout(() => (alert = false), 4400);
 			} catch (error) {
 				loadGif = false;
 				//@ts-ignore
 				toast(error.message, true);
-				setTimeout(() => (alert = false), 4400);
 			}
 		},
 		verify = async () => {
-			if (v_code == '') return;
+			if (v_code == '' || !checked) return;
 			loadGif = true;
 			try {
 				const req = await Api.post('/verify', JSON.stringify({ verify: v_code }));
-				console.log(req);
+				if (req.valid == true)verification = true;
+				toast(req.message, false);
+				loadGif = false;
+				setTimeout(() => (alert = false), 4400);
 			} catch (error) {
 				loadGif = false;
 				//@ts-ignore
 				toast(error.message, true);
-				setTimeout(() => (alert = false), 4400);
 			}
+		},
+		resend = async () => {
+			if (times > 3) {
+				toast('Exceeded Number Of Request', true);
+				verification = true;
+				return;
+			}
+			resendGif = true;
+			try{
+				const req = await Api.get('/email', JSON.stringify({email: e_mail}));
+				console.log(req)
+			} catch (error) {
+				resendGif = false;
+				//@ts-ignore
+				toast(error.message, true);
+			}
+			times++;
 		};
 
 	onMount(() => {
@@ -397,7 +413,7 @@
 											input$pattern={'\\d+(\\.\\d{2})?'}
 										/>
 										<button
-											on:click={verify}
+											on:click={verify} disabled={loadGif}
 											class="mt-5 tracking-wide font-semibold bg-black/90 text-gray-100 hak0fbu py-4 shadow rounded-lg hover:bg-black transition-all duration-300 ease-in-out flex items-center justify-center border border-solid border-slate-300 focus:shadow-outline focus:outline-none"
 										>
 											<span class="mr-3"> Verify </span>
@@ -407,11 +423,14 @@
 												</div>
 											{/if}
 										</button>
-										<button
-											disabled="false"
-											class="mt-5 tracking-wide font-semibold bg-transparent text-gray-800 hak0fbu py-4 shadow rounded-lg hover:text-white hover:bg-black transition-all duration-300 ease-in-out flex items-center justify-center border border-solid border-slate-700 focus:shadow-outline focus:outline-none"
+										<button on:click={resend} disabled={resendGif}
+											class="mt-5 tracking-wide peer font-semibold bg-transparent text-gray-800 hak0fbu py-4 shadow rounded-lg hover:text-white hover:bg-black transition-all duration-300 ease-in-out flex items-center justify-center border border-solid border-slate-700 focus:shadow-outline focus:outline-none"
 										>
+										{#if resendGif}
+										<span class="css-12hya6r w-5 h-5 peer-hover:border-[white_white_transparent] border-[black_black_transparent]"></span>
+{:else}
 											<span class="ml-3"> Resend Code </span>
+											{/if}
 										</button>
 									</div>
 								{/if}
