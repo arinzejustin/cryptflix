@@ -13,7 +13,11 @@
 			.substring(2, 9 + 2),
 		loading = true,
         visible = false,
-		code = 'us';
+		code = 'us',
+        first = '',
+        last = '',
+        tel = '',
+        v_code = '';
 
 	var valid: boolean,
 		checked = false,
@@ -71,7 +75,21 @@
 			separateDialCode: true,
 			utilsScript: '../../../node_modules/intl-tel-input/build/js/utils.js'
 		});
-	};
+	},
+    onboard = async () => {
+        if(!checked || first = '' || last = '' || tel = '') {
+            toast('Fill all the fields', true);
+            return;
+        }
+        try {
+            const req = Api.post('/onboard', JSON.stringify({email: e_mail, name: `${first} ${last}`, tel: tel }))
+        } catch(error) {
+           loadGif = false;
+			//@ts-ignore
+			toast(error.message, true);
+			setTimeout(() => (alert = false), 4400);
+        }
+    };
 
 	onMount(() => {
 		loading = false;
@@ -205,7 +223,7 @@
 													class="hak0fbu transition duration-300 appearance-none block border-solid focus:ring-0 px-8 py-4 rounded-lg font-medium bg-gray-50 border-2 border-gray-300 text-sm focus:outline-none focus:bg-white peer"
 													type="text"
 													placeholder=" "
-													bind:value={e_mail}
+													bind:value={first}
 													id="First"
 													spellcheck="true"
 												/>
@@ -227,7 +245,7 @@
 													class="hak0fbu transition duration-300 appearance-none block border-solid focus:ring-0 px-8 py-4 rounded-lg font-medium bg-gray-50 border-2 border-gray-300 text-sm focus:outline-none focus:bg-white peer"
 													type="text"
 													placeholder=" "
-													bind:value={e_mail}
+													bind:value={last}
 													id="Last"
 													spellcheck="true"
 												/>
@@ -240,29 +258,42 @@
 										</div>
 										<div class="w-full my-3 py-1">
 											<input
-												class="hak0fbu border-solid px-8 py-4 rounded-lg font-medium bg-gray-50 border-2 border-gray-300 placeholder-gray-500 text-sm focus:outline-none focus:bg-white"
+												class="hak0fbu font-nunito  border-solid px-8 py-4 rounded-lg font-medium bg-gray-50 border-2 border-gray-300 placeholder-gray-500 text-sm focus:outline-none focus:bg-white"
 												type="tel"
 												id="phone"
+                                                bind:value={tel}
 											/>
 										</div>
 										<div class="w-full my-3 py-1">
-											<input
-												class="hak0fbu border-solid px-8 py-4 rounded-lg font-medium bg-gray-50 border border-gray-300 placeholder-gray-500 text-sm focus:outline-none focus:bg-white {valid
-													? 'focus:border-green-600'
-													: 'focus:border-red-600'}"
-												type="email"
-												placeholder="Your Email Address"
-												bind:value={e_mail}
-												id={emailId}
-												spellcheck="false"
-											/>
+                                                <div class="relative">
+                                                    <input
+                                                        on:keyup={validateEmail}
+                                                        transition:fade={{
+                                                            delay: 200,
+                                                            duration: 1000,
+                                                            easing: cubicIn
+                                                        }}
+                                                        class="hak0fbu transition duration-300 appearance-none block border-solid focus:ring-0 px-8 py-4 rounded-lg font-medium bg-gray-50 border-2 border-gray-300 text-sm focus:outline-none focus:bg-white {valid
+                                                            ? 'focus:border-green-600'
+                                                            : 'focus:border-red-600'} peer"
+                                                        type="email"
+                                                        aria-describedby="email_help"
+                                                        placeholder=" "
+                                                        bind:value={e_mail}
+                                                        id={emailId}
+                                                        spellcheck="false"
+                                                    />
+                                                    <label
+                                                        for={emailId}
+                                                        class="absolute font-bold text-[15px] font-nunito text-slate-800 {valid ? 'peer-focus:text-green-600' : 'peer-focus:text-red-600'} duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-[0] bg-gray-50 px-2 peer-focus:px-2 peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4 left-1"
+                                                        >Your Email</label
+                                                    >
+                                            </div>
 										</div>
                                         <button
 									on:click={() => (
 										(loadGif = true),
-										setTimeout(() => {
-											loadGif = false;
-										}, 5000)
+                                        (onboard)
 									)}
 									{disabled}
 									transition:fade={{
