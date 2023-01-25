@@ -30,3 +30,39 @@ body {
 .iti {
     @apply w-full !important;
 }
+
+.mdc-notched-outline__leading {
+    @apply rounded-l-lg !important;
+}
+
+.mdc-notched-outline__trailing {
+    @apply rounded-r-lg !important;
+}
+
+.mdc-text-field--focused:not(.mdc-text-field--disabled) .mdc-floating-label {
+    @apply text-black !important;
+}
+
+.mdc-text-field:not(.mdc-text-field--disabled) .mdc-text-field__affix--prefix {
+    @apply text-gray-700 !important;
+}
+
+.mdc-text-field--outlined:not(.mdc-text-field--disabled) .mdc-notched-outline__leading,
+.mdc-text-field--outlined:not(.mdc-text-field--disabled) .mdc-notched-outline__notch,
+.mdc-text-field--outlined:not(.mdc-text-field--disabled) .mdc-notched-outline__trailing {
+    @apply border-gray-600 !important;
+}
+
+.mdc-text-field .mdc-text-field__input {
+    caret-color: #191919 !important;
+}
+
+.mdc-text-field--invalid .mdc-text-field__input {
+    caret-color: #b00020;
+}
+
+.mdc-text-field--valid:not(.mdc-text-field--disabled) .mdc-notched-outline__leading,
+.mdc-text-field--valid:not(.mdc-text-field--disabled) .mdc-notched-outline__notch,
+.mdc-text-field--valid:not(.mdc-text-field--disabled) .mdc-notched-outline__trailing {
+    @apply border-[#b00020] !important;
+}

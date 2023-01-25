@@ -7,6 +7,7 @@
 	import intlTelInput from 'intl-tel-input';
 	import Checkbox from '@smui/checkbox';
 	import { onMount } from 'svelte';
+	import Textfield from '@smui/textfield';
 
 	let emailId = Math.random()
 			.toString(36)
@@ -17,7 +18,11 @@
 		first = '',
 		last = '',
 		tel = '',
-		v_code = '';
+		v_code = '',
+		round_1 = false,
+		verification = false,
+		profile = false,
+		complete = false;
 
 	var valid: boolean,
 		checked = false,
@@ -87,7 +92,10 @@
 					'/onboard',
 					JSON.stringify({ email: e_mail, name: `${first} ${last}`, tel: tel })
 				);
-				console.log(req)
+				if (req.react == true) round_1 = true;
+				toast(req.message, false);
+				loadGif = false;
+				setTimeout(() => (alert = false), 4400);
 			} catch (error) {
 				loadGif = false;
 				//@ts-ignore
@@ -122,14 +130,20 @@
 					<h1 class="text-xl lg:text-2xl xl:text-3xl font-bold text-center">CREATE YOUR ACCOUNT</h1>
 					<ol class="flex items-center w-full align-middle mx-auto my-5">
 						<li
-							class="flex w-full items-center after:border-solid text-blue-600 dark:text-blue-500 after:content-[''] after:w-full after:h-1 after:border-b after:border-blue-100 after:border-4 after:inline-block dark:after:border-blue-800"
+							class="flex w-full items-center after:border-solid {round_1
+								? 'text-green-600'
+								: 'text-gray-600'} after:content-[''] after:w-full after:h-1 after:border-b {round_1
+								? 'after:border-green-100'
+								: 'after:border-gray-100'} after:border-4 after:inline-block"
 						>
 							<span
-								class="flex items-center justify-center w-10 h-10 bg-blue-100 rounded-full lg:h-12 lg:w-12 dark:bg-blue-800 shrink-0"
+								class="flex items-center justify-center w-10 h-10 {round_1
+									? 'bg-green-100'
+									: 'bg-gray-100'} rounded-full lg:h-12 lg:w-12  shrink-0"
 							>
 								<svg
 									aria-hidden="true"
-									class="w-5 h-5 text-blue-600 lg:w-6 lg:h-6 dark:text-blue-300"
+									class="w-5 h-5 {round_1 ? 'text-green-600' : 'text-gray-600'} lg:w-6 lg:h-6"
 									fill="currentColor"
 									viewBox="0 0 20 20"
 									xmlns="http://www.w3.org/2000/svg"
@@ -142,14 +156,20 @@
 							</span>
 						</li>
 						<li
-							class="flex w-full items-center after:border-solid after:content-[''] after:w-full after:h-1 after:border-b after:border-gray-100 after:border-4 after:inline-block dark:after:border-gray-700"
+							class="flex w-full items-center after:border-solid {verification
+								? 'text-green-600'
+								: 'text-gray-600'} after:content-[''] after:w-full after:h-1 after:border-b {verification
+								? 'after:border-green-100'
+								: 'after:border-gray-100'} after:border-4 after:inline-block"
 						>
 							<span
-								class="flex items-center justify-center w-10 h-10 bg-gray-100 rounded-full lg:h-12 lg:w-12 dark:bg-gray-700 shrink-0"
+								class="flex items-center justify-center w-10 h-10 {verification
+									? 'bg-green-100'
+									: 'bg-gray-100'} rounded-full lg:h-12 lg:w-12 shrink-0"
 							>
 								<svg
 									aria-hidden="true"
-									class="w-5 h-5 text-gray-500 lg:w-6 lg:h-6 dark:text-gray-100"
+									class="w-5 h-5 {verification ? 'text-green-600' : 'text-gray-600'} lg:w-6 lg:h-6"
 									fill="currentColor"
 									viewBox="0 0 20 20"
 									xmlns="http://www.w3.org/2000/svg"
@@ -162,14 +182,20 @@
 							</span>
 						</li>
 						<li
-							class="flex w-full items-center after:border-solid after:content-[''] after:w-full after:h-1 after:border-b after:border-gray-100 after:border-4 after:inline-block dark:after:border-gray-700"
+							class="flex w-full items-center after:border-solid {profile
+								? 'text-green-600'
+								: 'text-gray-600'} after:content-[''] after:w-full after:h-1 after:border-b {profile
+								? 'after:border-green-100'
+								: 'after:border-gray-100'} after:border-4 after:inline-block"
 						>
 							<span
-								class="flex items-center justify-center w-10 h-10 bg-gray-100 rounded-full lg:h-12 lg:w-12 dark:bg-gray-700 shrink-0"
+								class="flex items-center justify-center w-10 h-10 {profile
+									? 'bg-green-100'
+									: 'bg-gray-100'} rounded-full lg:h-12 lg:w-12 dark:bg-gray-700 shrink-0"
 							>
 								<svg
 									aria-hidden="true"
-									class="w-5 h-5 text-gray-500 lg:w-6 lg:h-6 dark:text-gray-100"
+									class="w-5 h-5 {profile ? 'text-green-600' : 'text-gray-600'} lg:w-6 lg:h-6"
 									fill="currentColor"
 									viewBox="0 0 20 20"
 									xmlns="http://www.w3.org/2000/svg"
@@ -209,7 +235,7 @@
 									<div class="my-8">
 										<span class="css-12hya6r" />
 									</div>
-								{:else}
+								{:else if round_1}
 									<div
 										transition:slide={{
 											delay: 50,
@@ -330,6 +356,17 @@
 												</div>
 											{/if}
 										</button>
+									</div>
+								{/if}
+								{#if !loading && !round_1 && !profile}
+									<div>
+										<Textfield class="rounded-lg font-nunito text-[15px]"
+											variant="outlined"
+											bind:value={v_code}
+											label="Verification"
+											prefix="CRYPTFLIX-"
+											input$pattern={'\\d+(\\.\\d{2})?'}
+										/>
 									</div>
 								{/if}
 							</div>
