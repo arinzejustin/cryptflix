@@ -19,10 +19,11 @@
 		last = '',
 		tel = '',
 		v_code = '',
-		round_1 = true,
+		register = true,
 		verification = false,
 		profile = false,
 		complete = false;
+	v_code = '';
 
 	var valid: boolean,
 		checked = false,
@@ -34,13 +35,14 @@
 		disabled = true,
 		gravatar = '',
 		showTrailingIcons = true;
+	disabled = true;
 
 	var isValid = (email: string) => {
 			var regExp =
 				/^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
 			return regExp.test(email);
 		},
-		toast = (message: any, error: boolean) => {
+		toast = (message: string, error: boolean) => {
 			msg = message;
 			err = error;
 			alert = true;
@@ -94,7 +96,7 @@
 					'/onboard',
 					JSON.stringify({ email: e_mail, name: `${first} ${last}`, tel: tel })
 				);
-				if (req.react == true) round_1 = true;
+				if (req.saved == true) register = true;
 				toast(req.message, false);
 				loadGif = false;
 				setTimeout(() => (alert = false), 4400);
@@ -110,6 +112,7 @@
 			loadGif = true;
 			try {
 				const req = await Api.post('/verify', JSON.stringify({ verify: v_code }));
+				console.log(req);
 			} catch (error) {
 				loadGif = false;
 				//@ts-ignore
@@ -141,23 +144,33 @@
 					<img alt="school" class="w-32 h-32" src="/logo.png" />
 				</div>
 				<div class="my-6 lg:my-2.5 _0itw21asd">
-					<h1 class="text-xl lg:text-2xl xl:text-3xl font-bold text-center">CREATE YOUR ACCOUNT</h1>
+					<h1 class="text-xl lg:text-2xl xl:text-3xl font-bold text-center">
+						{#if !register}
+							CREATE YOUR ACCOUNT
+						{:else if register && !verification}
+							VERIFY YOUR ACCOUNT
+						{:else if register && verification && !profile}
+							SET UP YOUR PROFILE
+						{:else}
+							ACCOUNT SUCCESSFULLY CREATED
+						{/if}
+					</h1>
 					<ol class="flex items-center w-full align-middle mx-auto my-5">
 						<li
-							class="flex w-full items-center after:border-solid {round_1
+							class="flex w-full items-center after:border-solid {register
 								? 'text-green-600'
-								: 'text-gray-600'} after:content-[''] after:w-full after:h-1 after:border-b {round_1
+								: 'text-gray-600'} after:content-[''] after:w-full after:h-1 after:border-b {register
 								? 'after:border-green-100'
 								: 'after:border-gray-100'} after:border-4 after:inline-block"
 						>
 							<span
-								class="flex items-center justify-center w-10 h-10 {round_1
+								class="flex items-center justify-center w-10 h-10 {register
 									? 'bg-green-100'
 									: 'bg-gray-100'} rounded-full lg:h-12 lg:w-12  shrink-0"
 							>
 								<svg
 									aria-hidden="true"
-									class="w-5 h-5 {round_1 ? 'text-green-600' : 'text-gray-600'} lg:w-6 lg:h-6"
+									class="w-5 h-5 {register ? 'text-green-600' : 'text-gray-600'} lg:w-6 lg:h-6"
 									fill="currentColor"
 									viewBox="0 0 20 20"
 									xmlns="http://www.w3.org/2000/svg"
@@ -247,9 +260,9 @@
 							<div class="my-4">
 								{#if loading}
 									<div class="my-8">
-										<span class="css-12hya6r" />
+										<span class="css-12hya6r w-20 h-20 border-[#008080_#008080_transparent]" />
 									</div>
-								{:else if !round_1}
+								{:else if !register}
 									<div
 										transition:slide={{
 											delay: 50,
@@ -372,40 +385,17 @@
 										</button>
 									</div>
 								{/if}
-								{#if !loading && round_1 && !profile}
+								{#if !loading && register && !verification}
 									<div class="mx-auto">
 										<!-- svelte-ignore a11y-click-events-have-key-events -->
 										<Textfield
 											class="rounded-lg items-center w-full mx-auto font-nunito text-[15px]"
 											variant="outlined"
 											bind:value={v_code}
-											label="Verification"
+											label="Verification Code"
 											prefix="C-"
 											input$pattern={'\\d+(\\.\\d{2})?'}
-											><svelte:fragment slot="trailingIcon">
-												{#if showTrailingIcons}
-												<div on:click={(e) => (e.target!.classList.add('animate'))} class="items-center cursor-pointer z-10 align-baseline h-full pr-3 flex">
-													<svg class="w-5 h-5"
-														xmlns="http://www.w3.org/2000/svg"
-														width="1em"
-														height="1em"
-														viewBox="0 0 20 20"
-														><rect
-															x="0"
-															y="0"
-															width="20"
-															height="20"
-															fill="none"
-															stroke="none"
-														/><path
-															fill="currentColor"
-															d="M14.66 15.66A8 8 0 1 1 17 10h-2a6 6 0 1 0-1.76 4.24l1.42 1.42zM12 10h8l-4 4l-4-4z"
-														/></svg
-													>
-												</div>
-												{/if}
-											</svelte:fragment>
-										</Textfield>
+										/>
 										<button
 											on:click={verify}
 											class="mt-5 tracking-wide font-semibold bg-black/90 text-gray-100 hak0fbu py-4 shadow rounded-lg hover:bg-black transition-all duration-300 ease-in-out flex items-center justify-center border border-solid border-slate-300 focus:shadow-outline focus:outline-none"
@@ -418,26 +408,10 @@
 											{/if}
 										</button>
 										<button
-											on:click={() => (round_1 = false)}
+											disabled="false"
 											class="mt-5 tracking-wide font-semibold bg-transparent text-gray-800 hak0fbu py-4 shadow rounded-lg hover:text-white hover:bg-black transition-all duration-300 ease-in-out flex items-center justify-center border border-solid border-slate-700 focus:shadow-outline focus:outline-none"
 										>
-											<svg
-												class="mr-3 w-6 h-6 inline-block align-middle overflow-hidden"
-												viewBox="0 0 24 24"
-												aria-hidden="true"
-												focusable="false"
-												fill="none"
-												xmlns="http://www.w3.org/2000/svg"
-												stroke="currentColor"
-												stroke-linecap="round"
-												stroke-linejoin="round"
-												><g transform="rotate(180 12 12)"
-													><line x1="5" x2="19" y1="12" y2="12" /><polyline
-														points="12 5 19 12 12 19"
-													/></g
-												></svg
-											>
-											<span class="ml-3"> Back </span>
+											<span class="ml-3"> Resend Code </span>
 										</button>
 									</div>
 								{/if}
@@ -578,7 +552,7 @@
 	}
 
 	.css-12hya6r {
-		@apply w-20 h-20 mx-auto rounded-full border-solid border-2 text-center block bg-transparent border-[#008080_#008080_transparent];
+		@apply mx-auto rounded-full border-solid border-2 text-center block bg-transparent;
 		border-image: initial;
 		animation: 0.8s linear 0s infinite normal both running animation;
 	}
