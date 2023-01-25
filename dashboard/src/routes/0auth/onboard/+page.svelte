@@ -31,7 +31,9 @@
 		alert = false,
 		msg = '',
 		err = true,
-		disabled = true;
+		disabled = true,
+		gravatar = '',
+		showTrailingIcons = true;
 
 	var isValid = (email: string) => {
 			var regExp =
@@ -104,11 +106,15 @@
 			}
 		},
 		verify = async () => {
+			if (v_code == '') return;
+			loadGif = true;
 			try {
-			const req = await Api.post('/verify', JSON.stringify({verify: v_code}))
+				const req = await Api.post('/verify', JSON.stringify({ verify: v_code }));
 			} catch (error) {
+				loadGif = false;
 				//@ts-ignore
-				toast(error.message, true)
+				toast(error.message, true);
+				setTimeout(() => (alert = false), 4400);
 			}
 		};
 
@@ -375,8 +381,14 @@
 											label="Verification"
 											prefix="C-"
 											input$pattern={'\\d+(\\.\\d{2})?'}
-										/>
-										<button on:click={verify}
+											><svelte:fragment slot="trailingIcon">
+												{#if showTrailingIcons}
+												hh
+												{/if}
+											</svelte:fragment>
+										</Textfield>
+										<button
+											on:click={verify}
 											class="mt-5 tracking-wide font-semibold bg-black/90 text-gray-100 hak0fbu py-4 shadow rounded-lg hover:bg-black transition-all duration-300 ease-in-out flex items-center justify-center border border-solid border-slate-300 focus:shadow-outline focus:outline-none"
 										>
 											<span class="mr-3"> Verify </span>
@@ -386,7 +398,8 @@
 												</div>
 											{/if}
 										</button>
-										<button on:click={() => (round_1 = false)}
+										<button
+											on:click={() => (round_1 = false)}
 											class="mt-5 tracking-wide font-semibold bg-transparent text-gray-800 hak0fbu py-4 shadow rounded-lg hover:text-white hover:bg-black transition-all duration-300 ease-in-out flex items-center justify-center border border-solid border-slate-700 focus:shadow-outline focus:outline-none"
 										>
 											<svg
