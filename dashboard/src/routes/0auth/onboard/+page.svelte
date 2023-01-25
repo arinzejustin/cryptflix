@@ -374,8 +374,9 @@
 								{/if}
 								{#if !loading && round_1 && !profile}
 									<div class="mx-auto">
+										<!-- svelte-ignore a11y-click-events-have-key-events -->
 										<Textfield
-											class="rounded-lg w-full mx-auto font-nunito text-[15px]"
+											class="rounded-lg items-center w-full mx-auto font-nunito text-[15px]"
 											variant="outlined"
 											bind:value={v_code}
 											label="Verification"
@@ -383,7 +384,25 @@
 											input$pattern={'\\d+(\\.\\d{2})?'}
 											><svelte:fragment slot="trailingIcon">
 												{#if showTrailingIcons}
-												hh
+												<div class="items-center cursor-pointer z-10 align-baseline h-full pr-3 flex">
+													<svg class="w-5 h-5"
+														xmlns="http://www.w3.org/2000/svg"
+														width="1em"
+														height="1em"
+														viewBox="0 0 20 20"
+														><rect
+															x="0"
+															y="0"
+															width="20"
+															height="20"
+															fill="none"
+															stroke="none"
+														/><path
+															fill="currentColor"
+															d="M14.66 15.66A8 8 0 1 1 17 10h-2a6 6 0 1 0-1.76 4.24l1.42 1.42zM12 10h8l-4 4l-4-4z"
+														/></svg
+													>
+												</div>
 												{/if}
 											</svelte:fragment>
 										</Textfield>
