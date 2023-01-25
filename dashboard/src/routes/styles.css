@@ -58,11 +58,15 @@ body {
 }
 
 .mdc-text-field--invalid .mdc-text-field__input {
-    caret-color: #b00020;
+    caret-color: #b00020 !important;
 }
 
-.mdc-text-field--valid:not(.mdc-text-field--disabled) .mdc-notched-outline__leading,
-.mdc-text-field--valid:not(.mdc-text-field--disabled) .mdc-notched-outline__notch,
-.mdc-text-field--valid:not(.mdc-text-field--disabled) .mdc-notched-outline__trailing {
+.mdc-text-field--invalid:not(.mdc-text-field--disabled) .mdc-notched-outline__leading,
+.mdc-text-field--invalid:not(.mdc-text-field--disabled) .mdc-notched-outline__notch,
+.mdc-text-field--invalid:not(.mdc-text-field--disabled) .mdc-notched-outline__trailing {
     @apply border-[#b00020] !important;
+}
+
+.mdc-text-field--invalid:not(.mdc-text-field--disabled) .mdc-floating-label {
+    @apply text-[#b00020] !important;
 }

@@ -19,7 +19,7 @@
 		last = '',
 		tel = '',
 		v_code = '',
-		round_1 = false,
+		round_1 = true,
 		verification = false,
 		profile = false,
 		complete = false;
@@ -101,6 +101,14 @@
 				//@ts-ignore
 				toast(error.message, true);
 				setTimeout(() => (alert = false), 4400);
+			}
+		},
+		verify = async () => {
+			try {
+			const req = await Api.post('/verify', JSON.stringify({verify: v_code}))
+			} catch (error) {
+				//@ts-ignore
+				toast(error.message, true)
 			}
 		};
 
@@ -235,7 +243,7 @@
 									<div class="my-8">
 										<span class="css-12hya6r" />
 									</div>
-								{:else if round_1}
+								{:else if !round_1}
 									<div
 										transition:slide={{
 											delay: 50,
@@ -358,15 +366,47 @@
 										</button>
 									</div>
 								{/if}
-								{#if !loading && !round_1 && !profile}
-									<div>
-										<Textfield class="rounded-lg font-nunito text-[15px]"
+								{#if !loading && round_1 && !profile}
+									<div class="mx-auto">
+										<Textfield
+											class="rounded-lg w-full mx-auto font-nunito text-[15px]"
 											variant="outlined"
 											bind:value={v_code}
 											label="Verification"
-											prefix="CRYPTFLIX-"
+											prefix="C-"
 											input$pattern={'\\d+(\\.\\d{2})?'}
 										/>
+										<button on:click={verify}
+											class="mt-5 tracking-wide font-semibold bg-black/90 text-gray-100 hak0fbu py-4 shadow rounded-lg hover:bg-black transition-all duration-300 ease-in-out flex items-center justify-center border border-solid border-slate-300 focus:shadow-outline focus:outline-none"
+										>
+											<span class="mr-3"> Verify </span>
+											{#if loadGif}
+												<div class="ml-3">
+													<img class="w-5 h-5" src="/gif.gif" srcset="/gif.gif 2x" alt="" />
+												</div>
+											{/if}
+										</button>
+										<button on:click={() => (round_1 = false)}
+											class="mt-5 tracking-wide font-semibold bg-transparent text-gray-800 hak0fbu py-4 shadow rounded-lg hover:text-white hover:bg-black transition-all duration-300 ease-in-out flex items-center justify-center border border-solid border-slate-700 focus:shadow-outline focus:outline-none"
+										>
+											<svg
+												class="mr-3 w-6 h-6 inline-block align-middle overflow-hidden"
+												viewBox="0 0 24 24"
+												aria-hidden="true"
+												focusable="false"
+												fill="none"
+												xmlns="http://www.w3.org/2000/svg"
+												stroke="currentColor"
+												stroke-linecap="round"
+												stroke-linejoin="round"
+												><g transform="rotate(180 12 12)"
+													><line x1="5" x2="19" y1="12" y2="12" /><polyline
+														points="12 5 19 12 12 19"
+													/></g
+												></svg
+											>
+											<span class="ml-3"> Back </span>
+										</button>
 									</div>
 								{/if}
 							</div>
