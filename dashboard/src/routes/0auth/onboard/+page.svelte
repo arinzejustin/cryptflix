@@ -384,7 +384,7 @@
 											input$pattern={'\\d+(\\.\\d{2})?'}
 											><svelte:fragment slot="trailingIcon">
 												{#if showTrailingIcons}
-												<div class="items-center cursor-pointer z-10 align-baseline h-full pr-3 flex">
+												<div on:click={(e) => (e.target!.classList.add('animate'))} class="items-center cursor-pointer z-10 align-baseline h-full pr-3 flex">
 													<svg class="w-5 h-5"
 														xmlns="http://www.w3.org/2000/svg"
 														width="1em"
