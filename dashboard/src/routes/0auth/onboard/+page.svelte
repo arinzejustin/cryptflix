@@ -20,7 +20,7 @@
 		tel = '',
 		v_code = '',
 		register = true,
-		verification = false,
+		verification = true,
 		profile = false,
 		complete = false,
 		resendGif = false;
@@ -402,7 +402,11 @@
 									</div>
 								{/if}
 								{#if !loading && register && !verification}
-									<div class="mx-auto">
+									<div class="mx-auto" transition:slide={{
+										delay: 200,
+										duration: 1000,
+										easing: cubicIn
+									}}>
 										<!-- svelte-ignore a11y-click-events-have-key-events -->
 										<Textfield
 											class="rounded-lg items-center w-full mx-auto font-nunito text-[15px]"
@@ -440,7 +444,18 @@
 									</div>
 								{/if}
 								{#if !loading && register && verification && !profile}
-									<div />
+									<div class="md:my-8" transition:slide={
+										{
+											delay: 200,
+											duration: 1000,
+											easing: cubiIn
+										}
+									}>
+									<div class="grid grid-row gap-6 justify-center align-middle">
+										<div></div>
+										<div></div>
+									</div>
+									</div>
 								{/if}
 							</div>
 							<div class="flex flex-row justify-start align-middle items-center">
