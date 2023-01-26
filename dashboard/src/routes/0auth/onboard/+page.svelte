@@ -34,7 +34,7 @@
 		err = true,
 		disabled = true,
 		gravatar = '',
-	times = 0;
+		times = 0;
 
 	var isValid = (email: string) => {
 			var regExp =
@@ -109,7 +109,7 @@
 			loadGif = true;
 			try {
 				const req = await Api.post('/verify', JSON.stringify({ verify: v_code }));
-				if (req.valid == true)verification = true;
+				if (req.valid == true) verification = true;
 				toast(req.message, false);
 				loadGif = false;
 				setTimeout(() => (alert = false), 4400);
@@ -126,9 +126,9 @@
 				return;
 			}
 			resendGif = true;
-			try{
-				const req = await Api.get('/email', JSON.stringify({email: e_mail}));
-				console.log(req)
+			try {
+				const req = await Api.get('/email', JSON.stringify({ email: e_mail }));
+				console.log(req);
 			} catch (error) {
 				resendGif = false;
 				//@ts-ignore
@@ -413,7 +413,8 @@
 											input$pattern={'\\d+(\\.\\d{2})?'}
 										/>
 										<button
-											on:click={verify} disabled={loadGif}
+											on:click={verify}
+											disabled={loadGif}
 											class="mt-5 tracking-wide font-semibold bg-black/90 text-gray-100 hak0fbu py-4 shadow rounded-lg hover:bg-black transition-all duration-300 ease-in-out flex items-center justify-center border border-solid border-slate-300 focus:shadow-outline focus:outline-none"
 										>
 											<span class="mr-3"> Verify </span>
@@ -423,16 +424,23 @@
 												</div>
 											{/if}
 										</button>
-										<button on:click={resend} disabled={resendGif}
+										<button
+											on:click={resend}
+											disabled={resendGif}
 											class="mt-5 tracking-wide peer font-semibold bg-transparent text-gray-800 hak0fbu py-4 shadow rounded-lg hover:text-white hover:bg-black transition-all duration-300 ease-in-out flex items-center justify-center border border-solid border-slate-700 focus:shadow-outline focus:outline-none"
 										>
-										{#if resendGif}
-										<span class="css-12hya6r w-5 h-5 peer-hover:border-[white_white_transparent] border-[black_black_transparent]"></span>
-{:else}
-											<span class="ml-3"> Resend Code </span>
+											{#if resendGif}
+												<span
+													class="css-12hya6r w-5 h-5 peer-hover:border-[white_white_transparent] border-[black_black_transparent]"
+												/>
+											{:else}
+												<span class="ml-3"> Resend Code </span>
 											{/if}
 										</button>
 									</div>
+								{/if}
+								{#if !loading && register && verification && !profile}
+									<div />
 								{/if}
 							</div>
 							<div class="flex flex-row justify-start align-middle items-center">
