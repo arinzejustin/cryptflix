@@ -8,6 +8,11 @@
 	import Checkbox from '@smui/checkbox';
 	import { onMount } from 'svelte';
 	import Textfield from '@smui/textfield';
+	import Autocomplete from '@smui-extra/autocomplete';
+ 
+ let fruits = ['Apple', 'Orange', 'Banana', 'Mango'];
+
+ let valueStandard: string | undefined = undefined;
 
 	let emailId = Math.random()
 			.toString(36)
@@ -452,8 +457,20 @@
 										}
 									}>
 									<div class="grid grid-row gap-6 justify-center align-middle">
-										<div></div>
-										<div></div>
+										<div>
+											<img src="" srcset="" alt={`${last} profile photo`} class="rounded-full w-12 h-12 border border-slate-200 border-solid" />
+										</div>
+										<div>
+											<div>
+												<Autocomplete
+												  options={fruits}
+												  bind:value={valueStandard}
+												  label="Standard"
+												/>
+											 
+												<pre class="status">Selected: {valueStandard || ''}</pre>
+											  </div>
+										</div>
 									</div>
 									</div>
 								{/if}
