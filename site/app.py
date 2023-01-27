@@ -9,6 +9,10 @@ app = Flask(__name__)
 def index():
     return send_from_directory('.svelte-kit/output/prerendered/pages', 'index.html')
 
+@app.route('/about')
+def about():
+    return jsonify({'hello': 'world'})
+
 
 @app.route("/<path:path>")
 def home(path):
