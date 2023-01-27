@@ -9,10 +9,10 @@
 	import { onMount } from 'svelte';
 	import Textfield from '@smui/textfield';
 	import Autocomplete from '@smui-extra/autocomplete';
- 
- let fruits = ['Apple', 'Orange', 'Banana', 'Mango'];
 
- let valueStandard: string | undefined = undefined;
+	let fruits = ['Apple', 'Orange', 'Banana', 'Mango'];
+
+	let valueStandard: string | undefined = undefined;
 
 	let emailId = Math.random()
 			.toString(36)
@@ -407,11 +407,14 @@
 									</div>
 								{/if}
 								{#if !loading && register && !verification}
-									<div class="mx-auto" transition:slide={{
-										delay: 200,
-										duration: 1000,
-										easing: cubicIn
-									}}>
+									<div
+										class="mx-auto"
+										transition:slide={{
+											delay: 200,
+											duration: 1000,
+											easing: cubicIn
+										}}
+									>
 										<!-- svelte-ignore a11y-click-events-have-key-events -->
 										<Textfield
 											class="rounded-lg items-center w-full mx-auto font-nunito text-[15px]"
@@ -449,29 +452,35 @@
 									</div>
 								{/if}
 								{#if !loading && register && verification && !profile}
-									<div class="md:my-8" transition:slide={
-										{
+									<div
+										class="md:my-8"
+										transition:slide={{
 											delay: 200,
 											duration: 1000,
 											easing: cubiIn
-										}
-									}>
-									<div class="grid grid-row gap-6 justify-center align-middle">
-										<div>
-											<img src="" srcset="" alt={`${last} profile photo`} class="rounded-full w-12 h-12 border border-slate-200 border-solid" />
-										</div>
-										<div>
+										}}
+									>
+										<div class="grid grid-row gap-6 justify-center align-middle">
 											<div>
-												<Autocomplete
-												  options={fruits}
-												  bind:value={valueStandard}
-												  label="Standard"
+												<img
+													src=""
+													srcset=""
+													alt={`${last} profile photo`}
+													class="rounded-full w-12 h-12 border border-slate-200 border-solid"
 												/>
-											 
-												<pre class="status">Selected: {valueStandard || ''}</pre>
-											  </div>
+											</div>
+											<div>
+												<div>
+													<Autocomplete
+														options={fruits}
+														bind:value={valueStandard}
+														label="Standard"
+													/>
+
+													<pre class="status">Selected: {valueStandard || ''}</pre>
+												</div>
+											</div>
 										</div>
-									</div>
 									</div>
 								{/if}
 							</div>
