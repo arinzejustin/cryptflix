@@ -1,2 +1,0 @@
-
-//cors in flask python

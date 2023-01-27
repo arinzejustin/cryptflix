@@ -2,7 +2,7 @@ import axios from 'axios';
 
 /* It's creating a new axios instance with a baseURL. */
 const axiosAPI = axios.create({
-    baseURL: "https://api.cryptflixinvest.com/api/bob/",
+    baseURL: "http://localhost:5000/api/bob/",
     headers: {
         "Content-Type": "application/json"
     },

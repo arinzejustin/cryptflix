@@ -24,8 +24,8 @@
 		last = '',
 		tel = '',
 		v_code = '',
-		register = true,
-		verification = true,
+		register = false,
+		verification = false,
 		profile = false,
 		complete = false,
 		resendGif = false;
@@ -160,7 +160,7 @@
 	<Alert {alert} message={msg} error={err} onClose={() => (alert = false)} />
 	<div class="pg9a5nd hak0fbu">
 		<div class="jonfdgct mx-4 sm:mx-20 sm:my-5 md:mt-2">
-			<div class="lg:w-1/2 xl:w-5/12 px-2 py-6 sm:p-12 flex flex-col justify-center">
+			<div class="lg:w-1/2 xl:w-5/12 px-2 py-6 sm:p-12 lg:pt-4 flex flex-col justify-center">
 				<div class="intro-x mb-6 md:mb-4 flex items-center justify-center">
 					<img alt="school" class="w-32 h-32" src="/logo.png" />
 				</div>
@@ -171,7 +171,7 @@
 						{:else if register && !verification}
 							VERIFY YOUR ACCOUNT
 						{:else if register && verification && !profile}
-							SET UP YOUR PROFILE
+							SETTING UP YOUR ACCOUNT
 						{:else}
 							ACCOUNT SUCCESSFULLY CREATED
 						{/if}
@@ -179,10 +179,8 @@
 					<ol class="flex items-center w-full align-middle mx-auto my-5">
 						<li
 							class="flex w-full items-center after:border-solid {register
-								? 'text-green-600'
-								: 'text-gray-600'} after:content-[''] after:w-full after:h-1 after:border-b {register
-								? 'after:border-green-100'
-								: 'after:border-gray-100'} after:border-4 after:inline-block"
+								? 'text-green-600 after:border-green-100'
+								: 'text-gray-600 after:border-gray-100'} after:content-[''] after:w-full after:h-1 after:border-b after:border-4 after:inline-block"
 						>
 							<span
 								class="flex items-center justify-center w-10 h-10 {register
@@ -195,12 +193,21 @@
 									fill="currentColor"
 									viewBox="0 0 20 20"
 									xmlns="http://www.w3.org/2000/svg"
-									><path
-										fill-rule="evenodd"
-										d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
-										clip-rule="evenodd"
-									/></svg
 								>
+									{#if register}
+										<path
+											fill-rule="evenodd"
+											d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+											clip-rule="evenodd"
+										/>
+									{:else}
+										<path
+											fill-rule="evenodd"
+											d="M10 2a1 1 0 00-1 1v1a1 1 0 002 0V3a1 1 0 00-1-1zM4 4h3a3 3 0 006 0h3a2 2 0 012 2v9a2 2 0 01-2 2H4a2 2 0 01-2-2V6a2 2 0 012-2zm2.5 7a1.5 1.5 0 100-3 1.5 1.5 0 000 3zm2.45 4a2.5 2.5 0 10-4.9 0h4.9zM12 9a1 1 0 100 2h3a1 1 0 100-2h-3zm-1 4a1 1 0 011-1h2a1 1 0 110 2h-2a1 1 0 01-1-1z"
+											clip-rule="evenodd"
+										/>
+									{/if}
+								</svg>
 							</span>
 						</li>
 						<li
@@ -219,13 +226,19 @@
 									aria-hidden="true"
 									class="w-5 h-5 {verification ? 'text-green-600' : 'text-gray-600'} lg:w-6 lg:h-6"
 									fill="currentColor"
-									viewBox="0 0 20 20"
+									viewBox="0 0 { verification ? '20 20' : '32 32'}"
 									xmlns="http://www.w3.org/2000/svg"
-									><path
-										fill-rule="evenodd"
-										d="M10 2a1 1 0 00-1 1v1a1 1 0 002 0V3a1 1 0 00-1-1zM4 4h3a3 3 0 006 0h3a2 2 0 012 2v9a2 2 0 01-2 2H4a2 2 0 01-2-2V6a2 2 0 012-2zm2.5 7a1.5 1.5 0 100-3 1.5 1.5 0 000 3zm2.45 4a2.5 2.5 0 10-4.9 0h4.9zM12 9a1 1 0 100 2h3a1 1 0 100-2h-3zm-1 4a1 1 0 011-1h2a1 1 0 110 2h-2a1 1 0 01-1-1z"
-										clip-rule="evenodd"
-									/></svg
+									>
+									{#if verification}
+									<path
+											fill-rule="evenodd"
+											d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+											clip-rule="evenodd"
+										/>
+									{:else}
+									<rect x="0" y="0" width="32" height="32" fill="none" stroke="none" /><path fill="currentColor" d="m11 23.18l-2-2.001l-1.411 1.41L11 26l6-6l-1.41-1.41L11 23.18zM28 30h-4v-2h4V16h-4V8a4.005 4.005 0 0 0-4-4V2a6.007 6.007 0 0 1 6 6v6h2a2.002 2.002 0 0 1 2 2v12a2.002 2.002 0 0 1-2 2z"/><path fill="currentColor" d="M20 14h-2V8A6 6 0 0 0 6 8v6H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V16a2 2 0 0 0-2-2ZM8 8a4 4 0 0 1 8 0v6H8Zm12 20H4V16h16Z"/>
+									{/if}
+									</svg
 								>
 							</span>
 						</li>
@@ -245,13 +258,19 @@
 									aria-hidden="true"
 									class="w-5 h-5 {profile ? 'text-green-600' : 'text-gray-600'} lg:w-6 lg:h-6"
 									fill="currentColor"
-									viewBox="0 0 20 20"
+									viewBox="0 0 {profile ? '20 20' : '24 24'}"
 									xmlns="http://www.w3.org/2000/svg"
-									><path
-										fill-rule="evenodd"
-										d="M10 2a1 1 0 00-1 1v1a1 1 0 002 0V3a1 1 0 00-1-1zM4 4h3a3 3 0 006 0h3a2 2 0 012 2v9a2 2 0 01-2 2H4a2 2 0 01-2-2V6a2 2 0 012-2zm2.5 7a1.5 1.5 0 100-3 1.5 1.5 0 000 3zm2.45 4a2.5 2.5 0 10-4.9 0h4.9zM12 9a1 1 0 100 2h3a1 1 0 100-2h-3zm-1 4a1 1 0 011-1h2a1 1 0 110 2h-2a1 1 0 01-1-1z"
-										clip-rule="evenodd"
-									/></svg
+									>
+									{#if profile}
+									<path
+											fill-rule="evenodd"
+											d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+											clip-rule="evenodd"
+										/>
+									{:else}
+									<rect x="0" y="0" width="24" height="24" fill="none" stroke="none" /><path fill="currentColor" d="M12 10.425ZM5 20q-.825 0-1.413-.587Q3 18.825 3 18V4q0-.825.587-1.413Q4.175 2 5 2h14q.825 0 1.413.587Q21 3.175 21 4v5.675q-.475-.225-.975-.375T19 9.075V4H5v12.85q1.25-1.2 2.838-1.95q1.587-.75 3.437-.875q-.125.475-.2 1Q11 15.55 11 16.05q-1.125.125-2.125.55q-1 .425-1.875 1.15V18h4.3q.175.55.4 1.05q.225.5.55.95Zm7-8h.25q.575-.825 1.363-1.463q.787-.637 1.737-1.012q.075-.25.113-.5q.037-.25.037-.525q0-1.45-1.025-2.475Q13.45 5 12 5q-1.45 0-2.475 1.025Q8.5 7.05 8.5 8.5q0 1.45 1.025 2.475Q10.55 12 12 12Zm0-2q-.625 0-1.062-.438Q10.5 9.125 10.5 8.5t.438-1.062Q11.375 7 12 7t1.062.438q.438.437.438 1.062t-.438 1.062Q12.625 10 12 10Zm5 11l-.3-1.5q-.3-.125-.562-.262q-.263-.138-.538-.338l-1.45.45l-1-1.7l1.15-1q-.05-.35-.05-.65q0-.3.05-.65l-1.15-1l1-1.7l1.45.45q.275-.2.538-.338q.262-.137.562-.262L17 11h2l.3 1.5q.3.125.563.275q.262.15.537.375l1.45-.5l1 1.75l-1.15 1q.05.3.05.625t-.05.625l1.15 1l-1 1.7l-1.45-.45q-.275.2-.537.338q-.263.137-.563.262L19 21Zm1-3q.825 0 1.413-.587Q20 16.825 20 16q0-.825-.587-1.413Q18.825 14 18 14q-.825 0-1.413.587Q16 15.175 16 16q0 .825.587 1.413Q17.175 18 18 18Z"/>
+									{/if}
+									</svg
 								>
 							</span>
 						</li>
@@ -276,12 +295,12 @@
 							</span>
 						</li>
 					</ol>
-					<div class="hak0fbu flex-1 mt-8">
+					<div class="hak0fbu flex-1 mt-8 md:mt-5">
 						<div class="mx-auto max-w-xs">
 							<div class="my-4">
 								{#if loading}
 									<div class="my-8">
-										<span class="css-12hya6r w-20 h-20 border-[#008080_#008080_transparent]" />
+										<span class="css-12hya6r w-20 h-20 border-[black_black_transparent]" />
 									</div>
 								{:else if !register}
 									<div
@@ -404,6 +423,13 @@
 												</div>
 											{/if}
 										</button>
+										<div class="mt-4">
+											<p class="text-center float-none mb-6 text-[15px] text-slate-600">
+												Already have an account ? <a href="/0auth/login" class="theme-text-app">
+													Sign In</a
+												>
+											</p>
+										</div>
 									</div>
 								{/if}
 								{#if !loading && register && !verification}
@@ -457,35 +483,19 @@
 										transition:slide={{
 											delay: 200,
 											duration: 1000,
-											easing: cubiIn
+											easing: cubicIn
 										}}
 									>
-										<div class="grid grid-row gap-6 justify-center align-middle">
-											<div>
-												<img
-													src=""
-													srcset=""
-													alt={`${last} profile photo`}
-													class="rounded-full w-12 h-12 border border-slate-200 border-solid"
-												/>
-											</div>
-											<div>
-												<div>
-													<Autocomplete
-														options={fruits}
-														bind:value={valueStandard}
-														label="Standard"
-													/>
-
-													<pre class="status">Selected: {valueStandard || ''}</pre>
-												</div>
-											</div>
+										<div class="my-8 justify-center align-middle">
+											<span
+												class="css-12hya6r w-20 border-4 h-20 border-[black_black_transparent]"
+											/>
 										</div>
 									</div>
 								{/if}
 							</div>
 							<div class="flex flex-row justify-start align-middle items-center">
-								<Checkbox bind:checked class="mr-1" />
+								<Checkbox bind:checked class="mr-1" disabled={verification} />
 								<!-- svelte-ignore a11y-click-events-have-key-events -->
 								<p
 									on:click={() => (checked = !checked)}
@@ -503,7 +513,7 @@
 			</div>
 			<div class="flex-1 text-center hidden md:flex rounded-r-xl">
 				<div
-					class="my-4 mx-10 relative xl:my-6 xl:mx-12  rounded-full hak0fbu bg-contain bg-center bg-no-repeat"
+					class="my-4 mx-10 relative xl:my-6 xl:mx-12 rounded-full hak0fbu bg-contain bg-center bg-no-repeat"
 					style="background-image: url('/773m32QMjm9Yg4QxsDxl.png');"
 				>
 					{#if !loading}
