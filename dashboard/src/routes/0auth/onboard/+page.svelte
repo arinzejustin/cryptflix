@@ -26,7 +26,7 @@
 		resendGif = false,
 		ok = true;
 
-	var valid: boolean,
+	var valid = true,
 		checked = false,
 		loadGif = false,
 		e_mail: string = '',
@@ -117,7 +117,7 @@
 				toast(req.message, false);
 				loadGif = false;
 				setTimeout(() => (alert = false), 4400);
-				console.log(req)
+				console.log(req);
 			} catch (error) {
 				loadGif = false;
 				//@ts-ignore
@@ -149,15 +149,18 @@
 			setTimeout(() => {
 				complete = true;
 				toast('Account Successfully Created', false);
-				setTimeout(() => console.log(true), 3000)
+				setTimeout(() => console.log(true), 3000);
 			}, 5000);
 		},
 		create = async () => {
 			if (pass == '' || confirm == '') return;
 			loadGif = true;
 			try {
-				const req = await Api.post('/password', JSON.stringify({ passcode: confirm }));
-				if (req.valid == true) profile = true;
+				const req = await Api.post(
+					'/password',
+					JSON.stringify({ passcode: pass, confirm: confirm })
+				);
+				if (req.match == true) profile = true;
 				toast(req.message, false);
 				loadGif = false;
 				setTimeout(() => (alert = false), 4400);
@@ -323,12 +326,21 @@
 									fill="currentColor"
 									viewBox="0 0 20 20"
 									xmlns="http://www.w3.org/2000/svg"
-									><path d="M9 2a1 1 0 000 2h2a1 1 0 100-2H9z" /><path
-										fill-rule="evenodd"
-										d="M4 5a2 2 0 012-2 3 3 0 003 3h2a3 3 0 003-3 2 2 0 012 2v11a2 2 0 01-2 2H6a2 2 0 01-2-2V5zm9.707 5.707a1 1 0 00-1.414-1.414L9 12.586l-1.293-1.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
-										clip-rule="evenodd"
-									/></svg
 								>
+									{#if complete}
+										<path
+											fill-rule="evenodd"
+											d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+											clip-rule="evenodd"
+										/>
+									{:else}
+										<path d="M9 2a1 1 0 000 2h2a1 1 0 100-2H9z" /><path
+											fill-rule="evenodd"
+											d="M4 5a2 2 0 012-2 3 3 0 003 3h2a3 3 0 003-3 2 2 0 012 2v11a2 2 0 01-2 2H6a2 2 0 01-2-2V5zm9.707 5.707a1 1 0 00-1.414-1.414L9 12.586l-1.293-1.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
+											clip-rule="evenodd"
+										/>
+									{/if}
+								</svg>
 							</span>
 						</li>
 					</ol>
@@ -408,9 +420,7 @@
 														duration: 1000,
 														easing: cubicIn
 													}}
-													class="hak0fbu transition duration-300 appearance-none block border-solid focus:ring-0 px-8 py-4 rounded-lg font-medium bg-gray-50 border-2 border-gray-300 text-sm focus:outline-none focus:bg-white {valid
-														? 'focus:border-green-600'
-														: 'focus:border-red-600'} peer"
+													class="hak0fbu transition duration-300 appearance-none block border-solid focus:ring-0 px-8 py-4 rounded-lg font-medium bg-gray-50 border-2 border-gray-300 text-sm focus:outline-none focus:bg-white peer"
 													type="email"
 													aria-describedby="email_help"
 													placeholder=" "
@@ -421,11 +431,14 @@
 												<label
 													for={emailId}
 													class="absolute font-bold text-[15px] font-nunito text-slate-800 {valid
-														? 'peer-focus:text-green-600'
+														? 'peer-focus:text-slate-800'
 														: 'peer-focus:text-red-600'} duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-[0] bg-gray-50 px-2 peer-focus:px-2 peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4 left-1"
 													>Your Email</label
 												>
 											</div>
+											{#if !valid}
+											<p transition:slide class="text-red-500 text-sm text-center pt-3">Ouch !!! Invalid E-mail address</p>
+											{/if}
 										</div>
 										<button
 											on:click={() => ((loadGif = true), onboard())}
@@ -646,7 +659,12 @@
 								{#if complete}
 									<div class="mx-auto w-full">
 										<div class="icon icon--success svg">
-											<svg class="mx-auto" xmlns="http://www.w3.org/2000/svg" width="72px" height="72px">
+											<svg
+												class="mx-auto"
+												xmlns="http://www.w3.org/2000/svg"
+												width="72px"
+												height="72px"
+											>
 												<g fill="none" stroke="rgb(22 163 74)" stroke-width="2">
 													<circle
 														class="circle text-green-600"
@@ -667,7 +685,7 @@
 								{/if}
 							</div>
 							<div class="flex flex-row justify-start align-middle items-center">
-								<Checkbox bind:checked class="mr-1" disabled={verification} />
+								<Checkbox bind:checked class="mr-1" disabled={register} />
 								<!-- svelte-ignore a11y-click-events-have-key-events -->
 								<p
 									on:click={() => (checked = !checked)}
