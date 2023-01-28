@@ -1,7 +1,11 @@
+import os
 from flask import Flask, render_template, request, jsonify, redirect, send_from_directory, make_response
+from dotenv import load_dotenv
 
 app = Flask(__name__)
+load_dotenv()
 
+ALLOWED_HOST = os.getenv('ALLOWED_HOST')
 
 @app.route('/index')
 @app.route('/')
@@ -79,12 +83,13 @@ def page_not_found(error):
 
 def _build_cors_preflight_response():
     """
-    It returns a response object with the appropriate headers to allow CORS requests from the client
+    It returns a response object with the appropriate headers to allow CORS requests from the specified
+    domain
     :return: A response object with the headers set to allow CORS.
     """
     response = make_response()
     response.headers.add("Access-Control-Allow-Origin",
-                         "http://localhost:3000, https://cryptflix.vercel.app")
+                         ALLOWED_HOST)
     response.headers.add('Access-Control-Allow-Headers',
                          "Origin, X-Requested-With, Content-Type, Accept, Authorization, Verification, X-XSRF-TOKEN, TRACK-ID")
     response.headers.add('Access-Control-Allow-Methods', "OPTIONS")
@@ -96,18 +101,16 @@ def _corsify_actual_response(response):
     """
     It adds the following headers to the response:
     
-    Access-Control-Allow-Origin: http://localhost:3000, https://cryptflix.vercel.app
+    Access-Control-Allow-Origin: ALLOWED_HOST
     Access-Control-Allow-Headers: Origin, X-Requested-With, Content-Type, Accept, Authorization,
     Verification, X-XSRF-TOKEN, TRACK-ID
     Access-Control-Allow-Methods: POST, GET
     Content-Type: application/json; charset=UTF-8
     Access-Control-Allow-Credentials: true
     
-    :param response: The response object that is returned from the view function
-    :return: The response is being returned as a string.
     """
     response.headers.add("Access-Control-Allow-Origin",
-                         "http://localhost:3000, https://cryptflix.vercel.app")
+                         ALLOWED_HOST)
     response.headers.add('Access-Control-Allow-Headers',
                          "Origin, X-Requested-With, Content-Type, Accept, Authorization, Verification, X-XSRF-TOKEN, TRACK-ID")
     response.headers.add('Access-Control-Allow-Methods', "POST, GET")
