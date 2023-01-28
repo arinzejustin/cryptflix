@@ -85,7 +85,7 @@
 				},
 				autoPlaceholder: 'aggressive',
 				separateDialCode: true,
-				utilsScript: '../../../node_modules/intl-tel-input/build/js/utils.js'
+				utilsScript: '/js/utils.js'
 			});
 		},
 		onboard = async () => {
@@ -181,7 +181,7 @@
 	<title>App Sign Up | cryptflixinvest.com</title>
 	<link
 		rel="stylesheet"
-		href="../../../node_modules/intl-tel-input/build/css/intlTelInput.min.css"
+		href="/css/intlTelInput.min.css"
 	/>
 </svelte:head>
 
