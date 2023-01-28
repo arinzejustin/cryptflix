@@ -77,7 +77,7 @@ def page_not_found(error):
 def _build_cors_preflight_response():
     response = make_response()
     response.headers.add("Access-Control-Allow-Origin",
-                         "http://localhost:3000")
+                         "https://cryptflix.vercel.app")
     response.headers.add('Access-Control-Allow-Headers',
                          "Origin, X-Requested-With, Content-Type, Accept, Authorization, Verification, X-XSRF-TOKEN, TRACK-ID")
     response.headers.add('Access-Control-Allow-Methods', "OPTIONS")
@@ -87,7 +87,7 @@ def _build_cors_preflight_response():
 
 def _corsify_actual_response(response):
     response.headers.add("Access-Control-Allow-Origin",
-                         "http://localhost:3000")
+                         "https://cryptflix.vercel.app")
     response.headers.add('Access-Control-Allow-Headers',
                          "Origin, X-Requested-With, Content-Type, Accept, Authorization, Verification, X-XSRF-TOKEN, TRACK-ID")
     response.headers.add('Access-Control-Allow-Methods', "POST, GET")

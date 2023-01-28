@@ -2,7 +2,7 @@ import axios from 'axios';
 
 /* It's creating a new axios instance with a baseURL. */
 const axiosAPI = axios.create({
-    baseURL: "http://localhost:5000/api/bob/",
+    baseURL: "https://cryptflix-site.vercel.app/api/bob/",
     headers: {
         "Content-Type": "application/json"
     },
