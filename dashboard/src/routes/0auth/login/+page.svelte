@@ -27,58 +27,59 @@
 		err = true;
 
 	var isValid = (email: string) => {
-		var regExp =
-			/^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-		return regExp.test(email);
-	}, toast = (message: any, error: boolean) => {
-		msg = message;
-		err = error;
-		alert = true;
-		setTimeout(() => (alert = false), 4400);
-	},
-	validateEmail = () => {
-		if (!isValid(e_mail)) {
-			disabled = true;
-			valid = false;
-		} else {
-			disabled = false;
-			valid = true;
-		}
-	},
-	login = async () => {
-		if (!checked) {
-			toast('Fill all the fields', true);
-			return;
-		}
-		emailGif = true;
-		try {
-			const req = await Api.post('/login', JSON.stringify({ email: e_mail, pass: passcode }));
-			console.log(req);
-		} catch (error) {
-			emailGif = false;
-			//@ts-ignore
-			toast(error.message, true);
+			var regExp =
+				/^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+			return regExp.test(email);
+		},
+		toast = (message: any, error: boolean) => {
+			msg = message;
+			err = error;
+			alert = true;
 			setTimeout(() => (alert = false), 4400);
-		}
-	},
-	toggle = () => {
-		const password = document.querySelector(`#${geneId}`)!,
-			type = password.getAttribute('type') === 'password' ? 'text' : 'password';
-		password.setAttribute('type', type);
-		visible = !visible;
-	},
-	auth = (e: Event, { google = false, apple = false }) => {
-		e.preventDefault();
-		googleGif = google;
-		appleGif = apple;
-		setTimeout(() => {
-			toast('Authentication Failed', true);
+		},
+		validateEmail = () => {
+			if (!isValid(e_mail)) {
+				disabled = true;
+				valid = false;
+			} else {
+				disabled = false;
+				valid = true;
+			}
+		},
+		login = async () => {
+			if (!checked) {
+				toast('Fill all the fields', true);
+				return;
+			}
+			emailGif = true;
+			try {
+				const req = await Api.post('/login', JSON.stringify({ email: e_mail, pass: passcode }));
+				console.log(req);
+			} catch (error) {
+				emailGif = false;
+				//@ts-ignore
+				toast(error.message, true);
+				setTimeout(() => (alert = false), 4400);
+			}
+		},
+		toggle = () => {
+			const password = document.querySelector(`#${geneId}`)!,
+				type = password.getAttribute('type') === 'password' ? 'text' : 'password';
+			password.setAttribute('type', type);
+			visible = !visible;
+		},
+		auth = (e: Event, { google = false, apple = false }) => {
+			e.preventDefault();
+			googleGif = google;
+			appleGif = apple;
 			setTimeout(() => {
-				googleGif = false;
-				appleGif = false;
-			}, 4000);
-		}, 3000);
-	};
+				toast('Authentication Failed', true);
+				setTimeout(() => {
+					googleGif = false;
+					appleGif = false;
+				}, 4000);
+			}, 3000);
+		};
 </script>
 
 <svelte:head>
@@ -242,7 +243,9 @@
 										/>
 										<label
 											for={geneId}
-											class=" {a ? 'hidden' : ''} absolute text-sm text-slate-800 {valid ? 'peer-focus:text-green-600' : 'peer-focus:text-red-600'} duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-[0] bg-gray-50 px-2 peer-focus:px-2 peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4 left-1"
+											class=" {a ? 'hidden' : ''} absolute text-sm text-slate-800 {valid
+												? 'peer-focus:text-green-600'
+												: 'peer-focus:text-red-600'} duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-[0] bg-gray-50 px-2 peer-focus:px-2 peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4 left-1"
 											>Your Email</label
 										>
 									</div>
@@ -300,27 +303,29 @@
 									<div class="flex items-center justify-center w-full gap-0 mt-4">
 										<div class="w-full">
 											<div class="relative">
-										<input
-											on:keyup={() => (valid = true)}
-											class="hak0fbu border-solid px-8 py-4 rounded-l-lg font-medium bg-gray-50 border-2 transition duration-300 border-gray-300 placeholder-gray-500 text-sm focus:outline-none focus:bg-white {valid
-												? 'focus:border-green-600'
-												: 'focus:border-red-600'} peer appearance-none"
-											type="password"
-											id={geneId}
-											placeholder=" "
-											bind:value={passcode}
-											spellcheck="false"
-										/>
-										<label
-											for='{geneId}'
-											class=" {pass ? 'absolute' : 'relative'} text-sm text-slate-800 {valid ? 'peer-focus:text-green-600' : 'peer-focus:text-red-600'} duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-[0] bg-gray-50 px-2 peer-focus:px-2 peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4 left-1"
-											>Passcode</label
-										>	
-									</div>
-								</div>
+												<input
+													on:keyup={() => (valid = true)}
+													class="hak0fbu border-solid px-8 py-4 rounded-l-lg font-medium bg-gray-50 border-2 transition duration-300 border-gray-300 placeholder-gray-500 text-sm focus:outline-none focus:bg-white {valid
+														? 'focus:border-green-600'
+														: 'focus:border-red-600'} peer appearance-none"
+													type="password"
+													id={geneId}
+													placeholder=" "
+													bind:value={passcode}
+													spellcheck="false"
+												/>
+												<label
+													for={geneId}
+													class=" {pass ? 'absolute' : 'relative'} text-sm text-slate-800 {valid
+														? 'peer-focus:text-green-600'
+														: 'peer-focus:text-red-600'} duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-[0] bg-gray-50 px-2 peer-focus:px-2 peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4 left-1"
+													>Passcode</label
+												>
+											</div>
+										</div>
 										<!-- svelte-ignore a11y-click-events-have-key-events -->
-										<div 
-										on:click={toggle}
+										<div
+											on:click={toggle}
 											class="flex items-center shadow justify-center border-2 border-solid border-slate-300 bg-gray-300 p-3.5 rounded-r-lg"
 										>
 											<svg

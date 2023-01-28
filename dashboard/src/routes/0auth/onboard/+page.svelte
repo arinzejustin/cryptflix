@@ -8,11 +8,6 @@
 	import Checkbox from '@smui/checkbox';
 	import { onMount } from 'svelte';
 	import Textfield from '@smui/textfield';
-	import Autocomplete from '@smui-extra/autocomplete';
-
-	let fruits = ['Apple', 'Orange', 'Banana', 'Mango'];
-
-	let valueStandard: string | undefined = undefined;
 
 	let emailId = Math.random()
 			.toString(36)
@@ -28,7 +23,8 @@
 		verification = false,
 		profile = false,
 		complete = false,
-		resendGif = false;
+		resendGif = false,
+		ok = true;
 
 	var valid: boolean,
 		checked = false,
@@ -38,8 +34,10 @@
 		msg = '',
 		err = true,
 		disabled = true,
-		gravatar = '',
-		times = 0;
+		times = 0,
+		vis = false,
+		pass = '',
+		confirm = '';
 
 	var isValid = (email: string) => {
 			var regExp =
@@ -61,11 +59,12 @@
 				valid = true;
 			}
 		},
-		toggle = () => {
-			const password = document.querySelector('#pass')!,
+		toggle = (id: string, { v, v2 }: any) => {
+			const password = document.querySelector(`#${id}`)!,
 				type = password.getAttribute('type') === 'password' ? 'text' : 'password';
 			password.setAttribute('type', type);
-			visible = !visible;
+			visible = v;
+			vis = v2;
 		},
 		intl = () => {
 			var input = document.querySelector('#phone')!;
@@ -118,6 +117,7 @@
 				toast(req.message, false);
 				loadGif = false;
 				setTimeout(() => (alert = false), 4400);
+				console.log(req)
 			} catch (error) {
 				loadGif = false;
 				//@ts-ignore
@@ -140,6 +140,32 @@
 				toast(error.message, true);
 			}
 			times++;
+		},
+		check = () => {
+			if (pass !== confirm) ok = false;
+			else ok = true;
+		},
+		setup = () => {
+			setTimeout(() => {
+				complete = true;
+				toast('Account Successfully Created', false);
+				setTimeout(() => console.log(true), 3000)
+			}, 5000);
+		},
+		create = async () => {
+			if (pass == '' || confirm == '') return;
+			loadGif = true;
+			try {
+				const req = await Api.post('/password', JSON.stringify({ passcode: confirm }));
+				if (req.valid == true) profile = true;
+				toast(req.message, false);
+				loadGif = false;
+				setTimeout(() => (alert = false), 4400);
+			} catch (error) {
+				loadGif = false;
+				//@ts-ignore
+				toast(error.message, true);
+			}
 		};
 
 	onMount(() => {
@@ -171,7 +197,7 @@
 						{:else if register && !verification}
 							VERIFY YOUR ACCOUNT
 						{:else if register && verification && !profile}
-							SETTING UP YOUR ACCOUNT
+							CREATE YOUR PASSCODE
 						{:else}
 							ACCOUNT SUCCESSFULLY CREATED
 						{/if}
@@ -226,20 +252,25 @@
 									aria-hidden="true"
 									class="w-5 h-5 {verification ? 'text-green-600' : 'text-gray-600'} lg:w-6 lg:h-6"
 									fill="currentColor"
-									viewBox="0 0 { verification ? '20 20' : '32 32'}"
+									viewBox="0 0 {verification ? '20 20' : '32 32'}"
 									xmlns="http://www.w3.org/2000/svg"
-									>
+								>
 									{#if verification}
-									<path
+										<path
 											fill-rule="evenodd"
 											d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
 											clip-rule="evenodd"
 										/>
 									{:else}
-									<rect x="0" y="0" width="32" height="32" fill="none" stroke="none" /><path fill="currentColor" d="m11 23.18l-2-2.001l-1.411 1.41L11 26l6-6l-1.41-1.41L11 23.18zM28 30h-4v-2h4V16h-4V8a4.005 4.005 0 0 0-4-4V2a6.007 6.007 0 0 1 6 6v6h2a2.002 2.002 0 0 1 2 2v12a2.002 2.002 0 0 1-2 2z"/><path fill="currentColor" d="M20 14h-2V8A6 6 0 0 0 6 8v6H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V16a2 2 0 0 0-2-2ZM8 8a4 4 0 0 1 8 0v6H8Zm12 20H4V16h16Z"/>
+										<rect x="0" y="0" width="32" height="32" fill="none" stroke="none" /><path
+											fill="currentColor"
+											d="m11 23.18l-2-2.001l-1.411 1.41L11 26l6-6l-1.41-1.41L11 23.18zM28 30h-4v-2h4V16h-4V8a4.005 4.005 0 0 0-4-4V2a6.007 6.007 0 0 1 6 6v6h2a2.002 2.002 0 0 1 2 2v12a2.002 2.002 0 0 1-2 2z"
+										/><path
+											fill="currentColor"
+											d="M20 14h-2V8A6 6 0 0 0 6 8v6H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V16a2 2 0 0 0-2-2ZM8 8a4 4 0 0 1 8 0v6H8Zm12 20H4V16h16Z"
+										/>
 									{/if}
-									</svg
-								>
+								</svg>
 							</span>
 						</li>
 						<li
@@ -260,29 +291,35 @@
 									fill="currentColor"
 									viewBox="0 0 {profile ? '20 20' : '24 24'}"
 									xmlns="http://www.w3.org/2000/svg"
-									>
+								>
 									{#if profile}
-									<path
+										<path
 											fill-rule="evenodd"
 											d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
 											clip-rule="evenodd"
 										/>
 									{:else}
-									<rect x="0" y="0" width="24" height="24" fill="none" stroke="none" /><path fill="currentColor" d="M12 10.425ZM5 20q-.825 0-1.413-.587Q3 18.825 3 18V4q0-.825.587-1.413Q4.175 2 5 2h14q.825 0 1.413.587Q21 3.175 21 4v5.675q-.475-.225-.975-.375T19 9.075V4H5v12.85q1.25-1.2 2.838-1.95q1.587-.75 3.437-.875q-.125.475-.2 1Q11 15.55 11 16.05q-1.125.125-2.125.55q-1 .425-1.875 1.15V18h4.3q.175.55.4 1.05q.225.5.55.95Zm7-8h.25q.575-.825 1.363-1.463q.787-.637 1.737-1.012q.075-.25.113-.5q.037-.25.037-.525q0-1.45-1.025-2.475Q13.45 5 12 5q-1.45 0-2.475 1.025Q8.5 7.05 8.5 8.5q0 1.45 1.025 2.475Q10.55 12 12 12Zm0-2q-.625 0-1.062-.438Q10.5 9.125 10.5 8.5t.438-1.062Q11.375 7 12 7t1.062.438q.438.437.438 1.062t-.438 1.062Q12.625 10 12 10Zm5 11l-.3-1.5q-.3-.125-.562-.262q-.263-.138-.538-.338l-1.45.45l-1-1.7l1.15-1q-.05-.35-.05-.65q0-.3.05-.65l-1.15-1l1-1.7l1.45.45q.275-.2.538-.338q.262-.137.562-.262L17 11h2l.3 1.5q.3.125.563.275q.262.15.537.375l1.45-.5l1 1.75l-1.15 1q.05.3.05.625t-.05.625l1.15 1l-1 1.7l-1.45-.45q-.275.2-.537.338q-.263.137-.563.262L19 21Zm1-3q.825 0 1.413-.587Q20 16.825 20 16q0-.825-.587-1.413Q18.825 14 18 14q-.825 0-1.413.587Q16 15.175 16 16q0 .825.587 1.413Q17.175 18 18 18Z"/>
+										<rect x="0" y="0" width="24" height="24" fill="none" stroke="none" /><path
+											fill="currentColor"
+											d="M2 19v-2h20v2Zm1.15-6.05l-1.3-.75l.85-1.5H1V9.2h1.7l-.85-1.45L3.15 7L4 8.45L4.85 7l1.3.75L5.3 9.2H7v1.5H5.3l.85 1.5l-1.3.75l-.85-1.5Zm8 0l-1.3-.75l.85-1.5H9V9.2h1.7l-.85-1.45l1.3-.75l.85 1.45l.85-1.45l1.3.75l-.85 1.45H15v1.5h-1.7l.85 1.5l-1.3.75l-.85-1.5Zm8 0l-1.3-.75l.85-1.5H17V9.2h1.7l-.85-1.45l1.3-.75l.85 1.45l.85-1.45l1.3.75l-.85 1.45H23v1.5h-1.7l.85 1.5l-1.3.75l-.85-1.5Z"
+										/>
 									{/if}
-									</svg
-								>
+								</svg>
 							</span>
 						</li>
 						<li
-							class="flex items-center w-full before:border-solid before:content-[''] before:w-full before:h-1 before:border-b before:border-gray-100 before:border-4 before:inline-block"
+							class="flex items-center w-full before:border-solid before:content-[''] before:w-full before:h-1 before:border-b {profile
+								? 'before:border-green-100'
+								: 'before:border-gray-100'} before:border-4 before:inline-block"
 						>
 							<span
-								class="flex items-center justify-center w-10 h-10 bg-gray-100 rounded-full lg:h-12 lg:w-12 dark:bg-gray-700 shrink-0"
+								class="flex items-center justify-center w-10 h-10 {complete
+									? 'bg-green-100'
+									: 'bg-gray-100'} rounded-full lg:h-12 lg:w-12 dark:bg-gray-700 shrink-0"
 							>
 								<svg
 									aria-hidden="true"
-									class="w-5 h-5 text-gray-500 lg:w-6 lg:h-6 dark:text-gray-100"
+									class="w-5 h-5 {complete ? 'text-green-600' : 'text-gray-600'} lg:w-6 lg:h-6"
 									fill="currentColor"
 									viewBox="0 0 20 20"
 									xmlns="http://www.w3.org/2000/svg"
@@ -432,7 +469,7 @@
 										</div>
 									</div>
 								{/if}
-								{#if !loading && register && !verification}
+								{#if register && !verification}
 									<div
 										class="mx-auto"
 										transition:slide={{
@@ -477,7 +514,7 @@
 										</button>
 									</div>
 								{/if}
-								{#if !loading && register && verification && !profile}
+								{#if register && verification && !profile}
 									<div
 										class="md:my-8"
 										transition:slide={{
@@ -486,10 +523,145 @@
 											easing: cubicIn
 										}}
 									>
-										<div class="my-8 justify-center align-middle">
-											<span
-												class="css-12hya6r w-20 border-4 h-20 border-[black_black_transparent]"
-											/>
+										<div class="flex items-center justify-center w-full gap-0 mt-4">
+											<div class="w-full">
+												<div class="relative">
+													<input
+														class="hak0fbu border-solid px-8 py-4 rounded-l-lg font-medium bg-gray-50 border-2 transition duration-300 border-gray-300 placeholder-gray-500 text-sm focus:outline-none focus:bg-white peer appearance-none"
+														type="password"
+														id="pass"
+														placeholder=" "
+														bind:value={pass}
+														spellcheck="false"
+													/>
+													<label
+														for="pass"
+														class="text-sm absolute text-slate-800 duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-[0] bg-gray-50 px-2 peer-focus:px-2 peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4 left-1"
+														>Passcode</label
+													>
+												</div>
+											</div>
+											<!-- svelte-ignore a11y-click-events-have-key-events -->
+											<div
+												on:click={() => {
+													toggle('pass', { v: !visible });
+												}}
+												class="flex items-center shadow justify-center border-2 border-solid border-slate-300 bg-gray-300 p-3.5 rounded-r-lg"
+											>
+												<svg
+													viewBox="0 0 24 24"
+													aria-hidden="true"
+													focusable="false"
+													fill="none"
+													xmlns="http://www.w3.org/2000/svg"
+													stroke="currentColor"
+													stroke-linecap="round"
+													stroke-linejoin="round"
+													class="StyledIconBase-sc-ea9ulj-0 bhLQRR w-6 h-6 cursor-pointer"
+												>
+													{#if visible}
+														<path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
+														<circle cx="12" cy="12" r="3" />
+													{:else}
+														<path
+															d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"
+														/><line x1="1" x2="23" y1="1" y2="23" />
+													{/if}
+												</svg>
+											</div>
+										</div>
+										<div class="flex items-center justify-center w-full gap-0 mt-4">
+											<div class="w-full">
+												<div class="relative">
+													<input
+														on:keyup={check}
+														class="hak0fbu border-solid px-8 py-4 rounded-l-lg font-medium bg-gray-50 border-2 transition duration-300 border-gray-300 placeholder-gray-500 text-sm focus:outline-none focus:bg-white peer appearance-none"
+														type="password"
+														id="verify"
+														placeholder=" "
+														bind:value={confirm}
+														spellcheck="false"
+													/>
+													<label
+														for="verify"
+														class="text-sm absolute text-slate-800 duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-[0] bg-gray-50 px-2 peer-focus:px-2 peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4 left-1"
+														>Confirm Passcode</label
+													>
+												</div>
+											</div>
+											<!-- svelte-ignore a11y-click-events-have-key-events -->
+											<div
+												on:click={() => {
+													toggle('verify', { v2: !vis });
+												}}
+												class="flex items-center shadow justify-center border-2 border-solid border-slate-300 bg-gray-300 p-3.5 rounded-r-lg"
+											>
+												<svg
+													viewBox="0 0 24 24"
+													aria-hidden="true"
+													focusable="false"
+													fill="none"
+													xmlns="http://www.w3.org/2000/svg"
+													stroke="currentColor"
+													stroke-linecap="round"
+													stroke-linejoin="round"
+													class="StyledIconBase-sc-ea9ulj-0 bhLQRR w-6 h-6 cursor-pointer"
+												>
+													{#if vis}
+														<path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
+														<circle cx="12" cy="12" r="3" />
+													{:else}
+														<path
+															d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"
+														/><line x1="1" x2="23" y1="1" y2="23" />
+													{/if}
+												</svg>
+											</div>
+										</div>
+										{#if !ok}
+											<p transition:slide class="my-4 text-center text-sm text-red-500">
+												Passcode does not match !!!
+											</p>
+										{/if}
+										<button
+											disabled={!ok}
+											on:click={create}
+											class="mt-5 tracking-wide font-semibold bg-black/90 text-gray-100 hak0fbu py-4 shadow rounded-lg hover:bg-black transition-all duration-300 ease-in-out flex items-center justify-center border border-solid border-slate-300 focus:shadow-outline focus:outline-none"
+										>
+											<span class="mr-3"> Create </span>
+											{#if loadGif}
+												<div class="ml-3">
+													<img class="w-5 h-5" src="/gif.gif" srcset="/gif.gif 2x" alt="" />
+												</div>
+											{/if}
+										</button>
+									</div>
+								{/if}
+								{#if register && verification && profile && !complete}
+									<div class="hidden">{setup()}</div>
+									<div class="my-8 justify-center align-middle">
+										<span class="css-12hya6r w-20 border-4 h-20 border-[black_black_transparent]" />
+									</div>
+								{/if}
+								{#if complete}
+									<div class="mx-auto w-full">
+										<div class="icon icon--success svg">
+											<svg class="mx-auto" xmlns="http://www.w3.org/2000/svg" width="72px" height="72px">
+												<g fill="none" stroke="rgb(22 163 74)" stroke-width="2">
+													<circle
+														class="circle text-green-600"
+														cx="36"
+														cy="36"
+														r="35"
+														style="stroke-dasharray:240px, 240px; stroke-dashoffset: 480px;"
+													/>
+													<path
+														class="path"
+														d="M17.417,37.778l9.93,9.909l25.444-25.393"
+														style="stroke-dasharray:50px, 50px; stroke-dashoffset: 0px;"
+													/>
+												</g>
+											</svg>
 										</div>
 									</div>
 								{/if}
@@ -645,5 +817,80 @@
 		100% {
 			transform: rotate(360deg) scale(1);
 		}
+	}
+	/* animations */
+
+	@-webkit-keyframes checkmark {
+		0% {
+			stroke-dashoffset: 50px;
+		}
+
+		100% {
+			stroke-dashoffset: 0;
+		}
+	}
+
+	@-ms-keyframes checkmark {
+		0% {
+			stroke-dashoffset: 50px;
+		}
+
+		100% {
+			stroke-dashoffset: 0;
+		}
+	}
+
+	@keyframes checkmark {
+		0% {
+			stroke-dashoffset: 50px;
+		}
+
+		100% {
+			stroke-dashoffset: 0;
+		}
+	}
+
+	@-webkit-keyframes checkmarkcircle {
+		0% {
+			stroke-dashoffset: 240px;
+		}
+
+		100% {
+			stroke-dashoffset: 480px;
+		}
+	}
+
+	@-ms-keyframes checkmarkcircle {
+		0% {
+			stroke-dashoffset: 240px;
+		}
+
+		100% {
+			stroke-dashoffset: 480px;
+		}
+	}
+
+	@keyframes checkmarkcircle {
+		0% {
+			stroke-dashoffset: 240px;
+		}
+
+		100% {
+			stroke-dashoffset: 480px;
+		}
+	}
+
+	.path {
+		-webkit-animation: checkmark 0.25s ease-in-out 0.7s backwards;
+		animation: checkmark 0.25s ease-in-out 0.7s backwards;
+		-webkit-animation-delay: 3s;
+		animation-delay: 3s;
+	}
+
+	.circle {
+		-webkit-animation: checkmarkcircle 0.6s ease-in-out backwards;
+		animation: checkmarkcircle 0.6s ease-in-out backwards;
+		-webkit-animation-delay: 2s;
+		animation-delay: 2s;
 	}
 </style>

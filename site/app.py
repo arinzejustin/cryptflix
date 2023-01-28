@@ -15,12 +15,51 @@ def home(path):
     return send_from_directory('.svelte-kit/output/client', path)
 
 
+@app.route('/api/bob/onboard', methods=['POST', 'OPTIONS'])
+def onboard():
+    if request.method == "OPTIONS":  # CORS preflight
+        return _build_cors_preflight_response()
+    elif request.method == "POST":
+        data = request.get_json(force=True)
+        json = {'message': 'Verification Code Sent', 'saved': True}
+        return _corsify_actual_response(jsonify(json))
+    else:
+        raise RuntimeError(
+            "Weird - don't know how to handle method {}".format(request.method))
+
+
+@app.route('/api/bob/verify', methods=['POST', 'OPTIONS'])
+def verify():
+    if request.method == "OPTIONS":  # CORS preflight
+        return _build_cors_preflight_response()
+    elif request.method == "POST":
+        data = request.get_json(force=True)
+        json = {'message': 'Authorization Successful', 'valid': True}
+        return _corsify_actual_response(jsonify(json))
+    else:
+        raise RuntimeError(
+            "Weird - don't know how to handle method {}".format(request.method))
+
+
+@app.route('/api/bob/password', methods=['POST', 'OPTIONS'])
+def passcode():
+    if request.method == "OPTIONS":  # CORS preflight
+        return _build_cors_preflight_response()
+    elif request.method == "POST":
+        data = request.get_json(force=True)
+        json = {'message': 'Account Created', 'valid': True}
+        return _corsify_actual_response(jsonify(json))
+    else:
+        raise RuntimeError(
+            "Weird - don't know how to handle method {}".format(request.method))
+
+
 @app.route('/api/bob/login', methods=['POST', 'OPTIONS'])
 def login():
     if request.method == "OPTIONS":  # CORS preflight
         return _build_cors_preflight_response()
     elif request.method == "POST":
-        data = request.get_json(force = True)
+        data = request.get_json(force=True)
         email = data['email']
         passcode = data['pass']
         json = {'email': email, 'pass': passcode}
