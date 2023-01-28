@@ -21,7 +21,10 @@ def onboard():
         return _build_cors_preflight_response()
     elif request.method == "POST":
         data = request.get_json(force=True)
-        json = {'message': 'Verification Code Sent', 'saved': True}
+        email = data['email']
+        star = email[:2]
+        domain = email.split('@')[1]
+        json = {'message': f'Verification Code Sent to {star}*****@{domain}', 'saved': True}
         return _corsify_actual_response(jsonify(json))
     else:
         raise RuntimeError(
@@ -75,9 +78,13 @@ def page_not_found(error):
 
 
 def _build_cors_preflight_response():
+    """
+    It returns a response object with the appropriate headers to allow CORS requests from the client
+    :return: A response object with the headers set to allow CORS.
+    """
     response = make_response()
     response.headers.add("Access-Control-Allow-Origin",
-                         "https://cryptflix.vercel.app")
+                         "http://localhost:3000, https://cryptflix.vercel.app")
     response.headers.add('Access-Control-Allow-Headers',
                          "Origin, X-Requested-With, Content-Type, Accept, Authorization, Verification, X-XSRF-TOKEN, TRACK-ID")
     response.headers.add('Access-Control-Allow-Methods', "OPTIONS")
@@ -86,8 +93,21 @@ def _build_cors_preflight_response():
 
 
 def _corsify_actual_response(response):
+    """
+    It adds the following headers to the response:
+    
+    Access-Control-Allow-Origin: http://localhost:3000, https://cryptflix.vercel.app
+    Access-Control-Allow-Headers: Origin, X-Requested-With, Content-Type, Accept, Authorization,
+    Verification, X-XSRF-TOKEN, TRACK-ID
+    Access-Control-Allow-Methods: POST, GET
+    Content-Type: application/json; charset=UTF-8
+    Access-Control-Allow-Credentials: true
+    
+    :param response: The response object that is returned from the view function
+    :return: The response is being returned as a string.
+    """
     response.headers.add("Access-Control-Allow-Origin",
-                         "https://cryptflix.vercel.app")
+                         "http://localhost:3000, https://cryptflix.vercel.app")
     response.headers.add('Access-Control-Allow-Headers',
                          "Origin, X-Requested-With, Content-Type, Accept, Authorization, Verification, X-XSRF-TOKEN, TRACK-ID")
     response.headers.add('Access-Control-Allow-Methods', "POST, GET")
