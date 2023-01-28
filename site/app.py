@@ -47,7 +47,7 @@ def passcode():
         return _build_cors_preflight_response()
     elif request.method == "POST":
         data = request.get_json(force=True)
-        json = {'message': 'Account Created', 'valid': True}
+        json = {'message': 'Passcode Set', 'valid': True}
         return _corsify_actual_response(jsonify(json))
     else:
         raise RuntimeError(
