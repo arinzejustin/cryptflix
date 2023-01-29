@@ -1,10 +1,19 @@
 <script>
-	import goto from '$app/navigation';
-	import { getStorage } from '$lib/storage';
+	import App from './app/+page.svelte';
+	import Header from '../components/Header.svelte';
+	import Footer from '../components/Footer.svelte';
 </script>
 
 <svelte:head>
-	<title>App</title>
+	<title>Dashboard | cryptflixinvest.com</title>
 </svelte:head>
 
-<section />
+<div>
+	<Header />
+</div>
+<section>
+	<App />
+</section>
+<div>
+	<Footer />
+</div>
