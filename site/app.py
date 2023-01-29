@@ -1,11 +1,13 @@
 import os
 from flask import Flask, render_template, request, jsonify, redirect, send_from_directory, make_response
 from dotenv import load_dotenv
+from jwt import auth, generate
 
 app = Flask(__name__)
 load_dotenv()
 
 ALLOWED_HOST = os.getenv('ALLOWED_HOST')
+
 
 @app.route('/index')
 @app.route('/')

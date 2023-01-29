@@ -2,5 +2,5 @@ def generate(uid='', key='', email=''):
     return uid
 
 
-class jwt:
-    pass
+def auth(token=''):
+    return token
