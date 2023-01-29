@@ -179,10 +179,7 @@
 
 <svelte:head>
 	<title>App Sign Up | cryptflixinvest.com</title>
-	<link
-		rel="stylesheet"
-		href="/css/intlTelInput.min.css"
-	/>
+	<link rel="stylesheet" href="/css/intlTelInput.min.css" />
 </svelte:head>
 
 <cryptflixinvest-onboard class="md:mx-10">
@@ -437,7 +434,9 @@
 												>
 											</div>
 											{#if !valid}
-											<p transition:slide class="text-red-500 text-sm text-center pt-3">Ouch !!! Invalid E-mail address</p>
+												<p transition:slide class="text-red-500 text-sm text-center pt-3">
+													Ouch !!! Invalid E-mail address
+												</p>
 											{/if}
 										</div>
 										<button
@@ -689,7 +688,7 @@
 								<!-- svelte-ignore a11y-click-events-have-key-events -->
 								<p
 									on:click={() => (checked = !checked)}
-									class="mt-6 text-sm text-gray-600 text-center ml-3.5"
+									class="{register ? 'pointer-events-none' : ''} mt-6 text-sm text-gray-600 text-center ml-3.5"
 								>
 									I agree to abide by cryptflixinvest's
 									<a href="/" class="border-b border-gray-500 border-dotted"> Terms of Service </a>
@@ -705,40 +704,7 @@
 				<div
 					class="my-4 mx-10 relative xl:my-6 xl:mx-12 rounded-full hak0fbu bg-contain bg-center bg-no-repeat"
 					style="background-image: url('/773m32QMjm9Yg4QxsDxl.png');"
-				>
-					{#if !loading}
-						<div class="absolute top-20 right-[18%]">
-							<h1 class="uppercase font-open text-5xl text-slate-700">
-								We are
-								<div class="inline-block h-[1.5em] overflow-hidden align-middle ms-slider">
-									<ul class="ms-slider__words list-none p-0 m-0 inline-block">
-										<li
-											class="ms-slider__word slider-1 leading-[1.3em] text-left block font-nunito font-black"
-										>
-											Committed
-										</li>
-										<li
-											class="ms-slider__word slider-3 leading-[1.3em] text-left block font-nunito font-black"
-										>
-											tested
-										</li>
-										<li
-											class="ms-slider__word slider-2 leading-[1.3em] text-left block font-nunito font-black"
-										>
-											Trusted
-										</li>
-										<!-- This last word needs to duplicate the first one to ensure a smooth infinite animation -->
-										<li
-											class="ms-slider__word slider-1 leading-[1.3em] text-left block font-nunito font-black"
-										>
-											Committed
-										</li>
-									</ul>
-								</div>
-							</h1>
-						</div>
-					{/if}
-				</div>
+				/>
 			</div>
 		</div>
 	</div>
@@ -757,66 +723,6 @@
 	}
 	._0itw21asd {
 		@apply flex flex-col items-center;
-	}
-	.slider-1 {
-		@apply text-black;
-	}
-	.slider-2 {
-		@apply text-[#daa12f];
-	}
-	.slider-3 {
-		@apply text-teal-600;
-	}
-	.ms-slider {
-		-webkit-mask-image: linear-gradient(transparent, white, white, white, transparent);
-		mask-image: linear-gradient(transparent, white, white, white, transparent);
-		mask-type: luminance;
-		mask-mode: alpha;
-	}
-	.ms-slider__words {
-		-webkit-animation-name: wordSlider;
-		animation-name: wordSlider;
-		-webkit-animation-timing-function: ease-out;
-		animation-timing-function: ease-out;
-		-webkit-animation-iteration-count: infinite;
-		animation-iteration-count: infinite;
-		-webkit-animation-duration: 7s;
-		animation-duration: 7s;
-	}
-	@-webkit-keyframes wordSlider {
-		0%,
-		27% {
-			transform: translateY(0%);
-		}
-		33%,
-		60% {
-			transform: translateY(-25%);
-		}
-		66%,
-		93% {
-			transform: translateY(-50%);
-		}
-		100% {
-			transform: translateY(-75%);
-		}
-	}
-
-	@keyframes wordSlider {
-		0%,
-		27% {
-			transform: translateY(0%);
-		}
-		33%,
-		60% {
-			transform: translateY(-25%);
-		}
-		66%,
-		93% {
-			transform: translateY(-50%);
-		}
-		100% {
-			transform: translateY(-75%);
-		}
 	}
 
 	.css-12hya6r {

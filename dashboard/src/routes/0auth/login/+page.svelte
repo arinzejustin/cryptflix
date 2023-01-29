@@ -53,7 +53,13 @@
 			}
 			emailGif = true;
 			try {
-				const req = await Api.post('/login', JSON.stringify({ email: e_mail, pass: passcode }));
+				const req = await Api.post(
+					'/login',
+					JSON.stringify({
+						email: e_mail,
+						pass: passcode
+					})
+				);
 				console.log(req);
 			} catch (error) {
 				emailGif = false;
@@ -63,7 +69,7 @@
 			}
 		},
 		toggle = () => {
-			const password = document.querySelector(`#${geneId}`)!,
+			const password = document.querySelector(`#p${geneId}`)!,
 				type = password.getAttribute('type') === 'password' ? 'text' : 'password';
 			password.setAttribute('type', type);
 			visible = !visible;
@@ -291,7 +297,6 @@
 									{/if}
 								</button>
 							{/if}
-
 							{#if pass}
 								<div
 									transition:slide={{
@@ -309,13 +314,13 @@
 														? 'focus:border-green-600'
 														: 'focus:border-red-600'} peer appearance-none"
 													type="password"
-													id={geneId}
+													id={`p${geneId}`}
 													placeholder=" "
 													bind:value={passcode}
 													spellcheck="false"
 												/>
 												<label
-													for={geneId}
+													for={`p${geneId}`}
 													class=" {pass ? 'absolute' : 'relative'} text-sm text-slate-800 {valid
 														? 'peer-focus:text-green-600'
 														: 'peer-focus:text-red-600'} duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-[0] bg-gray-50 px-2 peer-focus:px-2 peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4 left-1"
@@ -468,30 +473,38 @@
 	:disabled {
 		@apply pointer-events-none;
 	}
+
 	.pg9a5nd {
 		@apply container mx-auto;
 	}
+
 	.jonfdgct {
 		@apply max-w-screen-xl m-2 bg-white flex justify-center flex-1;
 	}
+
 	._0itw21asd {
 		@apply flex flex-col items-center;
 	}
+
 	.slider-1 {
 		@apply text-black;
 	}
+
 	.slider-2 {
 		@apply text-[#daa12f];
 	}
+
 	.slider-3 {
 		@apply text-teal-600;
 	}
+
 	.ms-slider {
 		-webkit-mask-image: linear-gradient(transparent, white, white, white, transparent);
 		mask-image: linear-gradient(transparent, white, white, white, transparent);
 		mask-type: luminance;
 		mask-mode: alpha;
 	}
+
 	.ms-slider__words {
 		-webkit-animation-name: wordSlider;
 		animation-name: wordSlider;
@@ -502,19 +515,23 @@
 		-webkit-animation-duration: 7s;
 		animation-duration: 7s;
 	}
+
 	@-webkit-keyframes wordSlider {
 		0%,
 		27% {
 			transform: translateY(0%);
 		}
+
 		33%,
 		60% {
 			transform: translateY(-25%);
 		}
+
 		66%,
 		93% {
 			transform: translateY(-50%);
 		}
+
 		100% {
 			transform: translateY(-75%);
 		}
@@ -525,14 +542,17 @@
 		27% {
 			transform: translateY(0%);
 		}
+
 		33%,
 		60% {
 			transform: translateY(-25%);
 		}
+
 		66%,
 		93% {
 			transform: translateY(-50%);
 		}
+
 		100% {
 			transform: translateY(-75%);
 		}

@@ -1,10 +1,13 @@
 import axios from 'axios';
+import { API_URL, TRACK_ID } from '$lib/env';
+
 
 /* It's creating a new axios instance with a baseURL. */
 const axiosAPI = axios.create({
-    baseURL: "https://cryptflix-site.vercel.app/api/bob/",
+    baseURL: `${API_URL}/`,
     headers: {
-        "Content-Type": "application/json"
+        "Content-Type": "application/json",
+        "TRACK-ID": TRACK_ID
     },
     withCredentials: true,
     timeout: 40000

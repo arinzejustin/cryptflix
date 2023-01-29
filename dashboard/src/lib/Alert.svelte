@@ -10,7 +10,7 @@
 	<div
 		in:scale
 		out:fade
-		class="md:rounded-lg ml-1 right-1 md:ml-0 border border-solid border-slate-200 dark:border-slate-200 bg-white dark:bg-black/60 w-[98%] md:w-1/4 shadow-xl fixed top-4 z-[1000] md:right-4"
+		class="ml-1 right-1 md:ml-0 border border-solid border-slate-200 dark:border-slate-200 bg-white dark:bg-black/60 w-[98%] md:w-1/4 shadow-xl fixed top-4 z-[1000] md:right-4"
 	>
 		<div class="flex flex-row justify-end align-middle items-center pt-2 mx-4">
 			<div class="">
@@ -61,7 +61,7 @@
 			<span class="font-nunito text-slate-700 dark:text-slate-50 pl-4">{message}</span>
 		</div>
 		<div
-			class="relative before:absolute md:before:rounded-bl-lg before:left-0 before:right-0 before:bottom-0 before:w-full before:border-[3px] before:border-solid {error
+			class="relative before:absolute before:left-0 before:right-0 before:bottom-0 before:w-full before:border-[3px] before:border-solid {error
 				? 'before:border-red-600'
 				: 'before:border-green-600'} animate"
 		/>
