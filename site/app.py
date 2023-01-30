@@ -1,7 +1,9 @@
 import os
+import uuid
 from flask import Flask, render_template, request, jsonify, redirect, send_from_directory, make_response
 from dotenv import load_dotenv
-from jwt import auth, generate
+from jwt_token import auth, generate
+from werkzeug.security import generate_password_hash, check_password_hash
 
 app = Flask(__name__)
 load_dotenv()
@@ -56,8 +58,13 @@ def passcode():
         return _build_cors_preflight_response()
     elif request.method == "POST":
         data = request.get_json(force=True)
-        json = {'message': 'Passcode Set', 'match': True}
-        return _corsify_actual_response(jsonify(json))
+        password = data['passcode']
+        confirm = data['confirm']
+        print(confirm, password)
+        if password == confirm:
+            return _corsify_actual_response(jsonify({'message': 'Passcode does not match', 'error': True}))
+        hashs = generate_password_hash(confirm, "pbkdf2:SHA256", 100)
+        return _corsify_actual_response(jsonify({'message': '', 'saved': True, 'passcode': hashs}))
     else:
         raise RuntimeError(
             "Weird - don't know how to handle method {}".format(request.method))
@@ -93,7 +100,7 @@ def _build_cors_preflight_response():
     response.headers.add("Access-Control-Allow-Origin",
                          ALLOWED_HOST)
     response.headers.add('Access-Control-Allow-Headers',
-                         "Origin, X-Requested-With, Content-Type, Accept, Authorization, Verification, X-XSRF-TOKEN, TRACK-ID")
+                         "Origin, X-Requested-With, Content-Type, Accept, Authorization, X-CSRF-TOKEN, TRACK-ID")
     response.headers.add('Access-Control-Allow-Methods', "OPTIONS")
     response.headers.add('Access-Control-Allow-Credentials', 'true')
     return response
@@ -105,7 +112,7 @@ def _corsify_actual_response(response):
     
     Access-Control-Allow-Origin: ALLOWED_HOST
     Access-Control-Allow-Headers: Origin, X-Requested-With, Content-Type, Accept, Authorization,
-    Verification, X-XSRF-TOKEN, TRACK-ID
+    Verification, X-CSRF-TOKEN, TRACK-ID
     Access-Control-Allow-Methods: POST, GET
     Content-Type: application/json; charset=UTF-8
     Access-Control-Allow-Credentials: true
@@ -114,8 +121,8 @@ def _corsify_actual_response(response):
     response.headers.add("Access-Control-Allow-Origin",
                          ALLOWED_HOST)
     response.headers.add('Access-Control-Allow-Headers',
-                         "Origin, X-Requested-With, Content-Type, Accept, Authorization, Verification, X-XSRF-TOKEN, TRACK-ID")
-    response.headers.add('Access-Control-Allow-Methods', "POST, GET")
+                         "Origin, X-Requested-With, Content-Type, Accept, Authorization, X-CSRF-TOKEN, TRACK-ID")
+    response.headers.add('Access-Control-Allow-Methods', "POST")
     response.headers.add('Content-Type', 'application/json; charset=UTF-8')
     response.headers.add('Access-Control-Allow-Credentials', 'true')
     return response
