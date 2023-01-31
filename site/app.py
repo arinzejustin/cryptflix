@@ -1,6 +1,6 @@
 import os
 import uuid
-from flask import Flask, render_template, request, jsonify, redirect, send_from_directory, make_response
+from flask import Flask, render_template, Response, request, jsonify, redirect, send_from_directory, make_response
 from dotenv import load_dotenv
 from jwt_token import auth, generate
 from werkzeug.security import generate_password_hash, check_password_hash

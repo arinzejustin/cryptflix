@@ -1,14 +1,27 @@
-import os
-import psycopg2
+import mysql.connector, pymongo, os
 from dotenv import load_dotenv
 
 load_dotenv()
 
-db_uri = os.getenv("DATABASE_URL")
-conn = psycopg2.connect(db_uri)
+DB_URI = os.getenv('DB_URI')
 
-with conn.cursor() as cur:
-    cur.execute("SELECT now()")
-    res = cur.fetchall()
-    conn.commit()
-    print(res)
+client = pymongo.MongoClient(DB_URI)
+
+dblist = client.list_database_names()
+for v in dblist:
+    print(v)
+
+mydb = mysql.connector.connect(
+    host="localhost",
+    user="root",
+    password=""
+)
+
+cursor = mydb.cursor()
+
+cursor.execute("SHOW DATABASES")
+
+for x in cursor:
+    if x == 'test':
+        break
+    print(x)
