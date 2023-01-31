@@ -1,23 +1,33 @@
 <script>
 	import Header from '../../components/Header.svelte';
 	import Footer from '../../components/Footer.svelte';
+	import Navbar from '../../components/Navbar.svelte';
+	import Drawer, { AppContent } from '@smui/drawer';
+	let open = true;
 </script>
 
-<cryptflixinvest-dashboard>
-	<div>
-		<Header />
-	</div>
-	<slot />
-	<div>
+<cryptflixinvest-dashboard class="flex overflow-hidden w-full flex-col">
+	<Drawer variant="dismissible" bind:open>
+		<Navbar />
+	</Drawer>
+	<AppContent class="app-content">
+		<Header src={'hello'} {open} />
+		<slot />
 		<Footer />
-	</div>
+	</AppContent>
 </cryptflixinvest-dashboard>
 
 <style>
-    :global(body) {
-        @apply bg-white transition-all duration-500;
-    }
-    :global(.dark body) {
-        @apply bg-black duration-500 transition-all;
-    }
+	:global(body) {
+		@apply bg-white transition-all duration-500;
+	}
+	:global(.dark body) {
+		@apply bg-black duration-500 transition-all;
+	}
+	* :global(.app-content) {
+		flex: auto;
+		overflow: auto;
+		position: relative;
+		flex-grow: 1;
+	}
 </style>

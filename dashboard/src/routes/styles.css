@@ -23,6 +23,10 @@ body {
     @apply font-nunito transition-all duration-500 !important;
 }
 
+.dark {
+    color-scheme: dark;
+}
+
 .hak0fbu {
     @apply w-full;
 }
