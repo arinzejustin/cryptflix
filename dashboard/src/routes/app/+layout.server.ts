@@ -2,7 +2,7 @@ import type { LayoutServerLoad } from './$types';
 import { redirect } from '@sveltejs/kit';
 import API from '$lib/api'
 
-let avi: string;
+let gravatar: string;
 
 export const load = (async ({ cookies, locals }) => {
     const UUID = cookies.get('UUID');
@@ -12,15 +12,15 @@ export const load = (async ({ cookies, locals }) => {
     // }
 
     try {
-        const req = await API.get('/gravatar', JSON.stringify({ email: 'justindiceyyo19@gmail.com' }))
-        avi = req.gravatar;
+        const req = await API.get('/gravatar', JSON.stringify({ user: locals.user.email }))
+        gravatar = req.gravatar;
     } catch (err) {
-        avi = '/logo.png'
+        gravatar = '/default.png'
     }
 
     return {
         user: {
-            gravatar: avi
+            gravatar: gravatar
         }
     }
 
