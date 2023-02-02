@@ -4,11 +4,13 @@ from flask import Flask, render_template, Response, request, jsonify, redirect, 
 from dotenv import load_dotenv
 from jwt_token import auth, generate
 from werkzeug.security import generate_password_hash, check_password_hash
+import hashlib
 
 app = Flask(__name__)
 load_dotenv()
 
 ALLOWED_HOST = os.getenv('ALLOWED_HOST')
+ENV_AVI_URL = os.getenv('ENV_AVI_URL')
 
 
 @app.route('/index')
@@ -79,6 +81,19 @@ def login():
         email = data['email']
         passcode = data['pass']
         json = {'email': email, 'pass': passcode}
+        return _corsify_actual_response(jsonify(json))
+    else:
+        raise RuntimeError(
+            "Weird - don't know how to handle method {}".format(request.method))
+
+
+@app.route('/api/bob/gravatar', methods=['GET'])
+def gravatar():
+    if request.method == "GET":
+        data = request.get_json(force=True)
+        email = data['email']
+        result = hashlib.md5(email.encode()).hexdigest()
+        json = {'gravatar': f'{ENV_AVI_URL}/{result}?d=robohash&f=y&s=100'}
         return _corsify_actual_response(jsonify(json))
     else:
         raise RuntimeError(

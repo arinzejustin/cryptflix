@@ -43,7 +43,7 @@ const apiRequest = (method: string, url: string, request: any) => {
  * @param {string} url - The URL to make the request to.
  * @param {any} request - the request object
  */
-const post = (url: string, request: any) => apiRequest("post", url, request);
+const post = (url: string, request: any) => apiRequest("POST", url, request);
 
 /**
  * It takes a url and a request object, and returns a promise that resolves to the response from the
@@ -51,7 +51,7 @@ const post = (url: string, request: any) => apiRequest("post", url, request);
  * @param {string} url - The URL to make the request to.
  * @param {any} request - The request object that is passed to the API.
  */
-const get = (url: string, request: any) => apiRequest("get", url, request);
+const get = (url: string, request: any) => apiRequest("GET", url, request);
 
 /* It's creating an object with the post and get functions. */
 const API = {
