@@ -1,10 +1,8 @@
-import os
-import uuid
+import os, hashlib, uuid
 from flask import Flask, render_template, Response, request, jsonify, redirect, send_from_directory, make_response
 from dotenv import load_dotenv
 from jwt_token import auth, generate
 from werkzeug.security import generate_password_hash, check_password_hash
-import hashlib
 
 app = Flask(__name__)
 load_dotenv()
@@ -92,7 +90,7 @@ def gravatar():
     if request.method == "GET":
         data = request.get_json(force=True)
         email = data['email']
-        result = hashlib.md5(email.encode()).hexdigest()
+        result = hashlib.md5(email.lower().encode()).hexdigest()
         json = {'gravatar': f'{ENV_AVI_URL}/{result}?d=robohash&f=y&s=100'}
         return _corsify_actual_response(jsonify(json))
     else:
