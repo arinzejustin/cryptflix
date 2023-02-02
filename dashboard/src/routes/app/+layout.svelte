@@ -3,14 +3,31 @@
 	import Footer from '../../components/Footer.svelte';
 	import Navbar from '../../components/Navbar.svelte';
 	import Drawer, { AppContent } from '@smui/drawer';
-	let open = true;
+	import { onMount } from 'svelte';
+
+	let open = false,
+		small = false;
+
+	onMount(() => {
+		if (window.matchMedia('(min-width: 768px)').matches) open = true;
+		onresize = () => {
+			if (window.matchMedia('(min-width: 768px)').matches) {
+                open = true;
+                small = false
+            }
+			else {
+                open = false;
+                small = true
+            }
+		};
+	});
 </script>
 
 <cryptflixinvest-dashboard class="flex overflow-hidden w-full flex-col">
 	<Drawer variant="dismissible" bind:open>
 		<Navbar />
 	</Drawer>
-	<AppContent class="app-content">
+	<AppContent class="app-content {!open && small ? '-right-[256px] fixed bg-black/[0.55] backdrop-blur-md' : ''}">
 		<Header src={'hello'} {open} />
 		<slot />
 		<Footer />
