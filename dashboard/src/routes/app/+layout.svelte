@@ -45,7 +45,7 @@
 	</Drawer>
 	<AppContent class="app-content {open && small ? '-right-[256px] fixed' : ''}">
 		<div>
-			<Header src={data.user.gravatar} loading={pageLoading} {open} bind:height={h} />
+			<Header src={data.user.gravatar} loading={data.user.load} {open} bind:height={h} />
 		</div>
 		{#if pageLoading}
 			<div out:fade class="transform -translate-y-1/2 -translate-x-1/2 top-1/2 left-1/2 fixed">

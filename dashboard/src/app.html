@@ -9,7 +9,7 @@
 		rel="stylesheet">
 	<meta charset="utf-8" />
 	<script>
-		var mode = localStorage.getItem('mode'),
+		var mode = JSON.parse(localStorage.getItem('mode')),
 			exempt_url = ['/0auth/login', '/0auth/onboard', '0auth/forget'],
 			html = document.documentElement;
 		if (mode == 'dark' && !exempt_url.includes(window.location.pathname))

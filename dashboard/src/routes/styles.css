@@ -78,3 +78,15 @@ body {
 .border-color {
     @apply border-slate-300 dark:border-slate-500 !important;
 }
+
+.app-inset {
+    inset: 0px auto auto 0px;
+}
+
+[role='tooltip'] > [data-popper-arrow]::before {
+    @apply border-solid border-slate-300 dark:border-slate-500;
+}
+
+[role='tooltip'] > [data-popper-arrow]::after {
+    @apply border-solid border-slate-300 dark:border-slate-500;
+}

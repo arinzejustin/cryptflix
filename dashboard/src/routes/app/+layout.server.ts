@@ -22,7 +22,8 @@ export const load = (async ({ cookies, locals }) => {
 
     return {
         user: {
-            gravatar: gravatar
+            gravatar: gravatar,
+            load: false
         }
     }
 
