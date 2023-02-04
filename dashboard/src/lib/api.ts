@@ -1,6 +1,7 @@
 import axios from 'axios';
-import { API_URL, TRACK_ID } from '$lib/env';
+import { API_URL, TRACK_ID, KEY } from '$lib/env';
 
+let key = {'Authorization': KEY}
 
 /* It's creating a new axios instance with a baseURL. */
 const axiosAPI = axios.create({
@@ -22,13 +23,14 @@ const axiosAPI = axios.create({
  * @param {any} headers - any = {}
  * @returns The return value is a promise.
  */
-const apiRequest = (method: string, url: string, request: any) => {
+const apiRequest = (method: string, url: string, request: any, headers: any) => {
 
     //using the axios instance to perform the request that received from each http method
     return axiosAPI({
         method: method,
         url: url,
-        data: request
+        data: request,
+        headers
     }).then(res => {
         return Promise.resolve(res.data);
     })
@@ -43,7 +45,7 @@ const apiRequest = (method: string, url: string, request: any) => {
  * @param {string} url - The URL to make the request to.
  * @param {any} request - the request object
  */
-const post = (url: string, request: any) => apiRequest("POST", url, request);
+const post = (url: string, request: any, headers: any = key) => apiRequest("POST", url, request, headers);
 
 /**
  * It takes a url and a request object, and returns a promise that resolves to the response from the
@@ -51,7 +53,7 @@ const post = (url: string, request: any) => apiRequest("POST", url, request);
  * @param {string} url - The URL to make the request to.
  * @param {any} request - The request object that is passed to the API.
  */
-const get = (url: string, request: any) => apiRequest("GET", url, request);
+const get = (url: string, request: any, headers: any = key) => apiRequest("GET", url, request, headers);
 
 /* It's creating an object with the post and get functions. */
 const API = {

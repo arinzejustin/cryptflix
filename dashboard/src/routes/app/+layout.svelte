@@ -7,6 +7,7 @@
 	import { fade, slide } from 'svelte/transition';
 	import { onMount } from 'svelte';
 	import type { LayoutData } from './$types';
+	import { getStorage } from '$lib/storage';
 
 	export let data: LayoutData;
 
@@ -15,7 +16,7 @@
 		pageLoading = true,
 		h = 0;
 
-	$: height = h + 15;
+	$: height = h + 20;
 
 	onMount(() => {
 		if (window.matchMedia('(min-width: 768px)').matches) open = true;
@@ -29,6 +30,8 @@
 			}
 		};
 		pageLoading = false;
+		var mode = getStorage('mode');
+		document.documentElement.classList.add(mode);
 	});
 </script>
 

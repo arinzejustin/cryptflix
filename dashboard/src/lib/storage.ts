@@ -113,20 +113,3 @@ export var deleteSession = async (key: string): Promise<void> => {
 	sessionStorage.removeItem(key);
 };
 
-/**
- * It checks if the user is logged in, if so, it returns the token, if not, it returns null.
- * @returns A string of the JWT and CSRF token.
- */
-export function getJWT() {
-	if (
-		getCookie('token') != undefined ||
-		getCookie('crsf') != undefined ||
-		getCookie('verification-code') != undefined
-	) {
-		const token = getCookie('token'),
-			crsf = getCookie('crsf'),
-			verification = getCookie('verification-code');
-		return token + '/' + crsf + '/' + verification;
-	}
-	return null;
-}

@@ -1,13 +1,31 @@
-import type { HandleFetch } from '@sveltejs/kit';
- 
-export const handleFetch = (({ request, fetch }) => {
-  if (request.url.startsWith('https://api.yourapp.com/')) {
-    // clone the original request, but change the URL
-    request = new Request(
-      request.url.replace('https://api.yourapp.com/', 'http://localhost:9999/'),
-      request
-    );
+import type { Handle } from '@sveltejs/kit'
+import Api from '$lib/api'
+
+let user: any = null;
+
+export const handle: Handle = async ({ event, resolve }) => {
+
+  const session = event.cookies.get('S_ID')
+
+  if (!session) {
+    return await resolve(event)
   }
- 
-  return fetch(request);
-}) satisfies HandleFetch;
+
+  try {
+    const req = await Api.post('/verify', JSON.stringify({ token: session }))
+    user = req.user
+  } catch (err) {
+    return await resolve(event)
+  }
+
+  if (user) {
+    event.locals.user = {
+      id: user.id,
+      name: user.name,
+      role: user.role,
+      email: user.email
+    }
+  }
+
+  return await resolve(event)
+}

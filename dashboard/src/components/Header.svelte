@@ -26,16 +26,14 @@
 
 <header class="relative">
 	<div
-	id="header"
-		class="fixed bg-white transition-all duration-500 dark:bg-black text-slate-700 dark:text-slate-100 right-0 top-0 border-solid border-b border-slate-300 dark:border-slate-500 {open
+		id="header"
+		class="fixed bg-white transition-all duration-500 dark:bg-black text-slate-700 dark:text-slate-100 right-0 top-0 border-solid border-b border-color {open
 			? 'left-[256px]'
 			: 'left-0'} {shadow
 			? 'shadow-lg dark:shadow-md dark:shadow-slate-600 backdrop-blur-md bg-white/[0.75] dark:bg-black/[0.65]'
 			: ''}"
 	>
-		<div
-			class="flex flex-row items-center align-middle justify-between mx-4 py-4 md:py-6"
-		>
+		<div class="flex flex-row items-center align-middle justify-between mx-4 py-2 md:py-4">
 			<div class="flex flex-row items-center align-middle justify-between">
 				<div class="md:hidden">
 					<svg
@@ -52,13 +50,20 @@
 				</div>
 				<div />
 			</div>
-			{#if loading}
-				<div class="mr-4 md:mr-6">
-					<Loader width={'30px'} height={'30px'} />
-				</div>
-			{:else}
-				img> {src}
-			{/if}
+			<div class="md:mr-6">
+				{#if loading}
+					<div class="mr-4 md:mr-6">
+						<Loader width={'30px'} height={'30px'} />
+					</div>
+				{:else}
+					<img
+						{src}
+						srcset="{src} 2x"
+						alt=""
+						class="border-solid border-2 border-color w-8 h-8 md:w-12 md:h-12 rounded-full"
+					/>
+				{/if}
+			</div>
 		</div>
 	</div>
 </header>

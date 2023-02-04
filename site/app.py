@@ -89,9 +89,10 @@ def login():
 def gravatar():
     if request.method == "GET":
         data = request.get_json(force=True)
-        email = data['email']
-        result = hashlib.md5(email.lower().encode()).hexdigest()
-        json = {'gravatar': f'{ENV_AVI_URL}/{result}?d=robohash&f=y&s=100'}
+        user = data['user']
+        result = hashlib.md5(user.lower().encode()).hexdigest()
+        json = {'gravatar': f'{ENV_AVI_URL}/{result}?d=robohash&f=y&s=100', 'email': user}
+        print(json)
         return _corsify_actual_response(jsonify(json))
     else:
         raise RuntimeError(
@@ -113,7 +114,7 @@ def _build_cors_preflight_response():
     response.headers.add("Access-Control-Allow-Origin",
                          ALLOWED_HOST)
     response.headers.add('Access-Control-Allow-Headers',
-                         "Origin, X-Requested-With, Content-Type, Accept, Authorization, X-CSRF-TOKEN, TRACK-ID")
+                         "Origin, X-Requested-With, Content-Type, Accept, Authorization, TRACK-ID")
     response.headers.add('Access-Control-Allow-Methods', "OPTIONS")
     response.headers.add('Access-Control-Allow-Credentials', 'true')
     return response
@@ -125,7 +126,7 @@ def _corsify_actual_response(response):
     
     Access-Control-Allow-Origin: ALLOWED_HOST
     Access-Control-Allow-Headers: Origin, X-Requested-With, Content-Type, Accept, Authorization,
-    Verification, X-CSRF-TOKEN, TRACK-ID
+    Verification, TRACK-ID
     Access-Control-Allow-Methods: POST, GET
     Content-Type: application/json; charset=UTF-8
     Access-Control-Allow-Credentials: true
@@ -134,7 +135,7 @@ def _corsify_actual_response(response):
     response.headers.add("Access-Control-Allow-Origin",
                          ALLOWED_HOST)
     response.headers.add('Access-Control-Allow-Headers',
-                         "Origin, X-Requested-With, Content-Type, Accept, Authorization, X-CSRF-TOKEN, TRACK-ID")
+                         "Origin, X-Requested-With, Content-Type, Accept, Authorization, TRACK-ID")
     response.headers.add('Access-Control-Allow-Methods', "POST")
     response.headers.add('Content-Type', 'application/json; charset=UTF-8')
     response.headers.add('Access-Control-Allow-Credentials', 'true')
