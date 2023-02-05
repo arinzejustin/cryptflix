@@ -1,7 +1,7 @@
 <script lang="ts">
 	import Header from '../../components/Header.svelte';
 	import Footer from '../../components/Footer.svelte';
-	import Navbar from '../../components/Navbar.svelte';
+	import Sidebar from '../../components/Sidebar.svelte';
 	import Drawer, { AppContent } from '@smui/drawer';
 	import Loader from '$lib/Loader.svelte';
 	import { fade, slide, fly } from 'svelte/transition';
@@ -41,7 +41,7 @@
 		bind:open
 		class="shadow-lg dark:border-slate-500 border-slate-300 dark:bg-black"
 	>
-		<Navbar />
+		<Sidebar />
 	</Drawer>
 	<AppContent class="app-content {open && small ? '-right-[256px] fixed' : ''}">
 		<div>

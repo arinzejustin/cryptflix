@@ -111,8 +111,8 @@
 							data-popover
 							data-popper-placement="bottom"
 							role="tooltip"
-							class="absolute z-10 app-inset m-0 left-0 right-0 top-0 border-solid pt-2 dark:shadow-slate-400 inline-block w-64 text-sm font-light text-slate-700 transition-opacity duration-300 bg-white dark:bg-black border rounded-md shadow-md dark:text-slate-50 border-color"
-							style="transform: translate(-202px, 55px)"
+							class="absolute z-10 app-inset m-0 left-0 right-0 top-0 border-solid pt-2 dark:shadow-slate-400 inline-block w-64 text-sm font-light text-slate-700 transition-opacity duration-300 bg-white dark:bg-black border rounded-md shadow-lg dark:shadow-md dark:text-slate-50 border-color"
+							style="transform: translate(-180px, 55px)"
 						>
 							<div class="">
 								<div
@@ -123,7 +123,7 @@
 											class="text-slate-700 relative inline-block dark:text-slate-50 pt-1.5 pr-2 text-xl font-semibold font-nunito"
 										>
 											Arinze Justin
-											<Badge class="px-2">{plan}</Badge>
+											<Badge class="px">{plan}</Badge>
 										</p>
 									</div>
 									<div>
@@ -149,8 +149,10 @@
 											>
 										{:else}
 											<button
-												on:click={() => {(menu = false), (active = true)}}
-												class="bg-blue-600 rounded-md text-sm p-1 hover:shadow-lg">Upgrade</button
+												on:click={() => {
+													(menu = false), (active = true);
+												}}
+												class="bg-blue-600 text-white rounded-full text-sm p-1.5 ring-offset-2 hover:ring-2 ring-blue-500 hover:shadow-lg">Upgrade</button
 											>
 										{/if}
 									</div>
@@ -227,12 +229,12 @@
 										<span class="ml-1 text-lg">Help</span>
 									</a>
 								</div>
-								<div class="border-color border-solid border-t-2 py-3 group/item px-2">
+								<div class="border-color border-solid border-t-2 py-2 group/item px-2">
 									<!-- svelte-ignore a11y-missing-content -->
 									<a
 										href="/0auth/logout"
 										on:click={(e) => (e.preventDefault(), logout())}
-										class="flex justify-center px-2 text-center items-center  group-hover/item:bg-slate-500/30 rounded-md transition-all duration-500 py-3"
+										class="flex justify-center px-2 text-center items-center  group-hover/item:bg-slate-500/30 rounded-md transition-all duration-500 py-2"
 									>
 										<svg
 											class="w-6 h-6 mr-3 text-slate-700 dark:text-slate-50"
