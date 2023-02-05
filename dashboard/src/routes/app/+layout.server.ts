@@ -17,7 +17,7 @@ export const load = (async ({ cookies, locals }) => {
         const req = await API.get('/gravatar', JSON.stringify({ user: 'justindiceyyo19@gmail.com' }))
         gravatar = req.gravatar;
     } catch (err) {
-        gravatar = '/default.png'
+        gravatar = '/dart.jpg'
     }
 
     return {

@@ -149,7 +149,7 @@
 											>
 										{:else}
 											<button
-												on:click={(() => (menu = !menu), (active = !active))}
+												on:click={() => {(menu = false), (active = true)}}
 												class="bg-blue-600 rounded-md text-sm p-1 hover:shadow-lg">Upgrade</button
 											>
 										{/if}
