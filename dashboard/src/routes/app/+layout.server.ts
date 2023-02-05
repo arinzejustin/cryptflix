@@ -23,7 +23,8 @@ export const load = (async ({ cookies, locals }) => {
     return {
         user: {
             gravatar: gravatar,
-            load: false
+            load: false,
+            plan: 'Plan 2'
         }
     }
 

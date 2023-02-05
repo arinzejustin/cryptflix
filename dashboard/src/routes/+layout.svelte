@@ -1,6 +1,7 @@
 <script>
 	import './styles.css';
 	import '../../node_modules/svelte-material-ui/bare.css'
+	import './animate.css'
 </script>
 
 <div>

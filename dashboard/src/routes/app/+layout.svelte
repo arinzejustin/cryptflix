@@ -4,7 +4,7 @@
 	import Navbar from '../../components/Navbar.svelte';
 	import Drawer, { AppContent } from '@smui/drawer';
 	import Loader from '$lib/Loader.svelte';
-	import { fade, slide } from 'svelte/transition';
+	import { fade, slide, fly } from 'svelte/transition';
 	import { onMount } from 'svelte';
 	import type { LayoutData } from './$types';
 	import { getStorage } from '$lib/storage';
@@ -45,17 +45,33 @@
 	</Drawer>
 	<AppContent class="app-content {open && small ? '-right-[256px] fixed' : ''}">
 		<div>
-			<Header src={data.user.gravatar} loading={data.user.load} {open} bind:height={h} />
+			<Header
+				src={data.user.gravatar}
+				loading={data.user.load}
+				plan={data.user.plan}
+				{open}
+				bind:height={h}
+			/>
 		</div>
-		{#if pageLoading}
-			<div out:fade class="transform -translate-y-1/2 -translate-x-1/2 top-1/2 left-1/2 fixed">
-				<Loader width={'55px'} height={'55px'} />
-			</div>
-		{:else}
-			<div in:slide class="px-2 slot" style="--mt: {height + 'px'}">
-				<slot />
-			</div>
-		{/if}
+		<div class="grid grid-cols-4 gap-4">
+			{#if pageLoading}
+				<div
+					out:fade
+					class="col-span-4 lg:col-span-3 transform -translate-y-1/2 -translate-x-1/2 top-1/2 left-1/2 fixed"
+				>
+					<Loader width={'55px'} height={'55px'} />
+				</div>
+			{:else}
+				<div in:slide class="px-2 slot col-span-4 lg:col-span-3" style="--mt: {height + 'px'}">
+					<slot />
+				</div>
+			{/if}
+			<div
+				in:fly={{ x: 200 }}
+				style="--mt-2: {h + 'px'}"
+				class="mt-[--mt-2] hidden lg:block border-color border-l-2 border-solid"
+			/>
+		</div>
 		<div class="hidden">
 			{h} : {height}
 		</div>
