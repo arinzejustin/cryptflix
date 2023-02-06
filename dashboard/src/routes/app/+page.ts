@@ -1,3 +1,2 @@
-// since there's no dynamic data here, we can prerender
-// it so that it gets served as a static asset in production
-export const prerender: boolean = true;
+// since there's  dynamic data here, we will not prerender
+export const prerender: boolean = false;

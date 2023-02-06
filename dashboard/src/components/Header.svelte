@@ -112,8 +112,7 @@
 							data-popover
 							data-popper-placement="bottom"
 							role="tooltip"
-							class="absolute z-10 app-inset m-0 left-0 right-0 top-0 border-solid pt-2 dark:shadow-slate-400 inline-block w-64 text-sm font-light text-slate-700 transition-opacity duration-300 bg-white dark:bg-black border rounded-md shadow-lg dark:shadow-md dark:text-slate-50 border-color"
-							style="transform: translate(-180px, 55px)"
+							class="absolute transform translate-y-[55px] -translate-x-[200px] md:-translate-x-[180px] z-10 app-inset m-0 left-0 right-0 top-0 border-solid pt-2 dark:shadow-slate-400 inline-block w-64 text-sm font-light text-slate-700 transition-opacity duration-300 bg-white dark:bg-black border rounded-md shadow-lg dark:shadow-md dark:text-slate-50 border-color"
 						>
 							<div class="">
 								<div
