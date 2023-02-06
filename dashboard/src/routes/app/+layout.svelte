@@ -76,6 +76,7 @@
 				class="mt-[--mt-2] hidden lg:block border-color border-l-2 border-solid"
 			/>
 		</div>
+		{data.user.error}
 		<div class="hidden">
 			{h} : {height} : {open}
 		</div>
