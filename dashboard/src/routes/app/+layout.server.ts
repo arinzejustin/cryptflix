@@ -3,7 +3,7 @@ import type { LayoutServerLoad } from './$types';
 import API from '$lib/api'
 
 let gravatar: string,
-ero: any;
+    ero: any;
 
 export const load = (async ({ cookies, locals }) => {
     const UUID = cookies.get('UUID');
@@ -27,7 +27,7 @@ export const load = (async ({ cookies, locals }) => {
             gravatar: gravatar,
             load: false,
             plan: 'Plan 2',
-            error: ero
+            error: JSON.stringify({ error: ero })
         }
     }
 
