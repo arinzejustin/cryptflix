@@ -2,7 +2,8 @@ import { redirect } from '@sveltejs/kit';
 import type { LayoutServerLoad } from './$types';
 import API from '$lib/api'
 
-let gravatar: string;
+let gravatar: string,
+ero: any;
 
 export const load = (async ({ cookies, locals }) => {
     const UUID = cookies.get('UUID');
@@ -18,13 +19,15 @@ export const load = (async ({ cookies, locals }) => {
         gravatar = req.gravatar;
     } catch (err) {
         gravatar = '/dart.jpg'
+        ero = err
     }
 
     return {
         user: {
             gravatar: gravatar,
             load: false,
-            plan: 'Plan 2'
+            plan: 'Plan 2',
+            error: ero
         }
     }
 
