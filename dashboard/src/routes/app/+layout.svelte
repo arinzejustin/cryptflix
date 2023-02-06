@@ -72,9 +72,10 @@
 				class="mt-[--mt-2] hidden lg:block border-color border-l-2 border-solid"
 			/>
 		</div>
+		<br />
 		{data.user.error}
 		<div class="hidden">
-			{h} : {height}
+			{h} : {height} : {open}
 		</div>
 		<Footer />
 	</AppContent>

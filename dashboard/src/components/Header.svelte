@@ -61,10 +61,11 @@
 						xmlns="http://www.w3.org/2000/svg"
 						width="1em"
 						height="1em"
-						viewBox="0 0 24 24"
-						><rect x="0" y="0" width="24" height="24" fill="none" stroke="none" /><path
-							fill="currentColor"
-							d="M4 18q-.425 0-.712-.288Q3 17.425 3 17t.288-.712Q3.575 16 4 16h16q.425 0 .712.288q.288.287.288.712t-.288.712Q20.425 18 20 18Zm0-5q-.425 0-.712-.288Q3 12.425 3 12t.288-.713Q3.575 11 4 11h16q.425 0 .712.287q.288.288.288.713t-.288.712Q20.425 13 20 13Zm0-5q-.425 0-.712-.287Q3 7.425 3 7t.288-.713Q3.575 6 4 6h16q.425 0 .712.287Q21 6.575 21 7t-.288.713Q20.425 8 20 8Z"
+						viewBox="0 0 20 20" fill="currentColor"
+						><path
+							fill-rule="evenodd"
+							d="M3 5a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM3 10a1 1 0 011-1h6a1 1 0 110 2H4a1 1 0 01-1-1zM3 15a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z"
+							clip-rule="evenodd"
 						/></svg
 					>
 				</div>
@@ -152,7 +153,8 @@
 												on:click={() => {
 													(menu = false), (active = true);
 												}}
-												class="bg-blue-600 text-white rounded-full text-sm p-1.5 ring-offset-2 hover:ring-2 ring-blue-500 hover:shadow-lg">Upgrade</button
+												class="bg-blue-600 text-white rounded-full text-sm p-1.5 ring-offset-2 hover:ring-2 ring-blue-500 hover:shadow-lg"
+												>Upgrade</button
 											>
 										{/if}
 									</div>
