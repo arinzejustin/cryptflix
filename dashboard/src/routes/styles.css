@@ -4,11 +4,15 @@
 
 @layer utilities {
     .w-9\/10 {
-        @apply w-[90%] !important;
+        @apply w-[90%];
     }
 
     .theme-text-app {
         @apply text-[#daa12f] !important;
+    }
+
+    .border-color {
+        @apply border-slate-300 dark:border-slate-500 !important;
     }
 }
 
@@ -20,7 +24,7 @@
 
 html,
 body {
-    @apply font-nunito transition-all duration-500 !important;
+    @apply font-nunito transition-all duration-500 text-slate-700 dark:text-slate-50 !important;
 }
 
 .dark {
@@ -75,10 +79,6 @@ body {
     @apply text-[#b00020] !important;
 }
 
-.border-color {
-    @apply border-slate-300 dark:border-slate-500 !important;
-}
-
 .app-inset {
     inset: 0px auto auto 0px;
 }
@@ -91,6 +91,14 @@ body {
     @apply border-solid border-slate-300 dark:border-slate-500;
 }
 
-.px {
-    @apply px-1.5 !important;
+.badge {
+    @apply px-1.5 bg-yellow-100 dark:bg-yellow-100/30 !important;
+}
+
+.mdc-drawer--dismissible {
+    @apply fixed !important;
+}
+
+.plan-active {
+    @apply ring ring-offset-2 ring-offset-transparent ring-yellow-300;
 }

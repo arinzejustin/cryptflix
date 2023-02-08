@@ -5,8 +5,9 @@
 	import Badge from '@smui-extra/badge';
 	import { fly } from 'svelte/transition';
 	import API from '$lib/api';
-	import { getStorage } from '$lib/storage';
+	import { getStorage, setStorage } from '$lib/storage';
 	import { goto } from '$app/navigation';
+	import {page} from '$app/stores'
 
 	export let loading = true,
 		src: string,
@@ -16,7 +17,9 @@
 
 	let shadow = false,
 		menu = false,
-		active = false;
+		active = false,
+		theme = () => {},
+		mode: any;
 
 	var logout = async () => {
 			try {
@@ -40,11 +43,22 @@
 			//@ts-ignore
 			height = document.querySelector('#header')!.offsetHeight;
 		};
+		theme = () => {
+			//@ts-ignore
+			const mode = document.querySelector('#theme')!.value;
+			setStorage('mode', mode);
+			if (mode == 'dark') {
+				document.documentElement.classList.add(mode);
+			} else {
+				document.documentElement.classList.remove('dark');
+			}
+		};
 		token = getStorage('token');
+		mode = getStorage('mode');
 	});
 </script>
 
-<header class="relative">
+<header class=" z-[1000]">
 	<div
 		id="header"
 		class="fixed bg-white transition-all duration-500 dark:bg-black text-slate-700 dark:text-slate-100 right-0 top-0 border-solid border-b border-color {open
@@ -61,7 +75,8 @@
 						xmlns="http://www.w3.org/2000/svg"
 						width="1em"
 						height="1em"
-						viewBox="0 0 20 20" fill="currentColor"
+						viewBox="0 0 20 20"
+						fill="currentColor"
 						><path
 							fill-rule="evenodd"
 							d="M3 5a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM3 10a1 1 0 011-1h6a1 1 0 110 2H4a1 1 0 01-1-1zM3 15a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z"
@@ -112,18 +127,18 @@
 							data-popover
 							data-popper-placement="bottom"
 							role="tooltip"
-							class="absolute transform translate-y-[55px] -translate-x-[200px] md:-translate-x-[180px] z-10 app-inset m-0 left-0 right-0 top-0 border-solid pt-2 dark:shadow-slate-400 inline-block w-64 text-sm font-light text-slate-700 transition-opacity duration-300 bg-white dark:bg-black border rounded-md shadow-lg dark:shadow-md dark:text-slate-50 border-color"
+							class="absolute transform translate-y-[55px] -translate-x-[200px] md:-translate-x-[180px] z-[1000] app-inset m-0 left-0 right-0 top-0 border-solid pt-2 dark:shadow-slate-400 inline-block w-64 text-sm font-light text-slate-700 transition-opacity duration-300 bg-white dark:bg-black border rounded-md shadow-lg dark:shadow-md dark:text-slate-50 border-color"
 						>
 							<div class="">
 								<div
-									class="flex flex-row justify-between align-middle items-center border-b-2 p-2 border-solid border-color"
+									class="flex flex-row justify-between align-middle items-center border-b p-2 border-solid border-color"
 								>
 									<div class="ml-1">
 										<p
 											class="text-slate-700 relative inline-block dark:text-slate-50 pt-1.5 pr-2 text-xl font-semibold font-nunito"
 										>
 											Arinze Justin
-											<Badge class="px">{plan}</Badge>
+											<Badge class="badge theme-text-app">{plan}</Badge>
 										</p>
 									</div>
 									<div>
@@ -158,11 +173,11 @@
 										{/if}
 									</div>
 								</div>
-								<div class="pt-3 group/item px-2">
+								<div class="pt-3 group/item px-2 {$page.url.pathname === '/app/profile' ? 'mb-1' : undefined}">
 									<!-- svelte-ignore a11y-missing-content -->
 									<a
 										href="/app/profile"
-										class="flex flex-auto px-2 items-center group-hover/item:bg-slate-500/30 rounded-md transition-all duration-500 py-3"
+										class="{$page.url.pathname === '/app/profile' ? 'bg-yellow-100 theme-text-app dark:bg-yellow-100/20 group-hover/item:bg-bg-yellow-100 dark:group-hover/item:bg-yellow-100/20' : 'group-hover/item:bg-slate-500/10 dark:group-hover/item:bg-slate-500/30'} flex flex-auto px-2 items-center rounded-md transition-all duration-500 py-3"
 									>
 										<svg
 											class="w-6 h-6 mr-3 text-slate-700 dark:text-slate-50"
@@ -178,11 +193,11 @@
 										<span class="ml-1 text-lg">Profile</span>
 									</a>
 								</div>
-								<div class="group/item px-2">
+								<div class="group/item px-2 {$page.url.pathname === '/app/settings' ? 'mt-1' : undefined}">
 									<!-- svelte-ignore a11y-missing-content -->
 									<a
 										href="/app/settings"
-										class="flex flex-auto px-2 items-center group-hover/item:bg-slate-500/30 rounded-md transition-all duration-500 py-3"
+										class="{$page.url.pathname === '/app/settings' ? 'bg-yellow-100 theme-text-app dark:bg-yellow-100/20 group-hover/item:bg-bg-yellow-100 dark:group-hover/item:bg-yellow-100/20' : 'group-hover/item:bg-slate-500/10 dark:group-hover/item:bg-slate-500/30'} flex flex-auto px-2 items-center rounded-md transition-all duration-500 py-3"
 									>
 										<svg
 											class="w-6 h-6 text-slate-700 dark:text-slate-50 mr-3"
@@ -201,12 +216,82 @@
 										<span class="ml-1 text-lg">Settings</span>
 									</a>
 								</div>
+								<div class="border-t border-b border-solid border-color px-2 py-3 mb-2 mt-1.5">
+									<div class="flex flex-row justify-between mx-2">
+										<p class="text-lg peer cursor-pointer">Theme</p>
+										<labal
+											for="theme"
+											class="peer-hover:opacity-100 opacity-75 hover:opacity-100"
+										>
+											<div
+												class="relative flex items-center align-center text-slate-700 dark:text-slate-50"
+											>
+												<span
+													class="inline-flex left-3 absolute pointer-events-none text-slate-700 dark:text-slate-50"
+												>
+													<svg
+														fill="none"
+														height="16"
+														shape-rendering="geometricPrecision"
+														stroke="currentColor"
+														stroke-linecap="round"
+														stroke-linejoin="round"
+														stroke-width="1.5"
+														viewBox="0 0 24 24"
+														width="16"
+														style="color: currentcolor;"
+													>
+														{#if mode == 'dark'}
+															<path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z" />
+														{:else}
+															<circle cx="12" cy="12" r="5" /><path d="M12 1v2" /><path
+																d="M12 21v2"
+															/><path d="M4.22 4.22l1.42 1.42" /><path
+																d="M18.36 18.36l1.42 1.42"
+															/><path d="M1 12h2" /><path d="M21 12h2" /><path
+																d="M4.22 19.78l1.42-1.42"
+															/><path d="M18.36 5.64l1.42-1.42" />
+														{/if}
+													</svg>
+												</span>
+												<select
+													on:change={(e) => {
+														theme();
+													}}
+													bind:value={mode}
+													id="theme"
+													class="text-sm h-8 leading-5 px-12 cursor-pointer appearance-none rounded-md text-slate-700 dark:text-slate-50 border border-solid border-color bg-white dark:bg-black transition-all duration-500 pr-[calc(1.5_*_32px)] pl-[calc(1.5_*_24px)] py-0"
+												>
+													<option value="light">Light</option>
+													<option value="dark">Dark</option>
+												</select>
+												<span
+													class="absolute right-3 inline-flex pointer-events-none text-slate-700 dark:text-slate-50"
+												>
+													<svg
+														fill="none"
+														height="16"
+														shape-rendering="geometricPrecision"
+														stroke="currentColor"
+														stroke-linecap="round"
+														stroke-linejoin="round"
+														stroke-width="1.5"
+														viewBox="0 0 24 24"
+														width="16"
+														style="color: currentcolor;"
+														><path d="M17 8.517L12 3 7 8.517M7 15.48l5 5.517 5-5.517" /></svg
+													>
+												</span>
+											</div>
+										</labal>
+									</div>
+								</div>
 								<div class="pb-3 group/item px-2">
 									<!-- svelte-ignore a11y-missing-content -->
 									<a
 										href="/help"
 										on:click={(e) => e.preventDefault()}
-										class="flex flex-auto px-2 items-center group-hover/item:bg-slate-500/30 rounded-md transition-all duration-500 py-3"
+										class="flex flex-auto px-2 items-center group-hover/item:bg-slate-500/10 dark:group-hover/item:bg-slate-500/30 rounded-md transition-all duration-500 py-3"
 									>
 										<svg
 											class="w-6 h-6 mr-3 text-slate-700 dark:text-slate-50"
@@ -230,12 +315,12 @@
 										<span class="ml-1 text-lg">Help</span>
 									</a>
 								</div>
-								<div class="border-color border-solid border-t-2 py-2 group/item px-2">
+								<div class="border-color border-solid border-t py-2 group/item px-2">
 									<!-- svelte-ignore a11y-missing-content -->
 									<a
 										href="/0auth/logout"
 										on:click={(e) => (e.preventDefault(), logout())}
-										class="flex justify-center px-2 text-center items-center  group-hover/item:bg-slate-500/30 rounded-md transition-all duration-500 py-2"
+										class="flex justify-center px-2 text-center items-center  group-hover/item:bg-slate-500/10 dark:group-hover/item:bg-slate-500/30 rounded-md transition-all duration-500 py-2"
 									>
 										<svg
 											class="w-6 h-6 mr-3 text-slate-700 dark:text-slate-50"
