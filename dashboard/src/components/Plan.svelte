@@ -105,7 +105,7 @@
 					</div>
 					<div class="mb-4">
 						<p class="font-semibold text-lg text-center underline uppercase theme-text-app">
-							{plan.profit} after {plan.duration}
+							{plan.profit} {plan.name !== 'Share 1' && plan.name !== 'Share 2' ? 'after' : ''} {plan.duration}
 						</p>
 					</div>
 					<div class="mb-2">
