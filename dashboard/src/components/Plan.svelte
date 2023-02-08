@@ -88,7 +88,7 @@
 				>
 					<div class="flex flex-row font-open items-center align-middle">
 						<div class="text-center w-1/2 inline-flex py-5 px-4">
-							<p class="text-lg text-center w-1/2 mx-auto">{plan.name}</p>
+							<p class="text-lg text-center">{plan.name}</p>
 						</div>
 						<!-- svelte-ignore a11y-click-events-have-key-events -->
 						<div

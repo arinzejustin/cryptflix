@@ -54,7 +54,7 @@
 			}
 		};
 		token = getStorage('token');
-		mode = getStorage('mode');
+		mode = getStorage('mode') || 'light';
 	});
 </script>
 
