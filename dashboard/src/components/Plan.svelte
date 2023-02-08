@@ -61,6 +61,7 @@
 		class="bg-white fixed transform -translate-x-1/2 z-[10000] w-[95%] overflow-y-auto h-[96%] md:h-3/4 lg:w-2/3 -translate-y-1/2  top-1/2 left-1/2 dark:bg-black border-color border-solid border rounded-lg shadow-md dark:shadow-slate-400 p-2"
 	>
 		<div class="sticky w-full py-3 flex justify-end">
+			<!-- svelte-ignore a11y-click-events-have-key-events -->
 			<svg
 				on:click={onClose}
 				class="md:w-8 md:h-8 h-6 w-6 cursor-pointer"
@@ -87,7 +88,7 @@
 				>
 					<div class="flex flex-row font-open items-center align-middle">
 						<div class="text-center w-1/2 inline-flex py-5 px-4">
-							<p class="text-lg">{plan.name}</p>
+							<p class="text-lg text-center w-1/2 mx-auto">{plan.name}</p>
 						</div>
 						<!-- svelte-ignore a11y-click-events-have-key-events -->
 						<div
@@ -96,7 +97,7 @@
 							}}
 							class="text-center w-1/2 cursor-pointer rounded-tr-lg inline-flex bg-yellow-100 dark:bg-yellow-100/30 theme-text-app py-5 px-4"
 						>
-							<p class="text-lg text-center ml-4">Choose</p>
+							<p class="text-lg text-center w-1/2 mx-auto">Choose</p>
 						</div>
 					</div>
 					<div class="mb-3 mt-5">

@@ -7,7 +7,7 @@
 	import API from '$lib/api';
 	import { getStorage, setStorage } from '$lib/storage';
 	import { goto } from '$app/navigation';
-	import {page} from '$app/stores'
+	import { page } from '$app/stores';
 
 	export let loading = true,
 		src: string,
@@ -173,11 +173,17 @@
 										{/if}
 									</div>
 								</div>
-								<div class="pt-3 group/item px-2 {$page.url.pathname === '/app/profile' ? 'mb-1' : undefined}">
+								<div
+									class="pt-3 group/item px-2 {$page.url.pathname === '/app/profile'
+										? 'mb-1'
+										: undefined}"
+								>
 									<!-- svelte-ignore a11y-missing-content -->
 									<a
 										href="/app/profile"
-										class="{$page.url.pathname === '/app/profile' ? 'bg-yellow-100 theme-text-app dark:bg-yellow-100/20 group-hover/item:bg-bg-yellow-100 dark:group-hover/item:bg-yellow-100/20' : 'group-hover/item:bg-slate-500/10 dark:group-hover/item:bg-slate-500/30'} flex flex-auto px-2 items-center rounded-md transition-all duration-500 py-3"
+										class="{$page.url.pathname === '/app/profile'
+											? 'bg-yellow-100 theme-text-app dark:bg-yellow-100/20 group-hover/item:bg-bg-yellow-100 dark:group-hover/item:bg-yellow-100/20'
+											: 'group-hover/item:bg-slate-500/10 dark:group-hover/item:bg-slate-500/30'} flex flex-auto px-2 items-center rounded-md transition-all duration-500 py-3"
 									>
 										<svg
 											class="w-6 h-6 mr-3 text-slate-700 dark:text-slate-50"
@@ -193,11 +199,17 @@
 										<span class="ml-1 text-lg">Profile</span>
 									</a>
 								</div>
-								<div class="group/item px-2 {$page.url.pathname === '/app/settings' ? 'mt-1' : undefined}">
+								<div
+									class="group/item px-2 {$page.url.pathname === '/app/settings'
+										? 'mt-1'
+										: undefined}"
+								>
 									<!-- svelte-ignore a11y-missing-content -->
 									<a
 										href="/app/settings"
-										class="{$page.url.pathname === '/app/settings' ? 'bg-yellow-100 theme-text-app dark:bg-yellow-100/20 group-hover/item:bg-bg-yellow-100 dark:group-hover/item:bg-yellow-100/20' : 'group-hover/item:bg-slate-500/10 dark:group-hover/item:bg-slate-500/30'} flex flex-auto px-2 items-center rounded-md transition-all duration-500 py-3"
+										class="{$page.url.pathname === '/app/settings'
+											? 'bg-yellow-100 theme-text-app dark:bg-yellow-100/20 group-hover/item:bg-bg-yellow-100 dark:group-hover/item:bg-yellow-100/20'
+											: 'group-hover/item:bg-slate-500/10 dark:group-hover/item:bg-slate-500/30'} flex flex-auto px-2 items-center rounded-md transition-all duration-500 py-3"
 									>
 										<svg
 											class="w-6 h-6 text-slate-700 dark:text-slate-50 mr-3"
@@ -219,10 +231,7 @@
 								<div class="border-t border-b border-solid border-color px-2 py-3 mb-2 mt-1.5">
 									<div class="flex flex-row justify-between mx-2">
 										<p class="text-lg peer cursor-pointer">Theme</p>
-										<labal
-											for="theme"
-											class="peer-hover:opacity-100 opacity-75 hover:opacity-100"
-										>
+										<labal for="theme" class="peer-hover:opacity-100 opacity-75 hover:opacity-100">
 											<div
 												class="relative flex items-center align-center text-slate-700 dark:text-slate-50"
 											>
@@ -352,7 +361,7 @@
 		</div>
 	</div>
 </header>
-<Plan {active} />
+<Plan {active} onClose={() => (active = false)} />
 
 <style>
 	[data-popper-arrow]::after,
