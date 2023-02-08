@@ -91,7 +91,7 @@ def gravatar():
         data = request.get_json(force=True)
         user = data['user']
         result = hashlib.md5(user.lower().encode()).hexdigest()
-        json = {'gravatar': f'{ENV_AVI_URL}/{result}?d=robohash&f=y&s=100', 'email': user}
+        json = {'gravatar': f'{ENV_AVI_URL}/{result}?d=robohash&f=y&s=50', 'email': user}
         print(json)
         return _corsify_actual_response(jsonify(json))
     else:
