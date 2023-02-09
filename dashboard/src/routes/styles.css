@@ -102,3 +102,11 @@ body {
 .plan-active {
     @apply ring ring-offset-2 ring-offset-transparent ring-yellow-300;
 }
+
+.scrollbar::-webkit-scrollbar-track {
+    @apply w-[2px] rounded-md !important;
+}
+
+.scrollbar::-webkit-scrollbar-track:hover {
+    @apply w-1 !important;
+}

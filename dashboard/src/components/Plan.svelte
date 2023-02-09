@@ -58,7 +58,7 @@
 	<div
 		in:fly={{ y: 600 }}
 		out:fly={{ y: -400 }}
-		class="bg-white fixed transform -translate-x-1/2 z-[10000] w-[95%] overflow-y-auto h-[96%] md:h-3/4 lg:w-2/3 -translate-y-1/2  top-1/2 left-1/2 dark:bg-black border-color border-solid border rounded-lg shadow-md dark:shadow-slate-400 p-2"
+		class="bg-white fixed scrollbar transform -translate-x-1/2 z-[10000] w-[95%] overflow-y-auto h-[96%] md:h-3/4 lg:w-2/3 -translate-y-1/2  top-1/2 left-1/2 dark:bg-black border-color border-solid border rounded-lg shadow-md dark:shadow-slate-400 p-2"
 	>
 		<div class="sticky w-full py-3 flex justify-end">
 			<!-- svelte-ignore a11y-click-events-have-key-events -->
@@ -117,7 +117,7 @@
 					<div class="pb-10 lg:pb-16 pt-5 text-center">
 						<a
 							href="/app/transaction/depoist"
-							class="bg-yellow-100 opacity-0 group-hover/item:opacity-100 transition-all duration-500 invest hover:ring-2 ring-offset-1 ring-yellow-200 shadow-md font-semibold dark:bg-yellow-100/30 theme-text-app px-10 py-3 text-base uppercase rounded-full"
+							class="bg-yellow-100 opacity-0 group-hover transition-all duration-500 invest hover:ring-2 ring-offset-1 ring-yellow-200 shadow-md font-semibold dark:bg-yellow-100/30 theme-text-app px-10 py-3 text-base uppercase rounded-full"
 							>Invest</a
 						>
 					</div>
