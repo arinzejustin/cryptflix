@@ -86,6 +86,11 @@
 				</div>
 				<div />
 			</div>
+			<div class="flex md:hidden -mr-2">
+				<a href="/">
+				<img src="/logo.png" alt="app logo" class="w-9 h-9" />
+				</a>
+			</div>
 			<div class="md:mr-4 relative">
 				{#if loading}
 					<div class="mr-4 md:mr-6">

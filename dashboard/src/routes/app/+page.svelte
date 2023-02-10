@@ -5,7 +5,5 @@
 <svelte:head />
 
 <div in:fly={{ x: 400 }} out:fly={{ x: -400 }} class="flex container">
-	<p class="text-center font-bold">
-		WORK IN PROGRESS
-	</p>
+	div>
 </div>

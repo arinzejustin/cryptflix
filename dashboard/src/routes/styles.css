@@ -103,10 +103,14 @@ body {
     @apply ring ring-offset-2 ring-offset-transparent ring-yellow-300;
 }
 
-.scrollbar::-webkit-scrollbar-track {
+.scrollbar::-webkit-scrollbar-track,
+.scrollbar::-moz-scrollbar-track,
+.scrollbar::scrollbar-track {
     @apply w-[2px] rounded-md !important;
 }
 
-.scrollbar::-webkit-scrollbar-track:hover {
+.scrollbar::-webkit-scrollbar-track:hover,
+.scrollbar::-moz-scrollbar-track,
+.scrollbar::scrollbar-track {
     @apply w-1 !important;
 }
