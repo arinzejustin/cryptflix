@@ -5,6 +5,7 @@
 	import Alert from '$lib/Alert.svelte';
 	import Api from '$lib/api';
 	import Checkbox from '@smui/checkbox';
+	import { setStorage } from '$lib/storage';
 
 	let geneId = Math.random()
 		.toString(36)
@@ -47,7 +48,7 @@
 			}
 		},
 		login = async () => {
-			if (!checked) {
+			if (!checked || passcode == '') {
 				toast('Fill all the fields', true);
 				return;
 			}
@@ -60,12 +61,19 @@
 						pass: passcode
 					})
 				);
-				console.log(req);
+				if ('status' in req) {
+					toast(req.message, !req.status);
+					emailGif = false;
+					setStorage('token', req.token);
+					if (req.status) setTimeout(() => goto('/', { replaceState: true, noScroll: true }), 3000);
+					return;
+				}
+				emailGif = false;
+				toast('An Error Occurred', true);
 			} catch (error) {
 				emailGif = false;
 				//@ts-ignore
 				toast(error.message, true);
-				setTimeout(() => (alert = false), 4400);
 			}
 		},
 		toggle = () => {
@@ -237,9 +245,7 @@
 												duration: 1000,
 												easing: cubicIn
 											}}
-											class="hak0fbu transition duration-300 appearance-none block border-solid focus:ring-0 px-8 py-4 rounded-lg font-medium bg-gray-50 border-2 border-gray-300 text-sm focus:outline-none focus:bg-white {valid
-												? 'focus:border-green-600'
-												: 'focus:border-red-600'} peer"
+											class="hak0fbu transition duration-300 appearance-none block border-solid focus:ring-0 px-8 py-4 rounded-lg font-medium bg-gray-50 border-2 border-gray-300 text-sm focus:outline-none focus:bg-white peer"
 											type="email"
 											aria-describedby="email_help"
 											placeholder=" "
@@ -255,6 +261,11 @@
 											>Your Email</label
 										>
 									</div>
+									{#if !valid}
+										<p transition:slide class="text-red-500 text-sm text-center pt-3">
+											Ouch !!! Invalid E-mail address
+										</p>
+									{/if}
 								</div>
 								<button
 									on:click={() => (
@@ -310,9 +321,7 @@
 											<div class="relative">
 												<input
 													on:keyup={() => (valid = true)}
-													class="hak0fbu border-solid px-8 py-4 rounded-l-lg font-medium bg-gray-50 border-2 transition duration-300 border-gray-300 placeholder-gray-500 text-sm focus:outline-none focus:bg-white {valid
-														? 'focus:border-green-600'
-														: 'focus:border-red-600'} peer appearance-none"
+													class="hak0fbu border-solid px-8 py-4 rounded-l-lg font-medium bg-gray-50 border-2 transition duration-300 border-gray-300 placeholder-gray-500 text-sm focus:outline-none focus:bg-white peer appearance-none"
 													type="password"
 													id={`p${geneId}`}
 													placeholder=" "
@@ -376,6 +385,7 @@
 										>
 									</div>
 									<button
+										disabled={emailGif}
 										on:click={login}
 										class="mt-5 tracking-wide font-semibold bg-black/90 text-gray-100 hak0fbu py-4 shadow rounded-lg hover:bg-black transition-all duration-300 ease-in-out flex items-center justify-center border border-solid border-slate-300 focus:shadow-outline focus:outline-none"
 									>

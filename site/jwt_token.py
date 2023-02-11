@@ -6,19 +6,18 @@ load_dotenv()
 
 SECRET = os.getenv('SECRET')
 
-print(SECRET)
 
-
-def generate(uid='', key='', email=''):
+def generate(uuid: str = '', key: str = '', email: str = ''):
+    if not uuid or not key or not email:
+        return
     encode = jwt.encode({"some": "payload"}, SECRET, algorithm='HS256')
-    print(encode)
-    auth(encode)
     return encode
 
 
-def auth(token=''):
+def authenticate(token: str = ''):
     decode = jwt.decode(token, SECRET, algorithms=['HS256'])
     print(decode, f'{decode["some"]} {decode}')
 
 
-generate()
+def authorize(cookie, token):
+    return

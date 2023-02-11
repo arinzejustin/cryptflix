@@ -1,8 +1,9 @@
 import os, hashlib, uuid
 from flask import Flask, render_template, Response, request, jsonify, redirect, send_from_directory, make_response
 from dotenv import load_dotenv
-from jwt_token import auth, generate
-from werkzeug.security import generate_password_hash, check_password_hash
+from jwt_token import authenticate, generate, authorize
+from query import db_login
+from netrequest import post
 
 app = Flask(__name__)
 load_dotenv()
@@ -45,6 +46,8 @@ def verify():
         return _build_cors_preflight_response()
     elif request.method == "POST":
         data = request.get_json(force=True)
+        code = data['verify']
+        uuid = data['uuid']
         json = {'message': 'Authorization Successful', 'valid': True}
         return _corsify_actual_response(jsonify(json))
     else:
@@ -60,11 +63,10 @@ def passcode():
         data = request.get_json(force=True)
         password = data['passcode']
         confirm = data['confirm']
-        print(confirm, password)
-        if password == confirm:
-            return _corsify_actual_response(jsonify({'message': 'Passcode does not match', 'error': True}))
-        hashs = generate_password_hash(confirm, "pbkdf2:SHA256", 100)
-        return _corsify_actual_response(jsonify({'message': '', 'saved': True, 'passcode': hashs}))
+        uuid = data['uuid']
+        if password != confirm:
+            return _corsify_actual_response(jsonify({'message': 'Passcode does not match', 'saved': False}))
+        return _corsify_actual_response(jsonify({'message': '', 'saved': True}))
     else:
         raise RuntimeError(
             "Weird - don't know how to handle method {}".format(request.method))
@@ -78,8 +80,10 @@ def login():
         data = request.get_json(force=True)
         email = data['email']
         passcode = data['pass']
-        json = {'email': email, 'pass': passcode}
-        return _corsify_actual_response(jsonify(json))
+        if not email or not passcode:
+            return _corsify_actual_response(jsonify({'message': 'Invalid Credentials', 'status': False}))
+        login_query = db_login(email=email, password=passcode)
+        return _corsify_actual_response(jsonify(login_query))
     else:
         raise RuntimeError(
             "Weird - don't know how to handle method {}".format(request.method))
@@ -101,7 +105,7 @@ def gravatar():
 
 @app.errorhandler(404)
 def page_not_found(error):
-    return render_template('error.html')
+    return render_template('error.html', type='404', description=error)
 
 
 def _build_cors_preflight_response():

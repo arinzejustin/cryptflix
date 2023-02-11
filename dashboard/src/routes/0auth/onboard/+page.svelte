@@ -37,7 +37,8 @@
 		times = 0,
 		vis = false,
 		pass = '',
-		confirm = '';
+		confirm = '',
+		uuid: null;
 
 	var isValid = (email: string) => {
 			var regExp =
@@ -45,6 +46,7 @@
 			return regExp.test(email);
 		},
 		toast = (message: string, error: boolean) => {
+			alert = false;
 			msg = message;
 			err = error;
 			alert = true;
@@ -99,9 +101,15 @@
 					'/onboard',
 					JSON.stringify({ email: e_mail, name: `${first} ${last}`, tel: tel })
 				);
-				if (req.saved == true) register = true;
-				toast(req.message, false);
+				if ('saved' in req){
+					register = req.saved;
+				toast(req.message, !req.saved);
+				uuid = req.uuid;
 				loadGif = false;
+				return;
+			}
+				loadGif = false;
+				toast('An Error Occurred', true)
 			} catch (error) {
 				loadGif = false;
 				//@ts-ignore
@@ -112,12 +120,15 @@
 			if (v_code == '' || !checked) return;
 			loadGif = true;
 			try {
-				const req = await Api.post('/verify', JSON.stringify({ verify: v_code }));
-				if (req.valid == true) verification = true;
-				toast(req.message, false);
+				const req = await Api.post('/verify', JSON.stringify({ verify: v_code, uuid: uuid }));
+				if ('valid' in req) {
+					verification = req.valid;
+				toast(req.message, !req.valid);
 				loadGif = false;
-				setTimeout(() => (alert = false), 4400);
-				console.log(req);
+				return;
+			}
+				loadGif = false;
+				toast('An Error Occurred', true)
 			} catch (error) {
 				loadGif = false;
 				//@ts-ignore
@@ -133,7 +144,13 @@
 			resendGif = true;
 			try {
 				const req = await Api.get('/email', JSON.stringify({ email: e_mail }));
-				console.log(req);
+				if('sent' in req) {
+				toast(req.message, !req.sent);
+				resendGif = false;
+				return;
+				}
+				resendGif = false;
+				toast('An Error Occurred', true)
 			} catch (error) {
 				resendGif = false;
 				//@ts-ignore
@@ -149,7 +166,7 @@
 			setTimeout(() => {
 				complete = true;
 				toast('Account Successfully Created', false);
-				setTimeout(() => console.log(true), 3000);
+				setTimeout(() => goto('/', {replaceState: true, noScroll: true}), 4000);
 			}, 5000);
 		},
 		create = async () => {
@@ -158,12 +175,16 @@
 			try {
 				const req = await Api.post(
 					'/password',
-					JSON.stringify({ passcode: pass, confirm: confirm })
+					JSON.stringify({ passcode: pass, confirm: confirm, uuid: uuid })
 				);
-				if (req.match == true) profile = true;
-				toast(req.message, false);
+				if ('match' in req) {
+					profile = req.match;
+				toast(req.message, !req.match);
 				loadGif = false;
-				setTimeout(() => (alert = false), 4400);
+				return;
+			}
+				loadGif = false;
+				toast('An Error Occurred', true)
 			} catch (error) {
 				loadGif = false;
 				//@ts-ignore
@@ -364,7 +385,7 @@
 														duration: 1000,
 														easing: cubicIn
 													}}
-													class="hak0fbu transition duration-300 appearance-none block border-solid focus:ring-0 px-8 py-4 rounded-lg font-medium bg-gray-50 border-2 border-gray-300 text-sm focus:outline-none focus:bg-white peer"
+													class="hak0fbu transition duration-300 appearance-none block border-solid focus:ring-0 px-2 py-4 rounded-lg font-medium bg-gray-50 border-2 border-gray-300 text-sm focus:outline-none focus:bg-white peer"
 													type="text"
 													placeholder=" "
 													bind:value={first}
@@ -386,7 +407,7 @@
 														duration: 1000,
 														easing: cubicIn
 													}}
-													class="hak0fbu transition duration-300 appearance-none block border-solid focus:ring-0 px-8 py-4 rounded-lg font-medium bg-gray-50 border-2 border-gray-300 text-sm focus:outline-none focus:bg-white peer"
+													class="hak0fbu transition duration-300 appearance-none block border-solid focus:ring-0 px-2 py-4 rounded-lg font-medium bg-gray-50 border-2 border-gray-300 text-sm focus:outline-none focus:bg-white peer"
 													type="text"
 													placeholder=" "
 													bind:value={last}
@@ -417,7 +438,7 @@
 														duration: 1000,
 														easing: cubicIn
 													}}
-													class="hak0fbu transition duration-300 appearance-none block border-solid focus:ring-0 px-8 py-4 rounded-lg font-medium bg-gray-50 border-2 border-gray-300 text-sm focus:outline-none focus:bg-white peer"
+													class="hak0fbu transition duration-300 appearance-none block border-solid focus:ring-0 px-2 py-4 rounded-lg font-medium bg-gray-50 border-2 border-gray-300 text-sm focus:outline-none focus:bg-white peer"
 													type="email"
 													aria-describedby="email_help"
 													placeholder=" "
@@ -539,7 +560,7 @@
 											<div class="w-full">
 												<div class="relative">
 													<input
-														class="hak0fbu border-solid px-8 py-4 rounded-l-lg font-medium bg-gray-50 border-2 transition duration-300 border-gray-300 placeholder-gray-500 text-sm focus:outline-none focus:bg-white peer appearance-none"
+														class="hak0fbu border-solid px-2 py-4 rounded-l-lg font-medium bg-gray-50 border-2 transition duration-300 border-gray-300 placeholder-gray-500 text-sm focus:outline-none focus:bg-white peer appearance-none"
 														type="password"
 														id="pass"
 														placeholder=" "
@@ -587,7 +608,7 @@
 												<div class="relative">
 													<input
 														on:keyup={check}
-														class="hak0fbu border-solid px-8 py-4 rounded-l-lg font-medium bg-gray-50 border-2 transition duration-300 border-gray-300 placeholder-gray-500 text-sm focus:outline-none focus:bg-white peer appearance-none"
+														class="hak0fbu border-solid px-2 py-4 rounded-l-lg font-medium bg-gray-50 border-2 transition duration-300 border-gray-300 placeholder-gray-500 text-sm focus:outline-none focus:bg-white peer appearance-none"
 														type="password"
 														id="verify"
 														placeholder=" "
