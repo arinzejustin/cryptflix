@@ -2,7 +2,7 @@ import os, hashlib, uuid
 from flask import Flask, render_template, Response, request, jsonify, redirect, send_from_directory, make_response
 from dotenv import load_dotenv
 from jwt_token import authenticate, generate, authorize
-from query import db_login
+from query import db_login, db_list
 from netrequest import post
 
 app = Flask(__name__)
@@ -101,6 +101,13 @@ def gravatar():
     else:
         raise RuntimeError(
             "Weird - don't know how to handle method {}".format(request.method))
+
+
+@app.route('/list', methods=['GET'])
+def lists():
+    if request.method == "GET":
+        db_name = db_list()
+        return _corsify_actual_response(jsonify({'db': db_name}))
 
 
 @app.errorhandler(404)

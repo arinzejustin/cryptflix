@@ -39,3 +39,12 @@ def db_passcode():
 
 def db_user():
     return
+
+
+def db_list():
+    lists = []
+    cursor.execute("SHOW DATABASES")
+    for x in cursor:
+        lists.append(x)
+    print(lists.sort())
+    return lists
