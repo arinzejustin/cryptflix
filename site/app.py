@@ -1,9 +1,10 @@
-import os, hashlib, uuid
-from flask import Flask, render_template, Response, request, jsonify, redirect, send_from_directory, make_response
+import hashlib
+import os
+
 from dotenv import load_dotenv
-from jwt_token import authenticate, generate, authorize
-from query import db_login, db_list
-from netrequest import post
+from flask import Flask, render_template, request, jsonify, send_from_directory, make_response
+
+from query import db_login, db_verify, db_passcode
 
 app = Flask(__name__)
 load_dotenv()
@@ -14,9 +15,15 @@ ENV_AVI_URL = os.getenv('ENV_AVI_URL')
 
 @app.route('/index')
 @app.route('/')
-@app.route('/home')
+@app.route('/index/')
 def index():
     return send_from_directory('.svelte-kit/output/prerendered/pages', 'index.html')
+
+
+@app.route('/about')
+@app.route('/about/')
+def about():
+    return send_from_directory('.svelte-kit/output/prerendered/pages', 'about.html')
 
 
 @app.route("/<path:path>")
@@ -31,10 +38,11 @@ def onboard():
     elif request.method == "POST":
         data = request.get_json(force=True)
         email = data['email']
-        star = email[:2]
-        domain = email.split('@')[1]
-        json = {'message': f'Verification Code Sent to {star}*****@{domain}', 'saved': True}
-        return _corsify_actual_response(jsonify(json))
+
+        # star = email[:2]
+        # domain = email.split('@')[1]
+        # json = {'message': f'Verification Code Sent to {star}*****@{domain}', 'saved': True}
+        return _corsify_actual_response(jsonify())
     else:
         raise RuntimeError(
             "Weird - don't know how to handle method {}".format(request.method))
@@ -47,9 +55,9 @@ def verify():
     elif request.method == "POST":
         data = request.get_json(force=True)
         code = data['verify']
-        uuid = data['uuid']
-        json = {'message': 'Authorization Successful', 'valid': True}
-        return _corsify_actual_response(jsonify(json))
+        email = data['email']
+        response = db_verify(email=email, code=code, insert=False)
+        return _corsify_actual_response(jsonify(response))
     else:
         raise RuntimeError(
             "Weird - don't know how to handle method {}".format(request.method))
@@ -65,8 +73,9 @@ def passcode():
         confirm = data['confirm']
         uuid = data['uuid']
         if password != confirm:
-            return _corsify_actual_response(jsonify({'message': 'Passcode does not match', 'saved': False}))
-        return _corsify_actual_response(jsonify({'message': '', 'saved': True}))
+            return _corsify_actual_response(jsonify({'message': 'Passcode does not match', 'status': False}))
+        insert = db_passcode(uuid=uuid, passcode=confirm)
+        return _corsify_actual_response(jsonify(insert))
     else:
         raise RuntimeError(
             "Weird - don't know how to handle method {}".format(request.method))
@@ -95,19 +104,11 @@ def gravatar():
         data = request.get_json(force=True)
         user = data['user']
         result = hashlib.md5(user.lower().encode()).hexdigest()
-        json = {'gravatar': f'{ENV_AVI_URL}/{result}?d=robohash&f=y&s=50', 'email': user}
-        print(json)
-        return _corsify_actual_response(jsonify(json))
+        avi = {'gravatar': f'{ENV_AVI_URL}/{result}?d=robohash&f=y&s=50'}
+        return _corsify_actual_response(jsonify(avi))
     else:
         raise RuntimeError(
             "Weird - don't know how to handle method {}".format(request.method))
-
-
-@app.route('/list', methods=['GET'])
-def lists():
-    if request.method == "GET":
-        db_name = db_list()
-        return _corsify_actual_response(jsonify({'db': db_name}))
 
 
 @app.errorhandler(404)
@@ -141,7 +142,7 @@ def _corsify_actual_response(response):
     Access-Control-Allow-Methods: POST, GET
     Content-Type: application/json; charset=UTF-8
     Access-Control-Allow-Credentials: true
-    
+
     """
     response.headers.add("Access-Control-Allow-Origin",
                          ALLOWED_HOST)
