@@ -4,7 +4,7 @@ import os
 from dotenv import load_dotenv
 from flask import Flask, render_template, request, jsonify, send_from_directory, make_response
 
-from query import db_login, db_verify, db_passcode
+from query import db_login, db_verify, db_passcode, db_onboard
 
 app = Flask(__name__)
 load_dotenv()
@@ -38,11 +38,10 @@ def onboard():
     elif request.method == "POST":
         data = request.get_json(force=True)
         email = data['email']
-
-        # star = email[:2]
-        # domain = email.split('@')[1]
-        # json = {'message': f'Verification Code Sent to {star}*****@{domain}', 'saved': True}
-        return _corsify_actual_response(jsonify())
+        name = data['name']
+        tel = data['tel']
+        reg = db_onboard(email=email, name=name, tel=tel)
+        return _corsify_actual_response(jsonify(reg))
     else:
         raise RuntimeError(
             "Weird - don't know how to handle method {}".format(request.method))

@@ -30,7 +30,7 @@ def get(url: str, params: any, headers: any):
     """
     It takes a url, params, and headers as arguments, and returns a response object
     
-    :param url: str = 'https://api.github.com/users/{}/repos'.format(username)
+    :param url: str = 'https://api.cryptflixinvest.com/users/{}/history'.format(username)
     :type url: str
     :param params: {'param1': 'value1', 'param2': 'value2'}
     :type params: any

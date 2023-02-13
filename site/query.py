@@ -87,7 +87,15 @@ def db_onboard(email: str, name: str, tel: str):
         mydb.commit()
         onboard = db_verify(email=email, insert=True)
         if onboard['status']:
-            return
+            try:
+                cursor.execute(f'CREATE TABLE user_{uid} (ID INT AUTO_INCREMENT PRIMARY KEY, ADDRESS VARCHAR(255), TRANSACTION VARCHAR(100), STATUS VARCHAR(100), TIME VARCHAR(100), TYPE VARCHAR(100), THEME VARCHAR(10), TRANS_PASS VARCHAR(100))')
+                onboard.update({'uuid': uid})
+            except:
+                query = "DELETE FROM users WHERE uuid = %s"
+                value = (uid, )
+                cursor.execute(query, value)
+                mydb.commit()
+                return except_func('Sign Up')
         return onboard
     except:
         return except_func('Sign Up')
