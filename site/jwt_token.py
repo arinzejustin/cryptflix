@@ -1,5 +1,4 @@
-import jwt
-import os
+import jwt, os, random, time
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -34,3 +33,14 @@ def authenticate(token: str):
 
 def authorize(cookie, token):
     return
+
+
+def acct_token():
+    """
+    It generates a random number between 100000 and 999999 and returns it
+    :return: A random number between 100000 and 999999
+    """
+    token = random.randrange(100000, 999999)
+    expires = int(time.time() * 1000 + 3000000)
+    return dict(token=token, expires=expires)
+    

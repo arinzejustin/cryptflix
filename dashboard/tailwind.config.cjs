@@ -5,7 +5,7 @@ module.exports = {
     fontFamily: {
       'open': ['Open Sans', 'sans-serif'],
       'nunito': ['Nunito', 'sans-serif'],
-      'mono': ["Roboto Mono",Menlo,Monaco,Lucida Console,Liberation Mono,DejaVu Sans Mono,Bitstream Vera Sans Mono,Courier New,monospace]
+      'mono': ["Roboto Mono", 'Menlo', 'Monaco', 'Lucida Console', 'Liberation Mono', 'DejaVu Sans Mono', 'Bitstream Vera Sans Mono', 'Courier New', 'monospace']
     },
     extend: {}
   },

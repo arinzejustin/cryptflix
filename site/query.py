@@ -1,9 +1,9 @@
 import mysql.connector as mc
-import os, uuid
+import os, uuid, time
 from dotenv import load_dotenv
 from werkzeug.security import check_password_hash, generate_password_hash
 
-from jwt_token import generate
+from jwt_token import generate, acct_token
 from netrequest import post
 
 load_dotenv()
@@ -63,32 +63,57 @@ def db_login(email: str, password: str):
         return except_func('Login')
 
 
-def db_onboard():
-    return
-
-
-def db_verify(email: str, code: str, insert: bool):
+def db_onboard(email: str, name: str, tel: str):
     """
-    It takes in an email, a code, and a boolean value. If the boolean value is true, it inserts the code
-    into the database and sends an email to the user. If the boolean value is false, it checks if the
-    code in the database matches the code passed in. If it does, it returns a message saying the account
-    is verified. If it doesn't, it returns a message saying the code is invalid.
+    It inserts a new user into the database
     
-    :param email: str
+    :param email: str, name: str, tel: str
     :type email: str
-    :param code: str = The code that is sent to the user's email
-    :type code: str
+    :param name: str, email: str, tel: str, insert: bool
+    :type name: str
+    :param tel: str
+    :type tel: str
+    :return: A dictionary with the keys 'message' and 'status'
+    """
+    try:
+        cursor.execute('SELECT * FROM users WHERE email = %s', (email,))
+        account = cursor.fetchone()
+        if account:
+            return dict(message='Account already exists!', status=False)
+        query = 'INSERT INTO users (uuid, name, email, tel) VALUES (%s, %s, %s, %s)'
+        uid = uuid.uuid4().hex
+        values = (uid, name, email, tel)
+        cursor.execute(query, values)
+        mydb.commit()
+        onboard = db_verify(email=email, insert=True)
+        if onboard['status']:
+            return
+        return onboard
+    except:
+        return except_func('Sign Up')
+
+
+def db_verify(email: str, insert: bool, code: str = ''):
+    """
+    It takes an email, a boolean, and a code. If the boolean is true, it inserts a token into the
+    database. If the boolean is false, it checks if the code is valid.
+    
+    :param email: str = The email of the user
+    :type email: str
     :param insert: bool
     :type insert: bool
+    :param code: str = ''
+    :type code: str
     :return: A dictionary with the keys 'message' and 'status'
     """
     if insert:
         try:
             query = "UPDATE users SET code = %s WHERE email = %s"
-            value = (code, email)
-            cursor.execute(query, value)
+            token = acct_token()
+            values = (f"{token['token']}:{token['expires']}", email)
+            cursor.execute(query, values)
             mydb.commit()
-            params = dict(email=email)
+            params = dict(email=email, token=f'C-{token["token"]}')
             headers = dict(authorization=f'Bearer {SERVER_KEY}')
             request = post(url=EMAIL_URL, params=params, headers=headers)
             return request
@@ -100,7 +125,20 @@ def db_verify(email: str, code: str, insert: bool):
             value = (email,)
             cursor.execute(query, value)
             fetch = cursor.fetchone()
-            if fetch[0] == code:
+            verify = fetch[0]
+            expires = verify.split(':')[1]
+            if int(expires) - int(time.time() * 1000) < 0:
+                query = 'UPDATE users SET code = %s WHERE email = %s'
+                values = ('', email)
+                cursor.execute(query, values)
+                mydb.commit()
+                result = dict(message='Code Has Expired', status=False)
+                return result
+            if verify.split(':')[0] == code:
+                query = 'UPDATE users SET account = %s WHERE email = %s'
+                values = ('verified', email)
+                cursor.execute(query, values)
+                mydb.commit()
                 result = dict(message='Account Verified', status=True)
                 return result
             else:
@@ -124,8 +162,8 @@ def db_passcode(uuid: str, passcode: str):
     pass_hash = generate_password_hash(password=passcode, method=f"{SALT}", salt_length=57)
     try:
         query = "UPDATE users SET passcode = %s WHERE uuid = %s"
-        value = (pass_hash, uuid)
-        cursor.execute(query, value)
+        values = (pass_hash, uuid)
+        cursor.execute(query, values)
         mydb.commit()
         return dict(message='Passcode Set', status=True)
     except:
@@ -145,3 +183,5 @@ def except_func(error: str):
     :return: A dictionary with two keys: message and status.
     """
     return dict(message=f'{error} System Is Currently Down', status=False)
+
+    

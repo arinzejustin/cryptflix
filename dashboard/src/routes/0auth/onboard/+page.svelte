@@ -258,7 +258,7 @@
 							</span>
 						</li>
 						<li
-							class="flex w-full items-center after:border-solid {verification
+							class="flex w-full font-mono items-center after:border-solid {verification
 								? 'text-green-600'
 								: 'text-gray-600'} after:content-[''] after:w-full after:h-1 after:border-b {verification
 								? 'after:border-green-100'
