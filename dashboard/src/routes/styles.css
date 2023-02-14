@@ -114,3 +114,25 @@ body {
 .scrollbar::scrollbar-track {
     @apply w-1 !important;
 }
+
+.mdc-tab-indicator .mdc-tab-indicator__content--underline {
+    @apply border-yellow-300 rounded-md !important;
+}
+
+.mdc-tab .mdc-tab__text-label,
+.mdc-tab .mdc-tab__icon {
+    @apply text-slate-900 dark:text-slate-50 text-base !important;
+}
+
+.mdc-tab--active .mdc-tab__icon,
+.mdc-tab--active .mdc-tab__text-label {
+    @apply theme-text-app dark:theme-text-app text-base !important;
+}
+
+.mdc-tab--active {
+    @apply bg-yellow-100 dark:bg-yellow-100/30 rounded !important;
+}
+
+.mab-tab {
+    @apply hover:bg-yellow-100/10 dark:hover:bg-yellow-100/10 focus:bg-yellow-100/10 dark:focus:bg-yellow-100/10 !important;
+}

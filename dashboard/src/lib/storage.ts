@@ -4,7 +4,10 @@
  * @returns The value of the key in localStorage.
  */
 export function getStorage(key: string) {
-	return JSON.parse(localStorage.getItem(key)!);
+	if (localStorage.getItem(key) !== undefined)
+		 console.log(localStorage.getItem(key));
+	else
+		return null
 }
 
 /**

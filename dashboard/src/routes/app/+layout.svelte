@@ -44,6 +44,7 @@
 		};
 		pageLoading = false;
 		var mode = getStorage('mode');
+		//@ts-ignore
 		document.documentElement.classList.add(mode);
 		setTimeout(() => {
 			w = //@ts-ignore
@@ -52,7 +53,7 @@
 				document.querySelector('#slot-1')!.offsetWidth -
 				10;
 		}, 2000);
-		token = getStorage('token')
+		token = getStorage('token') || '';
 	});
 </script>
 
@@ -75,24 +76,27 @@
 			/>
 		</div>
 		<div class="grid grid-cols-4 gap-4" id="slot">
-			{#if pageLoading}
-				<div
-					id="slot-1"
-					out:fly={{ y: -300 }}
-					class="col-span-4 xl:col-span-3 transform -translate-y-1/2 -translate-x-1/2 top-1/2 left-1/2 fixed"
-				>
-					<Loader width={'55px'} height={'55px'} />
-				</div>
-			{:else}
-				<div
-					id="slot-1"
-					in:fly={{ y: 500 }}
-					class="px-2 mt-[var(--mt)] -z-10 transition-all duration-200 col-span-4 xl:col-span-3"
-					style="--mt: {height + 'px'}"
-				>
-					<slot />
-				</div>
-			{/if}
+			<div class="w-full col-span-4 xl:col-span-3">
+				{#if pageLoading}
+					<div
+						id="slot-1"
+						out:fly={{ y: -300 }}
+						class=" transform -translate-y-1/2 -translate-x-1/2 top-1/2 left-1/2 fixed"
+					>
+						<Loader width={'55px'} height={'55px'} />
+					</div>
+				{:else}
+					<div
+						id="slot-1"
+						in:fly={{ y: 500 }}
+						class="px-2 mt-[var(--mt)] transition-all duration-200"
+						style="--mt: {height + 'px'}"
+					>
+						<slot />
+					</div>
+				{/if}
+				<Footer />
+			</div>
 			{#if hidden}
 				<div
 					in:fly={{ x: 300 }}
@@ -103,7 +107,12 @@
 						<div
 							class="h-full row-span-3 overflow-x-hidden overflow-y-auto border-b border-solid border-color"
 						>
-							<Mini token={token} find={data.user.find} transaction={data.user.transaction} error={data.user.error} />
+							<Mini
+								{token}
+								find={data.user.find}
+								transaction={data.user.transaction}
+								error={data.user.error}
+							/>
 						</div>
 						<div
 							class="h-full row-span-2 overflow-x-hidden overflow-y-auto border-b border-solid border-color"
@@ -123,7 +132,6 @@
 		<div class="hidden">
 			{h} : {height} : {open} : {w}
 		</div>
-		<Footer />
 	</AppContent>
 </cryptflixinvest-dashboard>
 

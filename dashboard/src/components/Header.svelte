@@ -53,7 +53,7 @@
 				document.documentElement.classList.remove('dark');
 			}
 		};
-		token = getStorage('token');
+		token = getStorage('token') || '';
 		mode = getStorage('mode') || 'light';
 	});
 </script>

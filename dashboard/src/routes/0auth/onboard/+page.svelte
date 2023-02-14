@@ -101,9 +101,9 @@
 					'/onboard',
 					JSON.stringify({ email: e_mail, name: `${first} ${last}`, tel: tel })
 				);
-				if ('saved' in req){
-					register = req.saved;
-				toast(req.message, !req.saved);
+				if ('status' in req){
+					register = req.status;
+				toast(req.message, !req.status);
 				uuid = req.uuid;
 				loadGif = false;
 				return;
@@ -120,10 +120,10 @@
 			if (v_code == '' || !checked) return;
 			loadGif = true;
 			try {
-				const req = await Api.post('/verify', JSON.stringify({ verify: v_code, uuid: uuid }));
-				if ('valid' in req) {
-					verification = req.valid;
-				toast(req.message, !req.valid);
+				const req = await Api.post('/verify', JSON.stringify({ verify: v_code, email: e_mail }));
+				if ('status' in req) {
+					verification = req.status;
+				toast(req.message, !req.status);
 				loadGif = false;
 				return;
 			}
@@ -144,8 +144,8 @@
 			resendGif = true;
 			try {
 				const req = await Api.get('/email', JSON.stringify({ email: e_mail }));
-				if('sent' in req) {
-				toast(req.message, !req.sent);
+				if('status' in req) {
+				toast(req.message, !req.status);
 				resendGif = false;
 				return;
 				}
@@ -177,9 +177,9 @@
 					'/password',
 					JSON.stringify({ passcode: pass, confirm: confirm, uuid: uuid })
 				);
-				if ('match' in req) {
-					profile = req.match;
-				toast(req.message, !req.match);
+				if ('status' in req) {
+					profile = req.status;
+				toast(req.message, !req.status);
 				loadGif = false;
 				return;
 			}
@@ -258,7 +258,7 @@
 							</span>
 						</li>
 						<li
-							class="flex w-full font-mono items-center after:border-solid {verification
+							class="flex w-full items-center after:border-solid {verification
 								? 'text-green-600'
 								: 'text-gray-600'} after:content-[''] after:w-full after:h-1 after:border-b {verification
 								? 'after:border-green-100'

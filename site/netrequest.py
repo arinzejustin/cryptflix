@@ -18,8 +18,7 @@ def post(url: str, params: any, headers: any = ''):
     try:
         request = requests.post(url, json=params, headers=headers)
         if request.status_code == 200:
-            response = {'status': True}
-            return response.update(request.json())
+            return request.json()
         else:
             return error
     except:

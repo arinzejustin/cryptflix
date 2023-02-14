@@ -46,11 +46,10 @@ def db_login(email: str, password: str):
         cursor.execute(query, value)
         user = cursor.fetchone()
         if user:
-            print(password, user[5])
-            verify = check_password_hash(user[5], password)
+            verify = check_password_hash(user[4], password)
             if verify:
                 token = generate(uuid=user[1], email=email, key=user[0], name=user[2])
-                result = dict(message='Login Successful', status=True, uuid=user[1], name=user[2], email=email,
+                result = dict(message='Login Successful', status=True, uuid=user[1], account=user[7], name=user[2], email=email,
                               bearer=token)
                 return result
             else:
@@ -89,15 +88,21 @@ def db_onboard(email: str, name: str, tel: str):
         if onboard['status']:
             try:
                 cursor.execute(f'CREATE TABLE user_{uid} (ID INT AUTO_INCREMENT PRIMARY KEY, ADDRESS VARCHAR(255), TRANSACTION VARCHAR(100), STATUS VARCHAR(100), TIME VARCHAR(100), TYPE VARCHAR(100), THEME VARCHAR(10), TRANS_PASS VARCHAR(100))')
+                cursor.execute('UPDATE user_' + uid + ' SET TYPE = %s', ('Plan 1',))
+                mydb.commit()
                 onboard.update({'uuid': uid})
             except:
                 query = "DELETE FROM users WHERE uuid = %s"
                 value = (uid, )
                 cursor.execute(query, value)
                 mydb.commit()
-                return except_func('Sign Up')
+                return except_func('Accounts')
         return onboard
     except:
+        query = "DELETE FROM users WHERE email = %s"
+        value = (email, )
+        cursor.execute(query, value)
+        mydb.commit()
         return except_func('Sign Up')
 
 
@@ -143,7 +148,7 @@ def db_verify(email: str, insert: bool, code: str = ''):
                 result = dict(message='Code Has Expired', status=False)
                 return result
             if verify.split(':')[0] == code:
-                query = 'UPDATE users SET account = %s WHERE email = %s'
+                query = 'UPDATE users SET status = %s WHERE email = %s'
                 values = ('verified', email)
                 cursor.execute(query, values)
                 mydb.commit()
@@ -192,4 +197,3 @@ def except_func(error: str):
     """
     return dict(message=f'{error} System Is Currently Down', status=False)
 
-    
