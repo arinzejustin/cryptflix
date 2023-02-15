@@ -26,6 +26,7 @@
 						market = [...market, req.data.byId[`${coinName}`]];
 					});
 					console.log(market);
+					loading = false;
 				}
 			} catch (error) {
 				console.log(error);
@@ -39,18 +40,27 @@
 					{ Authorization: token }
 				);
 			} catch (error) {}
-		};
+		},
+		round = (number: number, precision = 1000) => {};
 	onMount(() => {
 		token = getStorage('token');
 		ticker();
+		round = (number: number, precision = 1000) => {
+			var result = Math.round(number / precision) * precision;
+			return result;
+		};
 	});
 </script>
 
-<svelte:head>
+<!-- <svelte:head>
 	<script src="https://widgets.coingecko.com/coingecko-coin-price-marquee-widget.js"></script>
-</svelte:head>
+</svelte:head> -->
 
-<div in:fly={{ x: 300, delay: 1000 }} out:fly={{ x: -400, duration: 800 }} class="container">
+<div
+	in:fly={{ x: 300, delay: 1000 }}
+	out:fly={{ x: -400, duration: 800 }}
+	class="container mt-4 pt-5"
+>
 	<div
 		class="flex flex-row md:mr-2 override w-full items-center align-middle justify-between mb-4 pb-4"
 	>
@@ -81,13 +91,13 @@
 		</div>
 	</div>
 	<div class="w-full override">
-		<coingecko-coin-price-marquee-widget
+		<!-- <coingecko-coin-price-marquee-widget
 			class="override"
 			coin-ids="bitcoin,eos,ethereum,litecoin,ripple,solana,stellar,safemoon-2,saitama-inu,usdd,algorand,dogecoin,render-token,wemix-token,vechain,binancecoin,quant-network,zoid-pay,osmosis,y2k,cardano,nucypher,nexo,edgecoin-2,euler,bitdao,binancecoin"
 			currency="usd"
 			background-color="trasparent"
 			locale="en"
-		/>
+		/> -->
 	</div>
 	<div class="override w-full grid grid-cols-1 md:grid-cols-2 gap-4 my-4 md:py-3">
 		<div
@@ -102,18 +112,97 @@
 		<div
 			class="rounded-lg border dark:border-solid border-color app-shadow dark:shadow-md dark:shadow-slate-100/30 p-4 dark:bg-black/60"
 		>
-			<p class="tex-lg font-open uppercase mb-5 font-semibold">Market Cap</p>
+			<p class="tex-lg font-open uppercase mb-5 font-semibold">Total Volume</p>
 			<div class="flex flex-row items-center align-middle justify-between">
 				<Loader width={'20px'} height={'20px'} auto={'0px'} />
 				<Loader width={'20px'} height={'20px'} auto={'0px'} />
 			</div>
 		</div>
 	</div>
-	{#if loading}
-		<Loader width={'40px'} height={'40px'} />
-	{:else}
-		{#each market as coin}
-			<div />
-		{/each}
-	{/if}
+	<div class="override pt-6 my-3">
+		<div
+			class="relative overflow-x-auto overflow-y-hidden shadow-lg dark:shadow-md dark:shadow-slate-100/30 sm:rounded-lg border-solid border-color border"
+		>
+			<table
+				class="{loading
+					? 'h-36'
+					: ''} w-full relative text-sm text-left text-slate-700 dark:text-slate-50"
+			>
+				<thead
+					class="text-base sticky border-b border-solid border-color font-nunito text-slate-700 uppercase bg-gray-50 dark:bg-accent dark:text-slate-50"
+				>
+					<tr>
+						<th scope="col" class="px-6 py-3"> Rank </th>
+						<th scope="col" class="px-6 py-3"> Coin </th>
+						<th scope="col" class="px-6 py-3"> Price (USD) </th>
+						<th scope="col" class="px-6 py-3"> 24h Volume </th>
+						<th scope="col" class="px-6 py-3"> Price Graph (7d) </th>
+						<th scope="col" class="px-6 py-3"> Market Cap </th>
+					</tr>
+				</thead>
+				{#if loading}
+					<div
+						out:fly={{ y: -400 }}
+						class="absolute -translate-x-1/2 -translate-y-1/2 transform top-1/2 left-1/2 my-4 py-4"
+					>
+						<Loader width={'40px'} height={'40px'} />
+					</div>
+				{:else}
+					<tbody in:fly={{ y: 400 }} class="font-mono">
+						{#each market as coin}
+							<tr
+								class="bg-white border-b dark:bg-black border-color border-solid hover:bg-slate-50 dark:hover:bg-accent"
+							>
+								<th
+									scope="row"
+									class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white"
+								>
+									<span class="dark:bg-accent p-2 rounded-md bg-slate-100">{coin.rank}</span>
+								</th>
+								<td class="px-6 py-4">
+									<div class="flex flex-nowrap align-middle items-center">
+									<div class="rounded-full bg-transparent flex justify-center items-center m-1 object-contain">
+										<img src={coin.imageUrl} alt={coin.name} srcset="{coin.imageUrl} 2x" loading="lazy" width="32px" height="32px" />
+									</div>
+									<div class="ml-2 overflow-hidden">
+										<div class="p-0 m-0 text-base overflow-hidden font-semibold text-ellipsis whitespace-nowrap">
+											{coin.name}
+										</div>
+										<div class="m-0 p-0 opacity-70 text-sm overflow-hidden font-semibold text-ellipsis whitespace-nowrap mt-2">
+											{coin.symbol}
+										</div>
+									</div>
+									</div>
+								</td>
+								<td class="px-6 py-4">
+									<div class="flex flex-row align-middle items-center justify-center">
+										<p class="" />
+										<p
+											class="{coin.percentChange24h < 0
+												? 'text-red-700'
+												: 'text-green-700'} font-open text-sm"
+										>
+											{coin.percentChange24h < 0 ? '' : '+'}{parseFloat(coin.percentChange24h.toFixed(2))}% last 24hr
+										</p>
+									</div>
+								</td>
+								<td class="px-6 py-4"> Yes </td>
+								<td class="px-6 py-4">
+									<img
+										width="135"
+										height="50"
+										loading="lazy"
+										src="https://www.coingecko.com/coins/{coin.rank}/sparkline"
+										srcset="https://www.coingecko.com/coins/{coin.rank}/sparkline 2x"
+										alt="({coin.name}) 7d chart"
+									/>
+								</td>
+								<td class="px-6 py-4"> $2999 </td>
+							</tr>
+						{/each}
+					</tbody>
+				{/if}
+			</table>
+		</div>
+	</div>
 </div>
