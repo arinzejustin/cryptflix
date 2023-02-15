@@ -1,9 +1,7 @@
 <script lang="ts">
 	import Header from '../../components/Header.svelte';
 	import Footer from '../../components/Footer.svelte';
-	import Interactive from '../../components/Interactive.svelte';
 	import Sidebar from '../../components/Sidebar.svelte';
-	import Mini from '../../components/Mini.svelte';
 	import Drawer, { AppContent } from '@smui/drawer';
 	import Loader from '$lib/Loader.svelte';
 	import { fly } from 'svelte/transition';
@@ -18,7 +16,13 @@
 		pageLoading = true,
 		h = 0,
 		w = 270,
-		token: any;
+		token: any,
+		aside = () => {
+			var slot = document.querySelector('#slot')!,
+				header = document.querySelector('#header')!;
+			slot.classList.remove('hidden');
+			header.classList.remove('hidden');
+		};
 
 	$: height = h + 20;
 
@@ -28,6 +32,7 @@
 			if (window.matchMedia('(min-width: 768px)').matches) {
 				open = true;
 				small = false;
+				aside();
 			} else {
 				open = false;
 				small = true;
@@ -60,7 +65,7 @@
 		bind:open
 		class="shadow-lg dark:border-slate-500 border-slate-300 dark:bg-black"
 	>
-		<Sidebar />
+		<Sidebar {open} />
 	</Drawer>
 	<AppContent class="app-content">
 		<div>
