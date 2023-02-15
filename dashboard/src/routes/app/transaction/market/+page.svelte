@@ -165,18 +165,18 @@
 										<img src={coin.imageUrl} alt={coin.name} srcset="{coin.imageUrl} 2x" loading="lazy" width="32px" height="32px" />
 									</div>
 									<div class="ml-2 overflow-hidden">
-										<div class="p-0 m-0 text-base overflow-hidden font-semibold text-ellipsis whitespace-nowrap">
+										<div class="p-0 m-0 font-nunito text-base overflow-hidden font-semibold text-ellipsis whitespace-nowrap">
 											{coin.name}
 										</div>
-										<div class="m-0 p-0 opacity-70 text-sm overflow-hidden font-semibold text-ellipsis whitespace-nowrap mt-2">
+										<div class="m-0 p-0 font-nunito opacity-70 text-sm overflow-hidden font-semibold text-ellipsis whitespace-nowrap mt-2">
 											{coin.symbol}
 										</div>
 									</div>
 									</div>
 								</td>
 								<td class="px-6 py-4">
-									<div class="flex flex-row align-middle items-center justify-center">
-										<p class="" />
+									<div class="flex flex-col align-middle justify-start">
+										<p class="text-base overflow-hidden font-semibold text-ellipsis whitespace-nowrap">${parseFloat(coin.priceUsd.toFixed(2))}</p>
 										<p
 											class="{coin.percentChange24h < 0
 												? 'text-red-700'
