@@ -4,7 +4,7 @@ from dotenv import load_dotenv
 from werkzeug.security import check_password_hash, generate_password_hash
 
 from jwt_token import generate, acct_token
-from netrequest import post
+from netrequest import post, get
 
 load_dotenv()
 
@@ -196,4 +196,3 @@ def except_func(error: str):
     :return: A dictionary with two keys: message and status.
     """
     return dict(message=f'{error} System Is Currently Down', status=False)
-

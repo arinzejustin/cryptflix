@@ -5,6 +5,7 @@ from dotenv import load_dotenv
 from flask import Flask, render_template, request, jsonify, send_from_directory, make_response
 
 from query import db_login, db_verify, db_passcode, db_onboard
+from netrequest import get
 
 app = Flask(__name__)
 load_dotenv()
@@ -110,6 +111,22 @@ def gravatar():
             "Weird - don't know how to handle method {}".format(request.method))
 
 
+@app.route('/api/bob/market', methods=['POST', 'OPTIONS'])
+def market():
+    if request.method == "OPTIONS":  # CORS preflight
+        return _build_cors_preflight_response()
+    if request.method == "POST":
+        data = request.get_json(force=True)
+        path = data['path']
+        query = dict(query=data['query'])
+        res = get(url=f'https://markets.api.bitcoin.com/{path}')
+        res.update(query)
+        return _corsify_actual_response(jsonify(res))
+    else:
+        raise RuntimeError(
+            "Weird - don't know how to handle method {}".format(request.method))
+
+
 @app.errorhandler(404)
 def page_not_found(error):
     return render_template('error.html', type='404', description=error)
@@ -134,7 +151,7 @@ def _build_cors_preflight_response():
 def _corsify_actual_response(response):
     """
     It adds the following headers to the response:
-    
+
     Access-Control-Allow-Origin: ALLOWED_HOST
     Access-Control-Allow-Headers: Origin, X-Requested-With, Content-Type, Accept, Authorization,
     Verification, TRACK-ID

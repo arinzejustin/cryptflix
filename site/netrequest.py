@@ -25,7 +25,7 @@ def post(url: str, params: any, headers: any = ''):
         return error
 
 
-def get(url: str, params: any, headers: any):
+def get(url: str, params: any ='', headers: any =''):
     """
     It takes a url, params, and headers as arguments, and returns a response object
     
@@ -40,8 +40,9 @@ def get(url: str, params: any, headers: any):
     try:
         request = requests.get(url, json=params, headers=headers)
         if request.status_code == 200:
-            response = {'status': True}
-            return response.update(request.json())
+            response = request.json()
+            response.update({'status': True})
+            return response
         else:
             return error
     except:

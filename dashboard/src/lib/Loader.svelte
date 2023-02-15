@@ -1,19 +1,19 @@
 <script lang="ts">
-	export let width: string, height: string;
+	export let width: string,
+		height: string,
+		auto: string = 'auto';
 </script>
 
 <span
-	style="--height: {height}; --width: {width}"
-	class="loader border-[black_black_transparent] dark:border-[white_white_transparent]"
+	style="--height: {height}; --width: {width}; --auto: {auto}"
+	class="loader border-[black_black_transparent] dark:border-[white_white_transparent] h-[var(--height)] mx-[var(--auto)] w-[var(--width)]"
 />
 
 <style>
 	.loader {
-		@apply mx-auto rounded-full border-solid border-2 text-center block bg-transparent;
+		@apply rounded-full border-solid border-2 text-center block bg-transparent;
 		border-image: initial;
 		animation: 0.8s linear 0s infinite normal both running animation;
-		width: var(--width);
-		height: var(--height);
 	}
 	@keyframes animation {
 		0% {
@@ -26,7 +26,6 @@
 			transform: rotate(360deg) scale(1);
 		}
 	}
-	/* animations */
 
 	@-webkit-keyframes checkmark {
 		0% {

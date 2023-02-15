@@ -4,10 +4,11 @@
  * @returns The value of the key in localStorage.
  */
 export function getStorage(key: string) {
-	if (localStorage.getItem(key) !== undefined)
-		 console.log(localStorage.getItem(key));
+	var storage = localStorage.getItem(key)!;
+	if (storage == 'undefined')
+		return null;
 	else
-		return null
+		return JSON.parse(storage);
 }
 
 /**
@@ -16,7 +17,11 @@ export function getStorage(key: string) {
  * @returns The value of the key in sessionStorage.
  */
 export function getSession(key: string) {
-	return JSON.parse(sessionStorage.getItem(key)!);
+	var storage = sessionStorage.getItem(key)!;
+	if (storage == 'undefined')
+		return null;
+	else
+		return JSON.parse(storage);
 }
 
 /**

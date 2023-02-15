@@ -64,6 +64,19 @@
 		};
 		token = getStorage('token') || '';
 		mode = getStorage('mode') || 'light';
+		document.body.onclick = () => {
+			var change = document.querySelectorAll('.override');
+			if(menu) {
+				change.forEach(ele => {
+					ele.classList.add('-z-10')
+				})
+			}
+			else {
+				change.forEach(ele => {
+					ele.classList.remove('-z-10')
+				})
+			}
+		}
 	});
 </script>
 

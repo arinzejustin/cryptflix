@@ -17,7 +17,7 @@
 
 <div in:fly={{ x: 300, delay: 1000 }} out:fly={{ x: -400, duration: 800 }} class="container">
     <div class="mb-8">
-        <TabBar {tabs} let:tab bind:active class="static">
+        <TabBar {tabs} let:tab bind:active class="override relative">
           <Tab {tab}>
             <Icon class="material-icons">{tab.icon}</Icon>
             <Label class="font-open text-slate-900 dark:text-slate-50">{tab.label}</Label>
