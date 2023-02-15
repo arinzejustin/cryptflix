@@ -1,52 +1,75 @@
 <script lang="ts">
 	import { page } from '$app/stores';
+	import { onMount } from 'svelte';
+	import Icon from './Icon.svelte';
+
 	let navbar = [
-		{
-			url: '/app',
-			class: '',
-			name: 'Dashboard',
-			svg: ''
-		},
-		{
-			url: '/app/inbox',
-			class: 'mb-4',
-			name: 'Inbox',
-			svg: ''
-		},
-		{
-			url: '/app/transaction/withdraw',
-			class: 'mt-4',
-			name: 'Withdraw',
-			svg: ''
-		},
-		{
-			url: '/app/transaction/deposit',
-			class: '',
-			name: 'Invest',
-			svg: ''
-		},
-		{
-			url: '/app/transaction/market',
-			class: 'mb-4',
-			name: 'Market',
-			svg: ''
-		},
-		{
-			url: '/app/news',
-			class:'mt-4',
-			name: 'News',
-			svg: ''
-		}
-	];
+			{
+				url: '/app',
+				class: '',
+				name: 'Dashboard',
+				svg: ''
+			},
+			{
+				url: '/app/inbox',
+				class: 'mb-4',
+				name: 'Inbox',
+				svg: ''
+			},
+			{
+				url: '/app/transaction/withdraw',
+				class: 'mt-4',
+				name: 'Withdraw',
+				svg: ''
+			},
+			{
+				url: '/app/transaction/deposit',
+				class: '',
+				name: 'Invest',
+				svg: ''
+			},
+			{
+				url: '/app/transaction/market',
+				class: 'mb-4',
+				name: 'Market',
+				svg: ''
+			},
+			{
+				url: '/app/news',
+				class: 'mt-3',
+				name: 'News',
+				svg: ''
+			}
+		],
+		aside = () => {};
+
+	onMount(() => {
+		aside = () => {
+			var side = document.querySelector('aside')!,
+				slot = document.querySelector('#slot')!,
+				header = document.querySelector('#header')!;
+			setTimeout(() => {
+				side.classList.remove('mdc-drawer--open');
+				slot.classList.remove('hidden');
+				header.classList.remove('hidden');
+			}, 2500);
+		};
+	});
 </script>
 
-<div>
-	<div />
+<div class="overflow-y-auto">
+	<div class="mb-8 mt-6 pt-4 grid grid-row-2 gap-2">
+		<img src="/logo.png" alt="" class="w-16 h-16 mx-auto" />
+		<p class="text-xs uppercase font-mono text-center">Lifting souls through crypto</p>
+	</div>
 	<div class="mt-5 pt-4">
 		{#each navbar as links}
 			<div class="py-3 group/item px-3 font-open">
 				<!-- svelte-ignore a11y-missing-content -->
 				<a
+					on:click={() => {
+						aside();
+					}}
 					href={links.url}
 					class="{$page.url.pathname === links.url
 						? 'bg-yellow-100 theme-text-app dark:bg-yellow-100/20 transform group-hover/item:bg-bg-yellow-100 dark:group-hover/item:bg-yellow-100/20'
@@ -68,10 +91,20 @@
 			</div>
 		{/each}
 		<div class="grid grid-cols-4 gap-4 items-center align-middle mx-3 my-5">
-			<div class="bg-yellow-200 dark:bg-yellow-100/30 rounded-full items-center text-slate-900 dark:text-slate-50 text-center p-3 ring-1 ring-transparent hover:ring-yellow-300 ring-offset-2 ring-offset-transparent"></div>
-			<div class="bg-yellow-200 dark:bg-yellow-100/30 rounded-full items-center text-slate-900 dark:text-slate-50 text-center p-3 ring-1 ring-transparent hover:ring-yellow-300 ring-offset-2 ring-offset-transparent"></div>
-			<div class="bg-yellow-200 dark:bg-yellow-100/30 rounded-full items-center text-slate-900 dark:text-slate-50 text-center p-3 ring-1 ring-transparent hover:ring-yellow-300 ring-offset-2 ring-offset-transparent"></div>
-			<div class="bg-yellow-200 dark:bg-yellow-100/30 rounded-full items-center text-slate-900 dark:text-slate-50 text-center p-3 ring-1 ring-transparent hover:ring-yellow-300 ring-offset-2 ring-offset-transparent"></div>
+			<div
+				class="bg-yellow-200 dark:bg-yellow-100/30 rounded-full items-center text-slate-900 dark:text-slate-50 text-center p-3 ring-1 ring-transparent hover:ring-yellow-300 ring-offset-2 ring-offset-transparent"
+			>
+				<Icon name={'facebook'} className={'material-icons w-12'} />
+			</div>
+			<div
+				class="bg-yellow-200 dark:bg-yellow-100/30 rounded-full items-center text-slate-900 dark:text-slate-50 text-center p-3 ring-1 ring-transparent hover:ring-yellow-300 ring-offset-2 ring-offset-transparent"
+			/>
+			<div
+				class="bg-yellow-200 dark:bg-yellow-100/30 rounded-full items-center text-slate-900 dark:text-slate-50 text-center p-3 ring-1 ring-transparent hover:ring-yellow-300 ring-offset-2 ring-offset-transparent"
+			/>
+			<div
+				class="bg-yellow-200 dark:bg-yellow-100/30 rounded-full items-center text-slate-900 dark:text-slate-50 text-center p-3 ring-1 ring-transparent hover:ring-yellow-300 ring-offset-2 ring-offset-transparent"
+			/>
 		</div>
 	</div>
 </div>

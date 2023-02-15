@@ -121,12 +121,12 @@ body {
 
 .mdc-tab .mdc-tab__text-label,
 .mdc-tab .mdc-tab__icon {
-    @apply text-slate-900 dark:text-slate-50 text-base !important;
+    @apply text-slate-900 dark:text-slate-50 !important;
 }
 
 .mdc-tab--active .mdc-tab__icon,
 .mdc-tab--active .mdc-tab__text-label {
-    @apply theme-text-app dark:theme-text-app text-base !important;
+    @apply theme-text-app dark:theme-text-app !important;
 }
 
 .mdc-tab--active {
@@ -135,4 +135,8 @@ body {
 
 .mab-tab {
     @apply hover:bg-yellow-100/10 dark:hover:bg-yellow-100/10 focus:bg-yellow-100/10 dark:focus:bg-yellow-100/10 !important;
+}
+
+.override {
+    position: static !important;
 }

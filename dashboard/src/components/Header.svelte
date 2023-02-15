@@ -11,7 +11,6 @@
 
 	export let loading = true,
 		src: string,
-		open: boolean,
 		height: number,
 		plan: string;
 
@@ -19,7 +18,9 @@
 		menu = false,
 		active = false,
 		theme = () => {},
-		mode: any;
+		mode: any,
+		aside = () => {},
+		open: boolean;
 
 	var logout = async () => {
 			try {
@@ -43,6 +44,14 @@
 			//@ts-ignore
 			height = document.querySelector('#header')!.offsetHeight;
 		};
+		aside = () => {
+			var side = document.querySelector('aside')!,
+				slot = document.querySelector('#slot')!,
+				header = document.querySelector('#header')!;
+			side.classList.add('mdc-drawer--open');
+			slot.classList.add('hidden');
+			header.classList.add('hidden')
+		};
 		theme = () => {
 			//@ts-ignore
 			const mode = document.querySelector('#theme')!.value;
@@ -58,18 +67,22 @@
 	});
 </script>
 
-<header class=" z-[1000]">
+<header class="z-[1000]">
 	<div
 		id="header"
-		class="fixed bg-white transition-all duration-500 dark:bg-black text-slate-700 dark:text-slate-100 right-0 top-0 border-solid border-b border-color {open
-			? 'left-[256px]'
-			: 'left-0'} {shadow
+		class="fixed bg-white left-0 transition-all duration-500 dark:bg-black text-slate-700 dark:text-slate-100 right-0 top-0 border-solid border-b border-color {shadow
 			? 'shadow-lg dark:shadow-md dark:shadow-slate-400 backdrop-blur-md bg-white/[0.75] dark:bg-black/[0.65]'
 			: ''}"
 	>
 		<div class="flex flex-row items-center align-middle justify-between mx-4 py-3.5 md:py-4">
 			<div class="flex flex-row items-center align-middle justify-between">
-				<div class="md:hidden">
+				<!-- svelte-ignore a11y-click-events-have-key-events -->
+				<div
+					class="md:hidden"
+					on:click={() => {
+						aside();
+					}}
+				>
 					<svg
 						class="text-slate-700 dark:text-white w-8 h-8"
 						xmlns="http://www.w3.org/2000/svg"
@@ -88,7 +101,7 @@
 			</div>
 			<div class="flex md:hidden -mr-2">
 				<a href="/">
-				<img src="/logo.png" alt="app logo" class="w-9 h-9" />
+					<img src="/logo.png" alt="app logo" class="w-9 h-9" />
 				</a>
 			</div>
 			<div class="md:mr-4 relative">
@@ -299,6 +312,35 @@
 											</div>
 										</labal>
 									</div>
+								</div>
+								<div class="pb-3 group/item px-2">
+									<!-- svelte-ignore a11y-missing-content -->
+									<a
+										href="/app/transaction"
+										class="{$page.url.pathname === '/app/transaction'
+											? 'bg-yellow-100 theme-text-app dark:bg-yellow-100/20 group-hover/item:bg-bg-yellow-100 dark:group-hover/item:bg-yellow-100/20'
+											: 'group-hover/item:bg-slate-500/10 dark:group-hover/item:bg-slate-500/30'} flex flex-auto px-2 items-center rounded-md transition-all duration-500 py-3"
+									>
+										<svg
+											class="w-6 h-6 mr-3 text-slate-700 dark:text-slate-50"
+											xmlns="http://www.w3.org/2000/svg"
+											width="1em"
+											height="1em"
+											viewBox="0 0 1024 1024"
+											><rect
+												x="0"
+												y="0"
+												width="1024"
+												height="1024"
+												fill="none"
+												stroke="none"
+											/><path
+												fill="currentColor"
+												d="M668.6 320c0-4.4-3.6-8-8-8h-54.5c-3 0-5.8 1.7-7.1 4.4l-84.7 168.8H511l-84.7-168.8a8 8 0 0 0-7.1-4.4h-55.7c-1.3 0-2.6.3-3.8 1c-3.9 2.1-5.3 7-3.2 10.8l103.9 191.6h-57c-4.4 0-8 3.6-8 8v27.1c0 4.4 3.6 8 8 8h76v39h-76c-4.4 0-8 3.6-8 8v27.1c0 4.4 3.6 8 8 8h76V704c0 4.4 3.6 8 8 8h49.9c4.4 0 8-3.6 8-8v-63.5h76.3c4.4 0 8-3.6 8-8v-27.1c0-4.4-3.6-8-8-8h-76.3v-39h76.3c4.4 0 8-3.6 8-8v-27.1c0-4.4-3.6-8-8-8H564l103.7-191.6c.5-1.1.9-2.4.9-3.7zM157.9 504.2a352.7 352.7 0 0 1 103.5-242.4c32.5-32.5 70.3-58.1 112.4-75.9c43.6-18.4 89.9-27.8 137.6-27.8c47.8 0 94.1 9.3 137.6 27.8c42.1 17.8 79.9 43.4 112.4 75.9c10 10 19.3 20.5 27.9 31.4l-50 39.1a8 8 0 0 0 3 14.1l156.8 38.3c5 1.2 9.9-2.6 9.9-7.7l.8-161.5c0-6.7-7.7-10.5-12.9-6.3l-47.8 37.4C770.7 146.3 648.6 82 511.5 82C277 82 86.3 270.1 82 503.8a8 8 0 0 0 8 8.2h60c4.3 0 7.8-3.5 7.9-7.8zM934 512h-60c-4.3 0-7.9 3.5-8 7.8a352.7 352.7 0 0 1-103.5 242.4a352.57 352.57 0 0 1-112.4 75.9c-43.6 18.4-89.9 27.8-137.6 27.8s-94.1-9.3-137.6-27.8a352.57 352.57 0 0 1-112.4-75.9c-10-10-19.3-20.5-27.9-31.4l49.9-39.1a8 8 0 0 0-3-14.1l-156.8-38.3c-5-1.2-9.9 2.6-9.9 7.7l-.8 161.7c0 6.7 7.7 10.5 12.9 6.3l47.8-37.4C253.3 877.7 375.4 942 512.5 942C747 942 937.7 753.9 942 520.2a8 8 0 0 0-8-8.2z"
+											/></svg
+										>
+										<span class="ml-1 text-lg">Transactions</span>
+									</a>
 								</div>
 								<div class="pb-3 group/item px-2">
 									<!-- svelte-ignore a11y-missing-content -->
