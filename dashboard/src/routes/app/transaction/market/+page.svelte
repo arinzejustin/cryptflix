@@ -4,11 +4,19 @@
 	import { fly } from 'svelte/transition';
 	import Loader from '$lib/Loader.svelte';
 	import { getStorage } from '$lib/storage';
+	import Alert from '$lib/Alert.svelte';
+
+	let msg: string, err: boolean, alert: boolean;
 
 	var market: any[] = [],
 		token: string,
-		loading: boolean = true;
-	var ticker = async () => {
+		loading: boolean = true,
+		hour = true,
+		cap: any,
+		volume: any,
+		capper: any,
+		volper: any;
+	var ticker = async (alert: boolean = false) => {
 			var name: any[] = [],
 				coin: any;
 			try {
@@ -25,11 +33,17 @@
 						if (index > 59) return;
 						market = [...market, req.data.byId[`${coinName}`]];
 					});
-					console.log(market);
 					loading = false;
+					return;
+				}
+				if (alert) {
+					toast(req.message, !req.status);
 				}
 			} catch (error) {
-				console.log(error);
+				if (alert) {
+					//@ts-ignore
+					toast(error.message, true);
+				}
 			}
 		},
 		hourly = async () => {
@@ -39,16 +53,42 @@
 					JSON.stringify({ path: 'metadata/historical/aggregated/hourly', query: 'hourly' }),
 					{ Authorization: token }
 				);
+				if(req.status) {
+					hour = false;
+					capper = req.data.percentageMove.marketCapChange;
+					volper = req.data.percentageMove.volumeChange;
+				}
+				console.log(req);
 			} catch (error) {}
+		},
+		toast = (message: any, error: boolean) => {
+			msg = message;
+			err = error;
+			alert = true;
+			setTimeout(() => (alert = false), 4400);
 		},
 		round = (number: number, precision = 1000) => {};
 	onMount(() => {
 		token = getStorage('token');
-		ticker();
+		// ticker(true);
+		hourly();
 		round = (number: number, precision = 1000) => {
 			var result = Math.round(number / precision) * precision;
 			return result;
 		};
+		var t = 200,
+			interval: any;
+		run();
+		function changeTimer() {
+			t = t * 2.5;
+		}
+		function run() {
+			clearInterval(interval);
+			// ticker();
+			hourly();
+			changeTimer();
+			interval = setInterval(run, t);
+		}
 	});
 </script>
 
@@ -61,6 +101,7 @@
 	out:fly={{ x: -400, duration: 800 }}
 	class="container mt-4 pt-5"
 >
+	<Alert {alert} message={msg} error={err} onClose={() => (alert = false)} />
 	<div
 		class="flex flex-row md:mr-2 override w-full items-center align-middle justify-between mb-4 pb-4"
 	>
@@ -105,8 +146,15 @@
 		>
 			<p class="tex-lg font-open uppercase mb-5 font-semibold">Market Cap</p>
 			<div class="flex flex-row items-center align-middle justify-between">
+				{#if hour}
 				<Loader width={'20px'} height={'20px'} auto={'0px'} />
 				<Loader width={'20px'} height={'20px'} auto={'0px'} />
+				{:else}
+				<p></p>
+				<p class="{capper < 0
+					? 'text-red-700'
+					: 'text-green-700'}">{capper < 0 ? '' : '+'}{parseFloat(capper.toFixed(2))}%</p>
+				{/if}
 			</div>
 		</div>
 		<div
@@ -114,8 +162,15 @@
 		>
 			<p class="tex-lg font-open uppercase mb-5 font-semibold">Total Volume</p>
 			<div class="flex flex-row items-center align-middle justify-between">
+				{#if hour}
 				<Loader width={'20px'} height={'20px'} auto={'0px'} />
 				<Loader width={'20px'} height={'20px'} auto={'0px'} />
+				{:else}
+				<p></p>
+				<p class="{volper < 0
+					? 'text-red-700'
+					: 'text-green-700'}">{volper < 0 ? '' : '+'}{parseFloat(volper.toFixed(2))}%</p>
+				{/if}
 			</div>
 		</div>
 	</div>
@@ -161,28 +216,47 @@
 								</th>
 								<td class="px-6 py-4">
 									<div class="flex flex-nowrap align-middle items-center">
-									<div class="rounded-full bg-transparent flex justify-center items-center m-1 object-contain">
-										<img src={coin.imageUrl} alt={coin.name} srcset="{coin.imageUrl} 2x" loading="lazy" width="32px" height="32px" />
-									</div>
-									<div class="ml-2 overflow-hidden">
-										<div class="p-0 m-0 font-nunito text-base overflow-hidden font-semibold text-ellipsis whitespace-nowrap">
-											{coin.name}
+										<div
+											class="rounded-full bg-transparent flex justify-center items-center m-1 object-contain"
+										>
+											<img
+												src={coin.imageUrl}
+												alt={coin.name}
+												srcset="{coin.imageUrl} 2x"
+												loading="lazy"
+												width="32px"
+												height="32px"
+											/>
 										</div>
-										<div class="m-0 p-0 font-nunito opacity-70 text-sm overflow-hidden font-semibold text-ellipsis whitespace-nowrap mt-2">
-											{coin.symbol}
+										<div class="ml-2 overflow-hidden">
+											<div
+												class="p-0 m-0 font-nunito text-base overflow-hidden font-semibold text-ellipsis whitespace-nowrap"
+											>
+												{coin.name}
+											</div>
+											<div
+												class="m-0 p-0 font-nunito opacity-70 text-sm overflow-hidden font-semibold text-ellipsis whitespace-nowrap mt-2"
+											>
+												{coin.symbol}
+											</div>
 										</div>
-									</div>
 									</div>
 								</td>
 								<td class="px-6 py-4">
 									<div class="flex flex-col align-middle justify-start">
-										<p class="text-base overflow-hidden font-semibold text-ellipsis whitespace-nowrap">${parseFloat(coin.priceUsd.toFixed(2))}</p>
+										<p
+											class="text-base overflow-hidden font-semibold text-ellipsis whitespace-nowrap"
+										>
+											${parseFloat(coin.priceUsd.toFixed(2))}
+										</p>
 										<p
 											class="{coin.percentChange24h < 0
-												? 'text-red-700'
-												: 'text-green-700'} font-open text-sm"
+												? 'text-red-400 dark:text-red-700'
+												: 'text-green-400 dark:text-green-700'} font-open text-sm"
 										>
-											{coin.percentChange24h < 0 ? '' : '+'}{parseFloat(coin.percentChange24h.toFixed(2))}% last 24hr
+											{coin.percentChange24h < 0 ? '' : '+'}{parseFloat(
+												coin.percentChange24h.toFixed(2)
+											)}% last 24hr
 										</p>
 									</div>
 								</td>
