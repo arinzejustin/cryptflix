@@ -127,6 +127,30 @@ def market():
             "Weird - don't know how to handle method {}".format(request.method))
 
 
+@app.route('/api/bob/transactions', methods=['POST', 'OPTIONS'])
+def transactions():
+    if request.method == "OPTIONS":  # CORS preflight
+        return _build_cors_preflight_response()
+    if request.method == "POST":
+        data = request.get_json(force=True)
+        res = dict(data=[{
+            'type_': 'Withdraw',
+            'status': True,
+            'time': '24-12-2022, 12:43:20 PM',
+            'amount': '$2,000'
+        },
+            {
+            'type_': 'Invest',
+            'status': False,
+            'time': '24-12-2022, 12:43:20 PM',
+            'amount': '$1,000'
+        }])
+        return _corsify_actual_response(jsonify(res))
+    else:
+        raise RuntimeError(
+            "Weird - don't know how to handle method {}".format(request.method))
+
+
 @app.errorhandler(404)
 def page_not_found(error):
     return render_template('error.html', type='404', description=error)

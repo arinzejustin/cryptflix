@@ -10,7 +10,7 @@
 	<div
 		in:scale
 		out:fade
-		class="ml-1 right-1 md:ml-0 border border-solid border-slate-200 dark:border-slate-200 bg-white dark:bg-black/60 w-[98%] md:w-1/4 shadow-xl fixed top-4 z-[1000] md:right-4"
+		class="ml-1 right-1 md:ml-0 border border-solid border-slate-200 dark:border-slate-200 bg-white dark:bg-accent w-[98%] md:w-1/4 shadow-xl fixed top-4 z-[1000] md:right-4"
 	>
 		<div class="flex flex-row justify-end align-middle items-center pt-2 mx-4">
 			<div class="">

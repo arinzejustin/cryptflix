@@ -10,3 +10,7 @@ def demo_wallet():
     bits = random.getrandbits(256)
     bits_hex = hex(bits)
     wallet = Wallet(bits_hex[2:])
+
+x = {1: 'a', 2: 'b'}
+y = x.keys()
+print(y)

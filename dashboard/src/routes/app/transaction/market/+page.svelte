@@ -16,7 +16,7 @@
 		volume: any,
 		capper: any,
 		volper: any;
-	var ticker = async (alert: boolean = false) => {
+	var ticker = async (show: boolean = false) => {
 			var name: any[] = [],
 				coin: any;
 			try {
@@ -36,11 +36,11 @@
 					loading = false;
 					return;
 				}
-				if (alert) {
+				if (show) {
 					toast(req.message, !req.status);
 				}
 			} catch (error) {
-				if (alert) {
+				if (show) {
 					//@ts-ignore
 					toast(error.message, true);
 				}
@@ -53,12 +53,13 @@
 					JSON.stringify({ path: 'metadata/historical/aggregated/hourly', query: 'hourly' }),
 					{ Authorization: token }
 				);
-				if(req.status) {
+				if (req.status) {
 					hour = false;
 					capper = req.data.percentageMove.marketCapChange;
 					volper = req.data.percentageMove.volumeChange;
+					cap = req.data.metadata[0].marketCap;
+					volume = req.data.metadata[0].volume;
 				}
-				console.log(req);
 			} catch (error) {}
 		},
 		toast = (message: any, error: boolean) => {
@@ -67,14 +68,25 @@
 			alert = true;
 			setTimeout(() => (alert = false), 4400);
 		},
-		round = (number: number, precision = 1000) => {};
+		format = (value: any, money: boolean = false) => {};
 	onMount(() => {
 		token = getStorage('token');
-		// ticker(true);
+		ticker(true);
 		hourly();
-		round = (number: number, precision = 1000) => {
-			var result = Math.round(number / precision) * precision;
-			return result;
+		format = (value: any, money: boolean = false) => {
+			if (money) {
+				var formatter = new Intl.NumberFormat('en-US', {
+					style: 'currency',
+					currency: 'USD',
+					notation: 'compact'
+				});
+				return formatter.format(value);
+			}
+			var formatter = new Intl.NumberFormat('en-US', {
+				style: 'currency',
+				currency: 'USD'
+			});
+			return formatter.format(value);
 		};
 		var t = 200,
 			interval: any;
@@ -84,7 +96,7 @@
 		}
 		function run() {
 			clearInterval(interval);
-			// ticker();
+			ticker();
 			hourly();
 			changeTimer();
 			interval = setInterval(run, t);
@@ -92,9 +104,9 @@
 	});
 </script>
 
-<!-- <svelte:head>
+<svelte:head>
 	<script src="https://widgets.coingecko.com/coingecko-coin-price-marquee-widget.js"></script>
-</svelte:head> -->
+</svelte:head>
 
 <div
 	in:fly={{ x: 300, delay: 1000 }}
@@ -132,13 +144,13 @@
 		</div>
 	</div>
 	<div class="w-full override">
-		<!-- <coingecko-coin-price-marquee-widget
+		<coingecko-coin-price-marquee-widget
 			class="override"
 			coin-ids="bitcoin,eos,ethereum,litecoin,ripple,solana,stellar,safemoon-2,saitama-inu,usdd,algorand,dogecoin,render-token,wemix-token,vechain,binancecoin,quant-network,zoid-pay,osmosis,y2k,cardano,nucypher,nexo,edgecoin-2,euler,bitdao,binancecoin"
 			currency="usd"
 			background-color="trasparent"
 			locale="en"
-		/> -->
+		/>
 	</div>
 	<div class="override w-full grid grid-cols-1 md:grid-cols-2 gap-4 my-4 md:py-3">
 		<div
@@ -147,13 +159,17 @@
 			<p class="tex-lg font-open uppercase mb-5 font-semibold">Market Cap</p>
 			<div class="flex flex-row items-center align-middle justify-between">
 				{#if hour}
-				<Loader width={'20px'} height={'20px'} auto={'0px'} />
-				<Loader width={'20px'} height={'20px'} auto={'0px'} />
+					<Loader width={'20px'} height={'20px'} auto={'0px'} />
+					<Loader width={'20px'} height={'20px'} auto={'0px'} />
 				{:else}
-				<p></p>
-				<p class="{capper < 0
-					? 'text-red-400 dark:text-red-700'
-					: 'text-green-400 dark:text-green-700'}">{capper < 0 ? '' : '+'}{parseFloat(capper.toFixed(2))}%</p>
+					<p>{format(cap, true)}</p>
+					<p
+						class={capper < 0
+							? 'text-red-400 dark:text-red-700'
+							: 'text-green-400 dark:text-green-700'}
+					>
+						{capper < 0 ? '' : '+'}{parseFloat(capper.toFixed(2))}%
+					</p>
 				{/if}
 			</div>
 		</div>
@@ -163,13 +179,17 @@
 			<p class="tex-lg font-open uppercase mb-5 font-semibold">Total Volume</p>
 			<div class="flex flex-row items-center align-middle justify-between">
 				{#if hour}
-				<Loader width={'20px'} height={'20px'} auto={'0px'} />
-				<Loader width={'20px'} height={'20px'} auto={'0px'} />
+					<Loader width={'20px'} height={'20px'} auto={'0px'} />
+					<Loader width={'20px'} height={'20px'} auto={'0px'} />
 				{:else}
-				<p></p>
-				<p class="{volper < 0
-					? 'text-red-400 dark:text-red-700'
-					: 'text-green-400 dark:text-green-700'}">{volper < 0 ? '' : '+'}{parseFloat(volper.toFixed(2))}%</p>
+					<p>{format(volume, true)}</p>
+					<p
+						class={volper < 0
+							? 'text-red-400 dark:text-red-700'
+							: 'text-green-400 dark:text-green-700'}
+					>
+						{volper < 0 ? '' : '+'}{parseFloat(volper.toFixed(2))}%
+					</p>
 				{/if}
 			</div>
 		</div>
@@ -247,7 +267,7 @@
 										<p
 											class="text-base overflow-hidden font-semibold text-ellipsis whitespace-nowrap"
 										>
-											${parseFloat(coin.priceUsd.toFixed(2))}
+											{format(coin.priceUsd)}
 										</p>
 										<p
 											class="{coin.percentChange24h < 0
@@ -260,7 +280,9 @@
 										</p>
 									</div>
 								</td>
-								<td class="px-6 py-4"> Yes </td>
+								<td class="px-6 py-4">
+									{format(coin['24hVolumeUsd'], true)}
+								</td>
 								<td class="px-6 py-4">
 									<img
 										width="135"
@@ -271,7 +293,9 @@
 										alt="({coin.name}) 7d chart"
 									/>
 								</td>
-								<td class="px-6 py-4"> $2999 </td>
+								<td class="px-6 py-4">
+									{format(coin.marketCapUsd, true)}
+								</td>
 							</tr>
 						{/each}
 					</tbody>

@@ -65,16 +65,12 @@
 		token = getStorage('token') || '';
 		mode = getStorage('mode') || 'light';
 		document.body.onclick = () => {
-			var change = document.querySelectorAll('.override');
+			var change = document.querySelector('body')!;
 			if(menu) {
-				change.forEach(ele => {
-					ele.classList.add('-z-10')
-				})
+				change.classList.add('set')
 			}
 			else {
-				change.forEach(ele => {
-					ele.classList.remove('-z-10')
-				})
+				change.classList.remove('set')
 			}
 		}
 	});
