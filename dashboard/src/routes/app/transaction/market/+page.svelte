@@ -152,8 +152,8 @@
 				{:else}
 				<p></p>
 				<p class="{capper < 0
-					? 'text-red-700'
-					: 'text-green-700'}">{capper < 0 ? '' : '+'}{parseFloat(capper.toFixed(2))}%</p>
+					? 'text-red-400 dark:text-red-700'
+					: 'text-green-400 dark:text-green-700'}">{capper < 0 ? '' : '+'}{parseFloat(capper.toFixed(2))}%</p>
 				{/if}
 			</div>
 		</div>
@@ -168,8 +168,8 @@
 				{:else}
 				<p></p>
 				<p class="{volper < 0
-					? 'text-red-700'
-					: 'text-green-700'}">{volper < 0 ? '' : '+'}{parseFloat(volper.toFixed(2))}%</p>
+					? 'text-red-400 dark:text-red-700'
+					: 'text-green-400 dark:text-green-700'}">{volper < 0 ? '' : '+'}{parseFloat(volper.toFixed(2))}%</p>
 				{/if}
 			</div>
 		</div>
