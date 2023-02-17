@@ -1,5 +1,6 @@
 import hashlib
 import os
+from datetime import datetime
 
 from dotenv import load_dotenv
 from flask import Flask, render_template, request, jsonify, send_from_directory, make_response
@@ -9,6 +10,8 @@ from netrequest import get
 
 app = Flask(__name__)
 load_dotenv()
+now = datetime.now()
+curr_time = now.strftime("%B %d, %Y %H:%M:%S")
 
 ALLOWED_HOST = os.getenv('ALLOWED_HOST')
 ENV_AVI_URL = os.getenv('ENV_AVI_URL')
@@ -135,15 +138,21 @@ def transactions():
         data = request.get_json(force=True)
         res = dict(data=[{
             'type_': 'Withdraw',
-            'status': True,
-            'time': '24-12-2022, 12:43:20 PM',
-            'amount': '$2,000'
+            'status': 'failed',
+            'time': curr_time,
+            'amount': '-$2,000'
         },
             {
-            'type_': 'Invest',
-            'status': False,
-            'time': '24-12-2022, 12:43:20 PM',
+            'type_': 'Deposit',
+            'status': 'success',
+            'time': curr_time,
             'amount': '$1,000'
+        },
+            {
+            'type_': 'Deposit',
+            'status': 'pending',
+            'time': curr_time,
+            'amount': '$4,000'
         }])
         return _corsify_actual_response(jsonify(res))
     else:
