@@ -6,6 +6,7 @@
 	import Api from '$lib/api';
 	import Checkbox from '@smui/checkbox';
 	import { setStorage } from '$lib/storage';
+	import { retry } from '../../stores';
 
 	let geneId = Math.random()
 		.toString(36)
@@ -25,7 +26,8 @@
 		pass = false,
 		alert = false,
 		msg = '',
-		err = true;
+		err = true,
+		value = $retry;
 
 	var isValid = (email: string) => {
 			var regExp =
@@ -110,7 +112,7 @@
 				</div>
 				<div class="my-6 lg:my-2.5 _0itw21asd">
 					<h1 class="text-xl lg:text-2xl xl:text-3xl font-bold text-center">
-						SIGN INTO YOUR ACCOUNT
+						SIGN INTO YOUR ACCOUNT {value}
 					</h1>
 					<div class="hak0fbu flex-1 mt-8">
 						<div class="_0itw21asd font-open">

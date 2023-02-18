@@ -9,6 +9,7 @@
 	import type { LayoutData } from './$types';
 	import { getStorage } from '$lib/storage';
 
+
 	export let data: LayoutData;
 
 	let open = false,
