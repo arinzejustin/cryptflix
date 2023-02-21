@@ -1,7 +1,8 @@
 <script lang="ts">
 	export let width: string,
 		height: string,
-		auto: string = 'auto';
+		auto: string = 'auto',
+  class: string = '';
 </script>
 
 <span
