@@ -67,16 +67,16 @@
 		document.body.onclick = () => {
 			var change = document.querySelector('body')!;
 			if(menu) {
-				change.classList.add('set')
+				change.classList.add('open')
 			}
 			else {
-				change.classList.remove('set')
+				change.classList.remove('open')
 			}
 		}
 	});
 </script>
 
-<header class="z-[1000]">
+<header class="z-[1000] relative">
 	<div
 		id="header"
 		class="fixed bg-white left-0 transition-all duration-500 dark:bg-black text-slate-700 dark:text-slate-100 right-0 top-0 border-solid border-b border-color {shadow

@@ -10,8 +10,8 @@
 		},
 		{
 			icon: 'archive',
-			label: 'archive',
-			target: 'archive'
+			label: 'archived',
+			target: 'archived'
 		}
 	];
 	let active = tabs[0];
@@ -53,9 +53,9 @@
 						</div>
 					</div>
 				</div>
-			{:else if active.target == 'archive'}
+			{:else if active.target == 'archived'}
 				<div in:fly={{ y: 300, delay: 300 }} out:fly={{ y: -300, duration: 500 }}>
-					<p class="font-mono font-medium text-lg pb-4">ARCHIVE</p>
+					<p class="font-mono font-medium text-lg pb-4">ARCHIVED</p>
 					<div
 						class="pt-5 border-dotted border-color border-2 rounded-md dark:bg-black/70 p-4 w-full"
 					>

@@ -35,7 +35,7 @@ body {
     @apply font-nunito transition-all duration-500 text-slate-700 dark:text-slate-50 !important;
 }
 
-body.set .override{
+body.open .override{
     @apply -z-50 !important;
 }
 
@@ -115,7 +115,7 @@ body.set .override{
     @apply ring ring-offset-2 ring-offset-transparent ring-yellow-300;
 }
 
-.scrollbar::-webkit-scrollbar-track,
+/* .scrollbar::-webkit-scrollbar-track,
 .scrollbar::-moz-scrollbar-track,
 .scrollbar::scrollbar-track {
     @apply w-[2px] rounded-md !important;
@@ -125,7 +125,7 @@ body.set .override{
 .scrollbar::-moz-scrollbar-track,
 .scrollbar::scrollbar-track {
     @apply w-1 !important;
-}
+} */
 
 .mdc-tab-indicator .mdc-tab-indicator__content--underline {
     @apply border-yellow-300 rounded-md !important;
@@ -151,4 +151,8 @@ body.set .override{
 
 .override {
     @apply relative !important;
+}
+
+.mdc-drawer {
+    @apply z-[700000] !important;
 }

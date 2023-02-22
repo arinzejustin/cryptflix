@@ -115,8 +115,8 @@
 						<p class="font-semibold text-lg text-center uppercase">maximum: {plan.maximum}</p>
 					</div>
 					<div class="pb-10 lg:pb-16 pt-5 text-center">
-						<a
-							href="/app/transaction/depoist"
+						<a on:click={onClose}
+							href="/app/transaction/deposit"
 							class="bg-yellow-100 opacity-0 group-hover transition-all duration-500 invest hover:ring-2 ring-offset-1 ring-yellow-200 shadow-md font-semibold dark:bg-yellow-100/30 theme-text-app px-10 py-3 text-base uppercase rounded-full"
 							>Invest</a
 						>

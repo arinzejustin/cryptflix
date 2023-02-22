@@ -23,6 +23,7 @@
 		"@smui/icon-button": "^7.0.0-beta.0",
 		"@smui/menu": "^7.0.0-beta.0",
 		"@smui/menu-surface": "^7.0.0-beta.0",
+		"@smui/ripple": "^7.0.0-beta.0",
 		"@smui/select": "^7.0.0-beta.0",
 		"@smui/switch": "^7.0.0-beta.0",
 		"@smui/tab": "^7.0.0-beta.0",

@@ -2,7 +2,7 @@
 	import './styles.css';
 	import '../../node_modules/svelte-material-ui/bare.css';
 	import './animate.css';
-	import { beforeNavigate, goto } from '$app/navigation';
+	import { beforeNavigate, goto, afterNavigate } from '$app/navigation';
 	import API from '$lib/api';
 	import {retry} from './stores';
 	let num = 0;
@@ -33,6 +33,15 @@
 				// goto('/0auth/login', { replaceState: true, keepFocus: true });
 			}
 			num++;
+		}
+	},
+	update = async () => {
+		try {
+			const settings = await API.post('/user_settings', JSON.stringify({uuid: ''}), {
+				Authorization: ''
+			});
+		} catch {
+			
 		}
 	};
 </script>

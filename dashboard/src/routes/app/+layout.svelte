@@ -77,7 +77,7 @@
 				bind:height={h}
 			/>
 		</div>
-		<div class="" id="slot">
+		<div class="overflow-y-auto" id="slot">
 			<div class="w-full">
 				{#if pageLoading}
 					<div
@@ -114,6 +114,6 @@
 		@apply bg-black text-slate-50;
 	}
 	* :global(.app-content) {
-		@apply flex-auto overflow-hidden relative flex-grow;
+		@apply flex-auto overflow-x-hidden overflow-y-auto relative flex-grow;
 	}
 </style>

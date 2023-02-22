@@ -102,6 +102,10 @@
 			interval = setInterval(run, t);
 		}
 	});
+	ononline = () => {
+		ticker();
+		hourly();
+	};
 </script>
 
 <svelte:head>
@@ -200,7 +204,7 @@
 		>
 			<table
 				class="{loading
-					? 'h-36'
+					? 'h-48 md:h-36'
 					: ''} w-full relative text-sm text-left text-slate-700 dark:text-slate-50"
 			>
 				<thead
@@ -218,7 +222,7 @@
 				{#if loading}
 					<div
 						out:fly={{ y: -400 }}
-						class="absolute -translate-x-1/2 -translate-y-1/2 transform top-1/2 left-1/2 my-4 py-4"
+						class="absolute -translate-x-1/2 -translate-y-1/2 transform top-2/3 md:top-1/2 left-1/3 md:left-1/2 my-4 py-4"
 					>
 						<Loader width={'40px'} height={'40px'} />
 					</div>
