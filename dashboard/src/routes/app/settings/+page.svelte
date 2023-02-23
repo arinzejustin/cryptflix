@@ -8,13 +8,24 @@
 	import FormField from '@smui/form-field';
 
 	let mode: any,
-		token: any,
+		token: string = '',
 		theme = () => {},
 		magic = '<<token>>',
 		id = 'Loading ....',
 		getOS = () => {},
-		copy = (ele: string) => {},
-		on: boolean = true;
+		copy = () => {},
+		on: boolean = true,
+        click = false;
+    
+    var gen = async () => {
+        try {
+            const req = await API.post('/magic_auth', JSON.stringify({}), {Authorization: token})
+            if (req.status)
+               magic = req.token
+        }catch (err) {
+            console.log(err)
+        }
+    }
 
 	onMount(() => {
 		theme = () => {
@@ -43,9 +54,10 @@
 				os = ['Windows', 'Android', 'Unix', 'Mac', 'Linux', 'BlackBerry'];
 			for (i = 0; i < os.length; i++) if (new RegExp(os[i], 'i').test(uA)) return os[i];
 		};
-		copy = (ele: string) => {
-			var element = document.getElementById(ele)!;
+		copy = () => {
 			navigator.clipboard.writeText(`https://app.cryptflixinvest.com/?/${magic}`);
+            click = true;
+            setTimeout(() => click = false, 2000)
 		};
 	});
 </script>
@@ -154,16 +166,16 @@
 						<p>Device ID</p>
 					</div>
 					<div class="text-right my-1 py-1">
-						<p class="mr-1">{id}</p>
+						<p class="mr-1">{token.charCodeAt(0)}</p>
 					</div>
 					<div class="my-1 py-1">
 						<p>Auto Save Changes</p>
 					</div>
 					<div class="text-right my-1 py-1">
-						<div class="mr-1">
+						<div class="ml-1">
 							<FormField align="end">
 								<Switch color="secondary" bind:checked={on} />
-								<span slot="label">{on ? 'On' : 'Off'}</span>
+								<span slot="label" class="text-black dark:text-white">{on ? 'On' : 'Off'}</span>
 							</FormField>
 						</div>
 					</div>
@@ -176,21 +188,27 @@
 				<!-- svelte-ignore a11y-click-events-have-key-events -->
 				<p
 					on:click={() => {
-						copy('link');
+						copy();
 					}}
 					id="link"
-					class="text-center mt-3 rounded-full bg-gray-300 dark:bg-accent cursor-pointer py-2"
+					class="text-center mt-8 truncate rounded-full bg-gray-300 border-solid border border-color dark:bg-accent cursor-pointer py-2 px-1"
 					use:Ripple={{ surface: true, color: 'secondary' }}
 					tabindex="0"
 				>
 					https://app.cryptflixinvest.com/?/{magic}
 				</p>
+                <!-- svelte-ignore a11y-click-events-have-key-events -->
+                <p on:click={() => {
+                    copy();
+                }} class="text-center text-gray-400 py-2">{click ? 'Copied ✔' : 'Click to copy'}</p>
 			</div>
-			<div class="flex flex-row items-center align-middle justify-between my-1 md:my-3 lg:mx-20">
-				<div />
+			<div class="grid grid-cols-3 lg:grid-cols-5 items-center align-middle justify-between my-1 md:my-3 lg:mx-10">
+				<div class="col-span-2 lg:col-span-4">
+                    <input disabled class="border-solid text-xs md:text-sm bg-slate-400 dark:bg-accent border border-color rounded-full py-2 w-full pl-2" type="text" bind:value={magic} id="magic">
+                </div>
 				<div>
-					<button
-						class="bg-blue-600 text-white rounded-full text-sm p-1.5 px-5 ring-offset-2 hover:ring-2 ring-blue-500 hover:shadow-lg"
+					<button on:click={gen}
+						class="bg-blue-600 text-white rounded-full text-sm py-1.5 float-right px-5 ring-offset-2 hover:ring-2 ring-blue-500 hover:shadow-lg"
 						>Generate</button
 					>
 				</div>

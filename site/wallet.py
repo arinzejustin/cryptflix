@@ -1,5 +1,5 @@
 from bitcoinaddress import Wallet
-import random
+import random, secrets
 
 
 def demo_wallet():
@@ -11,3 +11,12 @@ def demo_wallet():
     bits_hex = hex(bits)
     wallet = Wallet(bits_hex[2:])
     return wallet
+
+def safe_url_auth():
+   secret = secrets.token_urlsafe(16)
+   token = ''
+   for i in range(0, len(secret), 4):
+       chunk = secret[i:i+4]
+       token += chunk + '-'
+   token = token[:-1]
+   return token

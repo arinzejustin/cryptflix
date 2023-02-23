@@ -162,3 +162,7 @@ body.open .override {
 .mdc-drawer {
     @apply z-[700000] !important;
 }
+
+.mdc-switch {
+    @apply m-0 ml-2 !important;
+}

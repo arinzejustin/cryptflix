@@ -5,8 +5,9 @@ from datetime import datetime
 from dotenv import load_dotenv
 from flask import Flask, render_template, request, jsonify, send_from_directory, make_response
 
-from query import db_login, db_verify, db_passcode, db_onboard
+from query import db_login, db_verify, db_passcode, db_onboard, db_safe_
 from netrequest import get
+from wallet import safe_url_auth
 
 app = Flask(__name__)
 load_dotenv()
@@ -158,6 +159,16 @@ def transactions():
     else:
         raise RuntimeError(
             "Weird - don't know how to handle method {}".format(request.method))
+
+
+@app.route('/api/bob/magic_auth', methods=['POST', 'OPTIONS'])
+def magic_auth():
+    if request.method == "OPTIONS":  # CORS preflight
+        return _build_cors_preflight_response()
+    if request.method == "POST":
+        token = safe_url_auth()
+        res = db_safe_(magic=token, uuid='')
+        return _corsify_actual_response(jsonify(res))
 
 
 @app.errorhandler(404)
