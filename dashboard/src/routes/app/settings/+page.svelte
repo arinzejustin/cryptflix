@@ -1,11 +1,13 @@
 <script lang="ts">
-	import { fly } from 'svelte/transition';
+	import { fly, slide } from 'svelte/transition';
 	import { onMount } from 'svelte';
 	import { getStorage, setStorage } from '$lib/storage';
 	import API from '$lib/api';
 	import Ripple from '@smui/ripple';
 	import Switch from '@smui/switch';
 	import FormField from '@smui/form-field';
+	import Alert from '$lib/Alert.svelte';
+	import Loader from '$lib/Loader.svelte';
 
 	let mode: any,
 		token: string = '',
@@ -15,17 +17,40 @@
 		getOS = () => {},
 		copy = () => {},
 		on: boolean = true,
-        click = false;
-    
-    var gen = async () => {
-        try {
-            const req = await API.post('/magic_auth', JSON.stringify({}), {Authorization: token})
-            if (req.status)
-               magic = req.token
-        }catch (err) {
-            console.log(err)
-        }
-    }
+		click = false,
+		mail = false,
+		plan = '',
+		load = true,
+		withdraw = true,
+		news = true,
+		del = false;
+
+	let msg: string, err: boolean, alert: boolean;
+
+	var gen = async () => {
+			load = false;
+			try {
+				const req = await API.post('/magic_auth', JSON.stringify({}), { Authorization: token });
+				if (req.status) magic = req.token;
+				load = true;
+			} catch (err) {
+				load = true;
+				console.log(err);
+			}
+		},
+		verify = () => {
+			alert = false;
+			if (plan !== 'Share 2') {
+				mail = false;
+				toast('Upgrade your account', !mail);
+			}
+		},
+		toast = (message: any, error: boolean) => {
+			msg = message;
+			err = error;
+			alert = true;
+			setTimeout(() => (alert = false), 4400);
+		};
 
 	onMount(() => {
 		theme = () => {
@@ -56,8 +81,8 @@
 		};
 		copy = () => {
 			navigator.clipboard.writeText(`https://app.cryptflixinvest.com/?/${magic}`);
-            click = true;
-            setTimeout(() => click = false, 2000)
+			click = true;
+			setTimeout(() => (click = false), 2000);
 		};
 	});
 </script>
@@ -67,6 +92,7 @@
 	out:fly={{ x: -400, duration: 800 }}
 	class="container mt-3 pt-3 md:pt-5"
 >
+	<Alert {alert} message={msg} error={err} onClose={() => (alert = false)} />
 	<div class="override">
 		<div
 			class="grid gap-6 lg:gap-8 grid-cols-1 justify-between align-middle items-center my-4 mt-2 mx-2 lg:mx-5"
@@ -143,6 +169,37 @@
 			<div class="mt-4 pt-3">
 				<p class="text-xl lg:text-3xl font-bold font-mono uppercase">account Security</p>
 				<p class="text-gray-400 text-sm">Secure your account</p>
+				<div
+					class="grid grid-cols-2  items-center align-middle justify-between my-2 pt-2 md:my-3 lg:mx-10"
+				>
+					<div>
+						<p>Withdrawal Passcode</p>
+					</div>
+					<div class="text-right my-1 py-1">
+						<div class="ml-1">
+							<FormField align="end">
+								<Switch color="secondary" bind:checked={withdraw} />
+							</FormField>
+						</div>
+					</div>
+					<div>
+						<p>Login Verification Mail</p>
+					</div>
+					<div class="text-right my-1 py-1">
+						<div class="ml-1">
+							<FormField align="end">
+								<Switch
+									color="secondary"
+									on:SMUISwitch:change={(e) => verify()}
+									bind:checked={mail}
+									on:click={() => {
+										verify();
+									}}
+								/>
+							</FormField>
+						</div>
+					</div>
+				</div>
 			</div>
 			<div class="mt-4 pt-3">
 				<p class="text-xl lg:text-3xl font-bold font-mono uppercase">my Device</p>
@@ -166,7 +223,7 @@
 						<p>Device ID</p>
 					</div>
 					<div class="text-right my-1 py-1">
-						<p class="mr-1">{token.charCodeAt(0)}</p>
+						<p class="mr-1">{id}</p>
 					</div>
 					<div class="my-1 py-1">
 						<p>Auto Save Changes</p>
@@ -174,8 +231,7 @@
 					<div class="text-right my-1 py-1">
 						<div class="ml-1">
 							<FormField align="end">
-								<Switch color="secondary" bind:checked={on} />
-								<span slot="label" class="text-black dark:text-white">{on ? 'On' : 'Off'}</span>
+								<Switch disabled={true} color="secondary" bind:checked={on} />
 							</FormField>
 						</div>
 					</div>
@@ -195,30 +251,64 @@
 					use:Ripple={{ surface: true, color: 'secondary' }}
 					tabindex="0"
 				>
-					https://app.cryptflixinvest.com/?/{magic}
+					https://app.cryptflixinvest.com/magic/{magic}
 				</p>
-                <!-- svelte-ignore a11y-click-events-have-key-events -->
-                <p on:click={() => {
-                    copy();
-                }} class="text-center text-gray-400 py-2">{click ? 'Copied ✔' : 'Click to copy'}</p>
+				<!-- svelte-ignore a11y-click-events-have-key-events -->
+				<p
+					on:click={() => {
+						copy();
+					}}
+					class="text-center text-gray-400 py-2"
+				>
+					{click ? 'Copied ✔' : 'Click to copy'}
+				</p>
 			</div>
-			<div class="grid grid-cols-3 lg:grid-cols-5 items-center align-middle justify-between my-1 md:my-3 lg:mx-10">
+			<div
+				class="grid grid-cols-3 gap-2 md:gap-4 lg:grid-cols-5 items-center align-middle justify-between my-1 md:my-3 lg:mx-10"
+			>
 				<div class="col-span-2 lg:col-span-4">
-                    <input disabled class="border-solid text-xs md:text-sm bg-slate-400 dark:bg-accent border border-color rounded-full py-2 w-full pl-2" type="text" bind:value={magic} id="magic">
-                </div>
+					<input
+						disabled
+						class="border-solid text-xs md:text-sm bg-slate-400 dark:bg-accent border border-color rounded-full py-2 w-full pl-2"
+						type="text"
+						bind:value={magic}
+						id="magic"
+					/>
+				</div>
 				<div>
-					<button on:click={gen}
-						class="bg-blue-600 text-white rounded-full text-sm py-1.5 float-right px-5 ring-offset-2 hover:ring-2 ring-blue-500 hover:shadow-lg"
-						>Generate</button
+					<button
+						on:click={gen}
+						class="bg-blue-600 text-white rounded-full w-full ml-1 md:ml-2 text-sm py-1.5 md:py-2.5 float-right px-5 ring-offset-2 hover:ring-2 ring-blue-500 hover:shadow-lg"
 					>
+						{#if load}
+							<span>Generate</span>
+						{:else}
+							<Loader width={'20px'} height={'20px'} />
+						{/if}
+					</button>
 				</div>
 			</div>
 			<div class="mt-4 pt-3">
 				<p class="text-xl lg:text-3xl font-bold font-mono uppercase">newsletter</p>
 				<p class="text-gray-400 text-sm">Subscribe to our newsletters</p>
+				<div
+					class="grid grid-cols-2  items-center align-middle justify-between my-2 pt-2 md:my-3 lg:mx-10"
+				>
+					<div>
+						<p>In For News Update</p>
+					</div>
+					<div class="text-right">
+						<div class="ml-1">
+							<FormField align="end">
+								<Switch color="secondary" bind:checked={news} />
+							</FormField>
+						</div>
+					</div>
+				</div>
 			</div>
 			<div class="mt-4 pt-3">
 				<button
+					on:click={() => (del = true)}
 					use:Ripple={{ surface: true, color: 'secondary' }}
 					tabindex="0"
 					class="w-full border border-solid rounded-lg border-red-500 mx-auto p-3 text-center bg-red-100 text-red-500 dark:bg-red-100/30 text-lg uppercase"
@@ -228,3 +318,52 @@
 		</div>
 	</div>
 </div>
+{#if del}
+	<div
+		in:fly={{ y: 200 }}
+		out:fly={{ y: -400 }}
+		tabindex="-1"
+		class="fixed top-0 bottom-0 left-0 right-0 z-[999999999] w-full p-4 bg-black/50 backdrop-blur-sm overflow-x-hidden overflow-y-auto md:inset-0 h-modal md:h-full"
+	>
+		<div class="relative w-full mx-auto my-auto h-full max-w-md md:h-auto">
+			<div
+				class="relative top-1/2 bg-white rounded-lg border border-solid border-color shadow-lg dark:shadow-md dark:bg-black"
+			>
+				<div
+					class="flex items-center justify-between p-5 border-b border-solid border-color rounded-t-lg"
+				>
+					<h3 class="text-xl font-medium text-center text-[red] font-mono">
+						Dangerous Action
+					</h3>
+					<button
+						on:click={() => (del = false)}
+						type="button"
+						class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1.5 ml-auto inline-flex items-center dark:hover:bg-gray-600 dark:hover:text-white"
+					>
+						<svg
+							aria-hidden="true"
+							class="w-5 h-5"
+							fill="currentColor"
+							viewBox="0 0 20 20"
+							xmlns="http://www.w3.org/2000/svg"
+							><path
+								fill-rule="evenodd"
+								d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
+								clip-rule="evenodd"
+							/></svg
+						>
+						<span class="sr-only">Close modal</span>
+					</button>
+				</div>
+				<div class="py-3">
+					<p class="text-center pb-4 font-semibold font-open">Please Enter Your Password</p>
+					<input type="text" name="" id="" class="rounded-md border-solid border-color border w-9/10 mx-4 py-2 bg-transparent">
+				</div>
+				<div class="grid grid-cols-2 items-center align-middle mt-2 border-t border-solid border-color">
+					<button on:click={() => (del = false)} class="text-gray-400 py-4 text-center text-base border-r border-solid border-color">Cancel</button>
+					<button class="text-[red] py-4 text-center text-base border-l border-solid border-color">Delete</button>
+				</div>
+			</div>
+		</div>
+	</div>
+{/if}
