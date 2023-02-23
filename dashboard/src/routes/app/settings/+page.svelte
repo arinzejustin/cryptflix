@@ -4,6 +4,8 @@
 	import { getStorage, setStorage } from '$lib/storage';
 	import API from '$lib/api';
 	import Ripple from '@smui/ripple';
+	import Switch from '@smui/switch';
+	import FormField from '@smui/form-field';
 
 	let mode: any,
 		token: any,
@@ -11,7 +13,8 @@
 		magic = '<<token>>',
 		id = 'Loading ....',
 		getOS = () => {},
-		copy = (ele: string) => {};
+		copy = (ele: string) => {},
+		on: boolean = true;
 
 	onMount(() => {
 		theme = () => {
@@ -41,11 +44,8 @@
 			for (i = 0; i < os.length; i++) if (new RegExp(os[i], 'i').test(uA)) return os[i];
 		};
 		copy = (ele: string) => {
-            var element = document.getElementById(ele)!;
-            console.log(element)
-			element.select();
-			// element.setSelectionRange(0, 999999);
-			// navigator.clipboard.writeText(`https://app.cryptflixinvest.com/?/${magic}`);
+			var element = document.getElementById(ele)!;
+			navigator.clipboard.writeText(`https://app.cryptflixinvest.com/?/${magic}`);
 		};
 	});
 </script>
@@ -155,6 +155,17 @@
 					</div>
 					<div class="text-right my-1 py-1">
 						<p class="mr-1">{id}</p>
+					</div>
+					<div class="my-1 py-1">
+						<p>Auto Save Changes</p>
+					</div>
+					<div class="text-right my-1 py-1">
+						<div class="mr-1">
+							<FormField align="end">
+								<Switch color="secondary" bind:checked={on} />
+								<span slot="label">{on ? 'On' : 'Off'}</span>
+							</FormField>
+						</div>
 					</div>
 				</div>
 			</div>
