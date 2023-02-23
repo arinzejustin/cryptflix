@@ -2,12 +2,12 @@
 	export let width: string,
 		height: string,
 		auto: string = 'auto',
-  class: string = '';
+		className: string = '';
 </script>
 
 <span
 	style="--height: {height}; --width: {width}; --auto: {auto}"
-	class="loader border-[black_black_transparent] dark:border-[white_white_transparent] h-[var(--height)] mx-[var(--auto)] w-[var(--width)]"
+	class="loader border-[black_black_transparent] dark:border-[white_white_transparent] h-[var(--height)] mx-[var(--auto)] w-[var(--width)] {className}"
 />
 
 <style>

@@ -24,6 +24,12 @@
     }
 }
 
+::before,
+::after,
+* {
+    --mdc-theme-secondary: #393939 !important;
+}
+
 *,
 ::before,
 ::after {
@@ -35,7 +41,7 @@ body {
     @apply font-nunito transition-all duration-500 text-slate-700 dark:text-slate-50 !important;
 }
 
-body.open .override{
+body.open .override {
     @apply -z-50 !important;
 }
 
