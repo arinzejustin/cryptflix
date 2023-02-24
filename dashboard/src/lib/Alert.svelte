@@ -58,7 +58,7 @@
 					/></svg
 				>
 			{/if}
-			<span class="font-nunito text-slate-700 dark:text-slate-50 pl-4">{message}</span>
+			<span class="font-nunito text-slate-700 dark:text-slate-50 pl-4 truncate">{message}</span>
 		</div>
 		<div
 			class="relative before:absolute before:left-0 before:right-0 before:bottom-0 before:w-full before:border-[3px] before:border-solid {error
