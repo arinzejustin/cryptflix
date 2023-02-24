@@ -16,7 +16,7 @@
 		in:fade
 		out:fade
 		tabindex="-1"
-		class="fixed top-0 left-0 right-0 z-[999999999] w-full p-4 bg-black/50 backdrop-blur-sm overflow-x-hidden overflow-y-auto md:inset-0 h-modal md:h-full"
+		class="fixed top-0 left-0 right-0 z-[9999] w-full p-4 bg-black/50 backdrop-blur-sm overflow-x-hidden overflow-y-auto md:inset-0 h-modal md:h-full"
 	>
 		<div class="relative w-full mx-auto my-auto h-full max-w-md md:h-auto">
 			<div

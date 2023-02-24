@@ -8,6 +8,7 @@
 	import FormField from '@smui/form-field';
 	import Alert from '$lib/Alert.svelte';
 	import Loader from '$lib/Loader.svelte';
+	import { goto } from '$app/navigation';
 
 	let mode: any,
 		token: string = '',
@@ -23,9 +24,10 @@
 		load = true,
 		withdraw = true,
 		news = true,
-		del = false;
+		del = false,
+		delin = false;
 
-	let msg: string, err: boolean, alert: boolean;
+	let msg: string, err: boolean, alert: boolean, pass: string = '';
 
 	var gen = async () => {
 			load = false;
@@ -50,6 +52,23 @@
 			err = error;
 			alert = true;
 			setTimeout(() => (alert = false), 4400);
+		},
+		del_user = async () => {
+			if (pass == '') {
+				toast('Enter your password', true);
+				return
+			}
+			delin = true;
+			try {
+				const del = await API.post('/remove', JSON.stringify({password: pass}), { Authorization: token });
+				toast(del.message, !del.status);
+				delin = false;
+				if (del.status) setTimeout(() => goto('/0auth/logout', { replaceState: true }), 4000);
+			} catch (err) {
+				delin = false;
+				//@ts-ignore
+				toast(err.message, true);
+			}
 		};
 
 	onMount(() => {
@@ -323,7 +342,7 @@
 		in:fly={{ y: 200 }}
 		out:fly={{ y: -400 }}
 		tabindex="-1"
-		class="fixed top-0 bottom-0 left-0 right-0 z-[999999999] w-full p-4 bg-black/50 backdrop-blur-sm overflow-x-hidden overflow-y-auto md:inset-0 h-modal md:h-full"
+		class="fixed top-0 bottom-0 left-0 right-0 z-[9999] w-full p-4 bg-black/50 backdrop-blur-sm overflow-x-hidden overflow-y-auto md:inset-0 h-modal md:h-full"
 	>
 		<div class="relative w-full mx-auto my-auto h-full max-w-md md:h-auto">
 			<div
@@ -332,9 +351,7 @@
 				<div
 					class="flex items-center justify-between p-5 border-b border-solid border-color rounded-t-lg"
 				>
-					<h3 class="text-xl font-medium text-center text-[red] font-mono">
-						Dangerous Action
-					</h3>
+					<h3 class="text-xl font-medium text-center text-[red] font-mono">Dangerous Action</h3>
 					<button
 						on:click={() => (del = false)}
 						type="button"
@@ -357,11 +374,30 @@
 				</div>
 				<div class="py-3">
 					<p class="text-center pb-4 font-semibold font-open">Please Enter Your Password</p>
-					<input type="text" name="" id="" class="rounded-md border-solid border-color border w-9/10 mx-4 py-2 bg-transparent">
+					<input
+						type="text"
+						bind:value={pass}
+						class="rounded-md border-solid border-color border w-9/10 mx-4 py-2 bg-transparent"
+					/>
 				</div>
-				<div class="grid grid-cols-2 items-center align-middle mt-2 border-t border-solid border-color">
-					<button on:click={() => (del = false)} class="text-gray-400 py-4 text-center text-base border-r border-solid border-color">Cancel</button>
-					<button class="text-[red] py-4 text-center text-base border-l border-solid border-color">Delete</button>
+				<div
+					class="grid grid-cols-2 items-center align-middle mt-2 border-t border-solid border-color"
+				>
+					<button
+						on:click={() => (del = false)}
+						class="text-gray-400 py-4 text-center text-base border-r border-solid border-color"
+						>Cancel</button
+					>
+					<button
+						on:click={del_user}
+						class="text-[red] py-4 text-center text-base border-l border-solid border-color"
+					>
+						{#if !delin}
+							<span>Delete</span>
+						{:else}
+							<Loader width={'20px'} height={'20px'} />
+						{/if}
+					</button>
 				</div>
 			</div>
 		</div>

@@ -24,15 +24,10 @@
     }
 }
 
-::before,
-::after,
-* {
-    --mdc-theme-secondary: #393939 !important;
-}
-
 *,
 ::before,
-::after {
+::after{
+    --mdc-theme-secondary: #393939 !important;
     border-style: none;
 }
 
