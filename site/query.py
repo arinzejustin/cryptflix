@@ -206,6 +206,16 @@ def except_func(error: str):
 
 
 def db_safe_(magic: str, uuid: str):
+    """
+    It takes a string and a uuid, and updates the magic_auth column in the users table with the string,
+    where the uuid matches the uuid in the table
+    
+    :param magic: The magic authentication token
+    :type magic: str
+    :param uuid: The user's uuid
+    :type uuid: str
+    :return: A dictionary with the key 'token' and the value of the magic string.
+    """
     try:
         query = "UPDATE users SET magic_auth = %s WHERE uuid = %s"
         values = (magic, uuid)

@@ -38,7 +38,8 @@ def get(url: str, params: any ='', headers: any =''):
     :return: None
     """
     try:
-        request = requests.get(url, json=params, headers=headers)
+        request = requests.get(url=url, params=params, headers=headers)
+        print(request.url, params, url)
         if request.status_code == 200:
             response = request.json()
             response.update({'status': True})

@@ -15,17 +15,18 @@
 			// eslint-disable-next-line no-redeclare
 			ago = ago.split(',')[0],
 			ago_format = `${ago.split('/')[2]}-${ago.split('/')[0]}-${ago.split('/')[1]}`;
-		const req = API.post(
-			'/news',
-			JSON.stringify({ query: 'cryptocurrency', from: ago_format, to: pre_format }),
-			{ Authorization: token }
-		);
+		// const req = API.post(
+		// 	'/news',
+		// 	JSON.stringify({ query: 'cryptocurrency', from: ago_format, to: pre_format }),
+		// 	{ Authorization: token }
+		// );
+		console.log(req)
 	} catch (error) {}
 }
 
 	onMount(() => {
         news(token)
 		//@ts-ignore
-		token = getStorage(token);
+		token = getStorage(token) || '';
 	});
 </script>

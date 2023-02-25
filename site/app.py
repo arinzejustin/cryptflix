@@ -15,7 +15,8 @@ now = datetime.now()
 curr_time = now.strftime("%B %d, %Y %H:%M:%S")
 
 ALLOWED_HOST = os.getenv('ALLOWED_HOST')
-ENV_AVI_URL = os.getenv('ENV_AVI_URL')
+AVI_URL = os.getenv('AVI_URL')
+NEWS_KEY = os.getenv('NEWS_KEY')
 
 
 @app.route('/index')
@@ -108,7 +109,7 @@ def gravatar():
         data = request.get_json(force=True)
         user = data['user']
         result = hashlib.md5(user.lower().encode()).hexdigest()
-        avi = {'gravatar': f'{ENV_AVI_URL}/{result}?d=robohash&f=y&s=50'}
+        avi = {'gravatar': f'{AVI_URL}/{result}?d=robohash&f=y&s=50'}
         return _corsify_actual_response(jsonify(avi))
     else:
         raise RuntimeError(
@@ -170,6 +171,18 @@ def magic_auth():
         res = db_safe_(magic=token, uuid='')
         return _corsify_actual_response(jsonify(res))
 
+
+@app.route('/api/bob/news', methods=['POST', 'OPTIONS'])
+def news():
+    if request.method == "OPTIONS":  # CORS preflight
+        return _build_cors_preflight_response()
+    if request.method == "POST":
+        data = request.get_json(force=True)
+        query = data['query']
+        from_ = data['from']
+        to = data['to']
+        res = get(url = 'https://newsdata.io/api/1/news', params = dict(apiKey=NEWS_KEY,q=query, from_date=from_, to_date=to))
+        return _corsify_actual_response(jsonify(res))
 
 @app.errorhandler(404)
 def page_not_found(error):

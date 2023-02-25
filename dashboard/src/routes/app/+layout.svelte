@@ -77,7 +77,7 @@
 				bind:height={h}
 			/>
 		</div>
-		<div class="overflow-y-auto" id="slot">
+		<div class="overflow-y-auto overflow-x-hidden" id="slot">
 			<div class="w-full">
 				{#if pageLoading}
 					<div

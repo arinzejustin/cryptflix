@@ -1,36 +1,41 @@
 <script lang="ts">
 	import { fly } from 'svelte/transition';
 	import { BTC_WALLET, ETH_WALLET, USDT_WALLET } from '$lib/env';
-    import Alert from '$lib/Alert.svelte'
+	import Alert from '$lib/Alert.svelte';
 
 	let wallets = [
-		{
-			name: 'Bitcoin',
-			wallet: BTC_WALLET,
-			svg: '0 0 32 32'
-		},
-		{
-			name: 'USDT',
-			wallet: ETH_WALLET,
-			svg: '0 0 32 32'
-		},
-		{
-			name: 'Ethereum',
-			wallet: USDT_WALLET,
-			svg: '0 0 256 417'
-		}
-	], msg: string, err: boolean, alert: boolean;
+			{
+				name: 'Bitcoin',
+				wallet: BTC_WALLET,
+				svg: '0 0 32 32'
+			},
+			{
+				name: 'USDT',
+				wallet: ETH_WALLET,
+				svg: '0 0 32 32'
+			},
+			{
+				name: 'Ethereum',
+				wallet: USDT_WALLET,
+				svg: '0 0 256 417'
+			}
+		],
+		msg: string,
+		err: boolean,
+		alert: boolean,
+        timeout: any;
 
-    var copy = ({name, wallet}: any) => {
-        alert = false;
-        navigator.clipboard.writeText(wallet)
-        toast(`${name} Wallet Copied`, false)
-    },
-    toast = (message: any, error: boolean) => {
+	var copy = ({ name, wallet }: any) => {
+            clearTimeout(timeout)
+			alert = false;
+			navigator.clipboard.writeText(wallet);
+			toast(`${name} Wallet Copied`, false);
+		},
+		toast = (message: any, error: boolean) => {
 			msg = message;
 			err = error;
 			alert = true;
-			setTimeout(() => (alert = false), 4400);
+			timeout = setTimeout(() => (alert = false), 4400);
 		};
 </script>
 
@@ -39,7 +44,7 @@
 	out:fly={{ x: -400, duration: 800 }}
 	class="container mt-3 pt-3 md:pt-5"
 >
-<Alert {alert} message={msg} error={err} onClose={() => (alert = false)} />
+	<Alert {alert} message={msg} error={err} onClose={() => (alert = false)} />
 	<div class="override">
 		<div class="py-2">
 			<p class="text-3xl uppercase pb-2 font-bold">Invest</p>
@@ -57,7 +62,12 @@
 							<p class="truncate">{option.wallet}</p>
 						</div>
 						<!-- svelte-ignore a11y-click-events-have-key-events -->
-						<div class="opacity-70 hover:opacity-100 focus:opacity-100" on:click={() => {copy({name: option.name, wallet : option.wallet})}}>
+						<div
+							class="opacity-70 hover:opacity-100 focus:opacity-100 cursor-pointer"
+							on:click={() => {
+								copy({ name: option.name, wallet: option.wallet });
+							}}
+						>
 							<svg
 								class="mx-auto w-8 h-8"
 								xmlns="http://www.w3.org/2000/svg"
@@ -118,7 +128,7 @@
 				</div>
 			{/each}
 		</div>
-		<div class="flex flex-row justify-start  w-full align-middle pt-6">
+		<div class="flex flex-row justify-start text-center w-full align-middle pt-6">
 			<p class="font-black text-base pr-2">N.B:</p>
 			<p>
 				In some scenario it might take up 2 - 6 hours for your payment to reflect in your account
