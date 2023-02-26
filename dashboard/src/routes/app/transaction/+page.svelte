@@ -48,8 +48,8 @@
 	};
 
 	onMount(() => {
-		transactions();
 		token = getStorage('token');
+		transactions();
 	});
 </script>
 

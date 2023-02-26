@@ -17,6 +17,7 @@ curr_time = now.strftime("%B %d, %Y %H:%M:%S")
 ALLOWED_HOST = os.getenv('ALLOWED_HOST')
 AVI_URL = os.getenv('AVI_URL')
 NEWS_KEY = os.getenv('NEWS_KEY')
+HOST = os.getenv('NEWS_HOST')
 
 
 @app.route('/index')
@@ -185,7 +186,7 @@ def news():
         query = data['query']
         from_ = data['from']
         to = data['to']
-        res = get(url = 'http://localhost:5000/news', params = dict(apiKey=NEWS_KEY,q=query, from_date=from_, to_date=to))
+        res = get(url = f'{HOST}/news', params = dict(apiKey=NEWS_KEY,q=query, from_date=from_, to_date=to))
         return _corsify_actual_response(jsonify(res))
 
 @app.errorhandler(404)

@@ -46,9 +46,8 @@
 		};
 
 	onMount(() => {
+		token = getStorage('token') || '';
 		news();
-		//@ts-ignore
-		token = getStorage(token) || '';
 	});
 </script>
 

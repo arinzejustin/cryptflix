@@ -28,6 +28,7 @@
 	$: height = h + 20;
 
 	onMount(() => {
+		token = getStorage('token') || '';
 		if (window.matchMedia('(min-width: 768px)').matches) open = true;
 		onresize = () => {
 			if (window.matchMedia('(min-width: 768px)').matches) {
@@ -56,7 +57,6 @@
 				document.querySelector('#slot-1')!.offsetWidth -
 				10;
 		}, 2000);
-		token = getStorage('token') || '';
 	});
 </script>
 

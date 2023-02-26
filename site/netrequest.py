@@ -39,7 +39,6 @@ def get(url: str, params: any ='', headers: any =''):
     """
     try:
         request = requests.get(url=url, params=params, headers=headers)
-        print(request.url, params, url)
         if request.status_code == 200:
             response = request.json()
             response.update({'status': True})
