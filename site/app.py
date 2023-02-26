@@ -31,6 +31,10 @@ def index():
 def about():
     return send_from_directory('.svelte-kit/output/prerendered/pages', 'about.html')
 
+@app.route('/news')
+def news_():
+    return send_from_directory('templates', 'news.json')
+
 
 @app.route("/<path:path>")
 def home(path):
@@ -181,7 +185,7 @@ def news():
         query = data['query']
         from_ = data['from']
         to = data['to']
-        res = get(url = 'https://newsdata.io/api/1/news', params = dict(apiKey=NEWS_KEY,q=query, from_date=from_, to_date=to))
+        res = get(url = 'http://localhost:5000/news', params = dict(apiKey=NEWS_KEY,q=query, from_date=from_, to_date=to))
         return _corsify_actual_response(jsonify(res))
 
 @app.errorhandler(404)

@@ -62,7 +62,10 @@
 		</div>
 		{#if error}
 			{#if loading}
+			<div class="mt-10 pt-8" out:fly={{ y: -400 }}>
 				<Loader width={'50px'} height={'50px'} />
+				<p class="text-center pt-8">Loading Transaction History ......</p>
+			</div>
 			{:else}
 				<div class="text-center mt-8">
 					<p class="text-sm font-open">Error: Can't Load Your Transaction Histroy</p>
@@ -76,7 +79,7 @@
 		{:else if find && !error}
 			{#each list[0] as act}
 				<!-- svelte-ignore a11y-click-events-have-key-events -->
-				<div
+				<div in:fly={{ y: 400 }}
 					on:click={() =>
 						receipt({
 							date_: act.time,

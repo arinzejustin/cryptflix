@@ -161,3 +161,15 @@ body.open .override {
 .mdc-switch {
     @apply m-0 ml-2 !important;
 }
+
+.mdc-dialog .mdc-dialog__surface {
+    @apply dark:bg-black rounded-lg border border-solid border-color shadow-lg dark:shadow-md dark:shadow-slate-800  !important
+}
+
+.mdc-dialog__actions {
+    @apply border-color !important;
+}
+
+.mdc-dialog {
+    @apply z-[999999999] !important;
+}
