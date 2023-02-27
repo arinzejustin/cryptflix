@@ -111,7 +111,7 @@
 							<img
 								src={article.image_url || '?'}
 								loading="lazy"
-								on:error={(e) => {
+								on:error={(e) => { //@ts-ignore
 									e.target.src = '/img/default.png';
 								}}
 								alt=""
