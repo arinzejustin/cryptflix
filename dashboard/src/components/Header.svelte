@@ -87,7 +87,7 @@
 			<div class="flex flex-row items-center align-middle justify-between">
 				<!-- svelte-ignore a11y-click-events-have-key-events -->
 				<div
-					class="md:hidden"
+					class="md:hidden cursor-pointer"
 					on:click={() => {
 						aside();
 					}}

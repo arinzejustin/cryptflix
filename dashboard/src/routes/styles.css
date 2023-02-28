@@ -171,7 +171,7 @@ body.open .override {
 }
 
 .mdc-dialog {
-    @apply z-[999999999] !important;
+    @apply z-[99999999999] !important;
 }
 
 .z-above-all {

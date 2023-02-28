@@ -68,7 +68,7 @@
 				on:click={() => {
 					aside(1);
 				}}
-				class="w-8 h-8 text-slate-700 dark:text-slate-50"
+				class="w-8 h-8 text-slate-700 dark:text-slate-50 cursor-pointer"
 				xmlns="http://www.w3.org/2000/svg"
 				width="1em"
 				height="1em"

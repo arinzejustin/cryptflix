@@ -58,7 +58,7 @@
 	<div
 		in:fly={{ y: 600 }}
 		out:fly={{ y: -400 }}
-		class="bg-white fixed scrollbar transform -translate-x-1/2 z-[10000] w-[95%] overflow-y-auto h-[96%] md:h-3/4 lg:w-2/3 -translate-y-1/2  top-1/2 left-1/2 dark:bg-black border-color border-solid border rounded-lg shadow-md dark:shadow-slate-400 p-2"
+		class="bg-white fixed scrollbar transform -translate-x-1/2 z-above-all w-[95%] overflow-y-auto h-[96%] md:h-3/4 lg:w-2/3 -translate-y-1/2  top-1/2 left-1/2 dark:bg-black border-color border-solid border rounded-lg shadow-md dark:shadow-slate-400 p-2"
 	>
 		<div class="sticky w-full py-3 flex justify-end">
 			<!-- svelte-ignore a11y-click-events-have-key-events -->

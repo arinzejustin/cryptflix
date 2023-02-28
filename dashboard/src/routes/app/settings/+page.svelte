@@ -27,7 +27,10 @@
 		del = false,
 		delin = false;
 
-	let msg: string, err: boolean, alert: boolean, pass: string = '';
+	let msg: string,
+		err: boolean,
+		alert: boolean,
+		pass: string = '';
 
 	var gen = async () => {
 			load = false;
@@ -56,11 +59,13 @@
 		del_user = async () => {
 			if (pass == '') {
 				toast('Enter your password', true);
-				return
+				return;
 			}
 			delin = true;
 			try {
-				const del = await API.post('/remove', JSON.stringify({password: pass}), { Authorization: token });
+				const del = await API.post('/remove', JSON.stringify({ password: pass }), {
+					Authorization: token
+				});
 				toast(del.message, !del.status);
 				delin = false;
 				if (del.status) setTimeout(() => goto('/0auth/logout', { replaceState: true }), 4000);
@@ -384,11 +389,15 @@
 					class="grid grid-cols-2 items-center align-middle mt-2 border-t border-solid border-color"
 				>
 					<button
+						use:Ripple={{ surface: true, color: 'secondary' }}
+						tabindex="0"
 						on:click={() => (del = false)}
 						class="text-gray-400 py-4 text-center text-base border-r border-solid border-color"
 						>Cancel</button
 					>
 					<button
+						use:Ripple={{ surface: true, color: 'secondary' }}
+						tabindex="0"
 						on:click={del_user}
 						class="text-[red] py-4 text-center text-base border-l border-solid border-color"
 					>
