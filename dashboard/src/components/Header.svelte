@@ -30,7 +30,11 @@
 				goto('/0auth/logout', { replaceState: true });
 			}
 		},
-		token: any;
+		token: any,
+		help = (e: Event) => {
+			e.preventDefault();
+			menu = false;
+		};
 
 	onMount(() => {
 		addEventListener('scroll', () => {
@@ -50,7 +54,7 @@
 				header = document.querySelector('#header')!;
 			side.classList.add('mdc-drawer--open');
 			slot.classList.add('hidden');
-			header.classList.add('hidden')
+			header.classList.add('hidden');
 		};
 		theme = () => {
 			//@ts-ignore
@@ -66,13 +70,12 @@
 		mode = getStorage('mode') || 'light';
 		document.body.onclick = () => {
 			var change = document.querySelector('body')!;
-			if(menu) {
-				change.classList.add('open')
+			if (menu) {
+				change.classList.add('open');
+			} else {
+				change.classList.remove('open');
 			}
-			else {
-				change.classList.remove('open')
-			}
-		}
+		};
 	});
 </script>
 
@@ -355,7 +358,9 @@
 									<!-- svelte-ignore a11y-missing-content -->
 									<a
 										href="/help"
-										on:click={(e) => e.preventDefault()}
+										on:click={(e) => {
+											help(e);
+										}}
 										class="flex flex-auto px-2 items-center group-hover/item:bg-slate-500/10 dark:group-hover/item:bg-slate-500/30 rounded-md transition-all duration-500 py-3"
 									>
 										<svg

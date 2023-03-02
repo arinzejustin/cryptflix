@@ -235,7 +235,7 @@
 						<p>APP Version</p>
 					</div>
 					<div class="text-right">
-						<p class="mr-1">V1.0.0</p>
+						<p class="mr-1">v1.25.0</p>
 					</div>
 					<div class="my-1 mt-2 py-1 pt-2">
 						<p>Device Name</p>
@@ -258,6 +258,12 @@
 								<Switch disabled={true} color="secondary" bind:checked={on} />
 							</FormField>
 						</div>
+					</div>
+					<div class="my-1 mt-2 py-1 pt-2">
+						<p>Language</p>
+					</div>
+					<div class="text-right my-1 mt-2 py-1 pt-2">
+						<p class="mr-1">English</p>
 					</div>
 				</div>
 			</div>
@@ -282,7 +288,7 @@
 					on:click={() => {
 						copy();
 					}}
-					class="text-center text-gray-400 py-2"
+					class="text-center text-gray-400 py-2 cursor-pointer"
 				>
 					{click ? 'Copied ✔' : 'Click to copy'}
 				</p>
