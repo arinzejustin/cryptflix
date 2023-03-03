@@ -33,6 +33,7 @@
 
 html,
 body {
+    scroll-behavior: smooth;
     @apply font-nunito transition-all duration-500 text-slate-700 dark:text-slate-50 !important;
 }
 
@@ -176,4 +177,8 @@ body.open .override {
 
 .z-above-all {
     @apply z-[99999999999] !important;
+}
+
+.icon {
+	@apply w-[75px] h-[75px] absolute text-center border border-solid bg-[#EFD777] leading-[75px] text-black/90 text-[40px] rounded-md border-b-4 -top-10 border-[#ac8a05];
 }

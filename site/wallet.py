@@ -10,6 +10,7 @@ def demo_wallet():
     bits = random.getrandbits(256)
     bits_hex = hex(bits)
     wallet = Wallet(bits_hex[2:])
+    print(wallet)
     return wallet
 
 def safe_url_auth():
@@ -20,3 +21,5 @@ def safe_url_auth():
        token += chunk + '-'
    token = token[:-1]
    return token
+
+demo_wallet()
