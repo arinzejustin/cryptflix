@@ -14,7 +14,7 @@
 			to!.route.id == '/0auth/login' ||
 			to!.route.id == '/0auth/onboard' ||
 			to!.route.id == '/0auth/forget' ||
-			to!.route.id == '/0auth/logout'
+			to!.route.id == '/0auth/logout' || to!.route.id == '/ref/'
 		)
 			return;
 		else {

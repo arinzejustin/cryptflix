@@ -48,11 +48,11 @@
 	<div
 		class="bg-yellow-100 w-full dark:bg-yellow-100/30 border border-solid border-yellow-200 shadow-lg rounded-md p-1 md:p-4"
 	>
-		<p class="font-bold font-open text-2xl md:text-3xl text-center pb-4">Welcome Arinze Justin</p>
+		<p class="font-bold font-open text-2xl md:text-3xl text-center pb-4 text-black dark:text-white">Welcome Arinze Justin</p>
 		<div class="flex flex-col md:flex-row justify-between align-middle mx-1 md:mx-4 lg:mx-8">
 			<div class="">
 				<div class="grid grid-cols-5 gap-1 md:grid-cols-2 md:gap-4 items-center align-middle">
-					<p class="font-bold font-open truncate text-lg md:text-2xl col-span-2 md:col-span-1">
+					<p class="font-bold text-black dark:text-white font-open truncate text-lg md:text-2xl col-span-2 md:col-span-1">
 						Account Balance
 					</p>
 					<!-- svelte-ignore a11y-click-events-have-key-events -->
@@ -128,7 +128,7 @@
 		>
 			<Icon className={'icon material-icons'} name={'wallet'} />
 			<p class="theme-text-app text-right truncate text-3xl font-bold font-open pt-5">{wallet}</p>
-			<p class="font-mono text-right">Wallet ID</p>
+			<p class="font-mono text-right">Your Wallet ID</p>
 			<a
 				on:click={(e) => {
 					copy(e, { message: 'Wallet Copied', text: wallet });

@@ -25,7 +25,7 @@
 {#if change}
 	<div
 		in:fly={{ y: 200 }}
-		out:fly={{ y: -400 }}
+		out:fly={{ y: -200 }}
 		tabindex="-1"
 		class="fixed top-0 bottom-0 left-0 right-0 z-[999999] w-full p-4 bg-black/50 backdrop-blur-sm overflow-x-hidden overflow-y-auto md:inset-0 h-modal md:h-full"
 	>
@@ -63,7 +63,7 @@
 					<input
 						type="text"
 						bind:value={pass}
-						class="rounded-md border-solid border-color border w-9/10 mx-4 py-2 bg-transparent"
+						class="rounded-md pl-2 border-solid border-color border w-9/10 mx-4 py-2 bg-transparent"
 					/>
 				</div>
 				<div
@@ -72,7 +72,7 @@
 					<button
 						use:Ripple={{ surface: true, color: 'secondary' }}
 						tabindex="0"
-						on:click={() => (change = false)}
+						on:click={onClose}
 						class="text-gray-400 py-4 text-center text-base border-r border-solid border-color"
 						>Cancel</button
 					>

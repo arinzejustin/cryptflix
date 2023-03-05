@@ -19,16 +19,23 @@
 <div
 	in:fly={{ x: 300, delay: 1000 }}
 	out:fly={{ x: -400, duration: 800 }}
-	class="container mt-4 pt-5"
+	class="mt-4 pt-5"
 >
 	<Alert {alert} message={msg} error={err} onClose={() => (alert = false)} />
 	<div
-		class="flex flex-row md:mr-2 override w-full items-center align-middle justify-between mb-4 pb-4"
+		class="flex rounded-lg shadow-lg bg-gray-100 dark:bg-accent border border-solid border-color flex-row md:mr-2 override w-full items-center align-middle justify-between mb-4 p-4"
 	>
 		<div class="w-auto">
 			<p class="font-nunito lg:pl-8 text-xl lg:text-2xl font-bold uppercase text-black dark:text-white">
-				Withdrawal 
+				Account Balance 
 			</p>
 		</div>
+		<div></div>
+	</div>
+	<div class="my-4 py-2 md:pl-3">
+		<p class="text-xl text-center md:text-left font-medium font-mono uppercase">Withdrawal Request</p>
+	</div>
+	<div class="w-9/10 md:w-3/4 lg:w-2/3 mx-auto">
+		<div></div>
 	</div>
 </div>
