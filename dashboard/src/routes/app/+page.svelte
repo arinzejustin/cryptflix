@@ -68,7 +68,7 @@
 							href="/app/transaction"
 							class="text-sm inline truncate hover:underline transition-all duration-300"
 							>Transaction histroy
-							<Icon className={'material-icons inline align-middle'} name={'chevron_right'} />
+							<Icon className={'material-icons text-sm inline align-middle'} name={'chevron_right'} />
 						</a>
 					</p>
 				</div>
@@ -93,7 +93,7 @@
 						href="/app/transaction"
 						class="text-sm inline truncate hover:underline transition-all duration-300"
 						>Transaction histroy
-						<Icon className={'material-icons inline align-middle'} name={'chevron_right'} />
+						<Icon className={'material-icons text-sm inline align-middle'} name={'chevron_right'} />
 					</a>
 				</p>
 				<div class="pt-3 grid grid-cols-3 gap-0 md:flex md:flex-row align-middle md:justify-evenly">

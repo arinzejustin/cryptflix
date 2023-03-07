@@ -405,7 +405,7 @@
 						use:Ripple={{ surface: true, color: 'secondary' }}
 						tabindex="0"
 						on:click={del_user}
-						class="text-[red] py-4 text-center text-base border-l border-solid border-color"
+						class="text-[hsl(0,100%,50%)] hover:text-red-500 py-4 text-center text-base border-l border-solid border-color"
 					>
 						{#if !delin}
 							<span>Delete</span>
