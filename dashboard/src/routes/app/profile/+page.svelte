@@ -27,7 +27,6 @@
 		let image = e.target.files[0];
 		let type = ['image/png', 'image/jpg', 'image/jpeg']
 		if(!type.includes(image.type)) {
-			console.log(image.type, type)
 			toast('Files format not supported', true)
 			return
 		}
