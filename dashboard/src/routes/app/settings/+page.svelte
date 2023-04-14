@@ -40,7 +40,6 @@
 				load = true;
 			} catch (err) {
 				load = true;
-				console.log(err);
 			}
 		},
 		verify = () => {

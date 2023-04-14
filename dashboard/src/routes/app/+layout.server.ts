@@ -8,14 +8,23 @@ let gravatar: string,
     error: boolean = false,
     find: boolean = false;
 
-export const load = (async ({ cookies, locals }) => {
+export const load = (async ({ cookies, locals, getClientAddress }) => {
     const UUID = cookies.get('UUID');
+    const ip = getClientAddress();
 
-    // if (!UUID || !locals.user) {
-    //     throw redirect(307, '/0auth/login');
-    // }
+    if (!UUID || !locals.user) {
+        throw redirect(307, '/0auth/login');
+    }
 
-    // if (locals.user.role == 'admin') throw redirect(304, 'admin')
+    if (locals.user.role == 'admin') throw redirect(304, '/admin')
+
+    cookies.set('client', ip, {
+        httpOnly: true,
+        maxAge: 60 * 60 * 24 * 14,
+        path: '/',
+        priority: 'high',
+        secure: true
+    })
 
     try {
         const req = await API.get('/gravatar', JSON.stringify({ user: 'justindiceyyo19@gmail.com' }))

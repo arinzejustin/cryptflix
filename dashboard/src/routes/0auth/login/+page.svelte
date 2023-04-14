@@ -66,8 +66,8 @@
 				if ('status' in req) {
 					toast(req.message, !req.status);
 					emailGif = false;
-					setStorage('token', req.token);
-					if (req.status) setTimeout(() => goto('/', { replaceState: true, noScroll: true }), 3000);
+					setStorage('token', req.bearer);
+					if (req.status) setTimeout(() => goto('/', { replaceState: true }), 3000);
 					return;
 				}
 				emailGif = false;

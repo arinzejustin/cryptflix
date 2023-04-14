@@ -52,15 +52,15 @@ def db_login(email: str, password: str):
             if verify:
                 token = generate(
                     uuid=user[1], email=email, key=user[0], name=user[2])
-                result = dict(message='Login Successful', status=True, uuid=user[1], account=user[7], name=user[2], email=email,
+                result = dict(message='Login successful', status=True, uuid=user[1], account=user[7], name=user[2], email=email,
                               bearer=token)
                 return result
             else:
-                result = dict(message='Invalid Credentials',
+                result = dict(message='Invalid credentials',
                               status=False, link=2)
                 return result
         else:
-            result = dict(message='User Not Found', status=False)
+            result = dict(message='User not found', status=False)
             return result
     except:
         return except_func('Login')
@@ -82,6 +82,8 @@ def db_onboard(email: str, name: str, tel: str):
         cursor.execute('SELECT * FROM users WHERE email = %s', (email,))
         account = cursor.fetchone()
         if account:
+            if account[4] is None:
+                return dict(message='Set your passcode', status=True, double=True, uuid=account[1])
             return dict(message='Account already exists!', status=False)
         query = 'INSERT INTO users (uuid, name, email, tel) VALUES (%s, %s, %s, %s)'
         uid = uuid.uuid4().hex
@@ -103,13 +105,18 @@ def db_onboard(email: str, name: str, tel: str):
                 cursor.execute(query, value)
                 mydb.commit()
                 return except_func('Accounts')
+        else:
+            query = "DELETE FROM users WHERE uuid = %s"
+            value = (uid, )
+            cursor.execute(query, value)
+            mydb.commit()
         return onboard
     except:
         query = "DELETE FROM users WHERE email = %s"
         value = (email, )
         cursor.execute(query, value)
         mydb.commit()
-        return except_func('Sign Up')
+        return except_func('Sign up')
 
 
 def db_verify(email: str, insert: bool, code: str = ''):
@@ -151,17 +158,17 @@ def db_verify(email: str, insert: bool, code: str = ''):
                 values = ('', email)
                 cursor.execute(query, values)
                 mydb.commit()
-                result = dict(message='Code Has Expired', status=False)
+                result = dict(message='Code has expired', status=False)
                 return result
             if verify.split(':')[0] == code:
                 query = 'UPDATE users SET status = %s WHERE email = %s'
                 values = ('verified', email)
                 cursor.execute(query, values)
                 mydb.commit()
-                result = dict(message='Account Verified', status=True)
+                result = dict(message='Account verified', status=True)
                 return result
             else:
-                result = dict(message='Invalid Code', status=False)
+                result = dict(message='Invalid code', status=False)
                 return result
         except:
             return except_func('Verification')
@@ -187,7 +194,7 @@ def db_passcode(uuid: str, passcode: str):
         mydb.commit()
         return dict(message='Passcode Set', status=True)
     except:
-        return except_func('Sign Up')
+        return except_func('Sign up')
 
 
 def db_user():
@@ -202,14 +209,14 @@ def except_func(error: str):
     :type error: str
     :return: A dictionary with two keys: message and status.
     """
-    return dict(message=f'{error} System Is Currently Down', status=False)
+    return dict(message=f'{error} system is currently down', status=False)
 
 
 def db_safe_(magic: str, uuid: str):
     """
     It takes a string and a uuid, and updates the magic_auth column in the users table with the string,
     where the uuid matches the uuid in the table
-    
+
     :param magic: The magic authentication token
     :type magic: str
     :param uuid: The user's uuid
@@ -223,4 +230,4 @@ def db_safe_(magic: str, uuid: str):
         mydb.commit()
         return dict(token=magic, status=True)
     except:
-        return except_func('Magic Authentication')
+        return except_func('Magic authentication')

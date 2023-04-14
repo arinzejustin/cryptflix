@@ -101,15 +101,16 @@
 					'/onboard',
 					JSON.stringify({ email: e_mail, name: `${first} ${last}`, tel: tel })
 				);
-				if ('status' in req){
+				if ('status' in req) {
 					register = req.status;
-				toast(req.message, !req.status);
-				uuid = req.uuid;
+					if (req.double) verification = true;
+					toast(req.message, !req.status);
+					uuid = req.uuid;
+					loadGif = false;
+					return;
+				}
 				loadGif = false;
-				return;
-			}
-				loadGif = false;
-				toast('An Error Occurred', true)
+				toast('An Error Occurred', true);
 			} catch (error) {
 				loadGif = false;
 				//@ts-ignore
@@ -123,12 +124,12 @@
 				const req = await Api.post('/verify', JSON.stringify({ verify: v_code, email: e_mail }));
 				if ('status' in req) {
 					verification = req.status;
-				toast(req.message, !req.status);
+					toast(req.message, !req.status);
+					loadGif = false;
+					return;
+				}
 				loadGif = false;
-				return;
-			}
-				loadGif = false;
-				toast('An Error Occurred', true)
+				toast('An Error Occurred', true);
 			} catch (error) {
 				loadGif = false;
 				//@ts-ignore
@@ -144,13 +145,13 @@
 			resendGif = true;
 			try {
 				const req = await Api.get('/email', JSON.stringify({ email: e_mail }));
-				if('status' in req) {
-				toast(req.message, !req.status);
-				resendGif = false;
-				return;
+				if ('status' in req) {
+					toast(req.message, !req.status);
+					resendGif = false;
+					return;
 				}
 				resendGif = false;
-				toast('An Error Occurred', true)
+				toast('An Error Occurred', true);
 			} catch (error) {
 				resendGif = false;
 				//@ts-ignore
@@ -166,7 +167,7 @@
 			setTimeout(() => {
 				complete = true;
 				toast('Account Successfully Created', false);
-				setTimeout(() => goto('/', {replaceState: true, noScroll: true}), 4000);
+				setTimeout(() => goto('/', { replaceState: true, noScroll: true }), 4000);
 			}, 5000);
 		},
 		create = async () => {
@@ -179,12 +180,12 @@
 				);
 				if ('status' in req) {
 					profile = req.status;
-				toast(req.message, !req.status);
+					toast(req.message, !req.status);
+					loadGif = false;
+					return;
+				}
 				loadGif = false;
-				return;
-			}
-				loadGif = false;
-				toast('An Error Occurred', true)
+				toast('An Error Occurred', true);
 			} catch (error) {
 				loadGif = false;
 				//@ts-ignore
@@ -709,7 +710,9 @@
 								<!-- svelte-ignore a11y-click-events-have-key-events -->
 								<p
 									on:click={() => (checked = !checked)}
-									class="{register ? 'pointer-events-none' : ''} mt-6 text-sm text-gray-600 text-center ml-3.5"
+									class="{register
+										? 'pointer-events-none'
+										: ''} mt-6 text-sm text-gray-600 text-center ml-3.5"
 								>
 									I agree to abide by cryptflixinvest's
 									<a href="/" class="border-b border-gray-500 border-dotted"> Terms of Service </a>

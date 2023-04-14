@@ -193,6 +193,8 @@ def news():
 def page_not_found(error):
     return render_template('error.html', type='404', description=error)
 
+def cookie():
+    return
 
 def _build_cors_preflight_response():
     """
