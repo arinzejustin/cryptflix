@@ -8,36 +8,31 @@ let gravatar: string,
     error: boolean = false,
     find: boolean = false;
 
-export const load = (async ({ cookies, locals, getClientAddress }) => {
-    const UUID = cookies.get('UUID');
-    const ip = getClientAddress();
+export const load = (async ({ cookies }) => {
 
-    if (!UUID || !locals.user) {
+    const email = cookies.get('user');
+    const ssid = cookies.get('uuid');
+    const authorization = cookies.get('token');
+    const role = cookies.get('card');
+
+    if (!authorization || !email || !role) {
         throw redirect(307, '/0auth/login');
     }
 
-    if (locals.user.role == 'admin') throw redirect(304, '/admin')
-
-    cookies.set('client', ip, {
-        httpOnly: true,
-        maxAge: 60 * 60 * 24 * 14,
-        path: '/',
-        priority: 'high',
-        secure: true
-    })
+    if (role == 'admin') throw redirect(307, '/admin')
 
     try {
-        const req = await API.get('/gravatar', JSON.stringify({ user: 'justindiceyyo19@gmail.com' }))
+        const req = await API.get('/gravatar', JSON.stringify({ user: email }))
         gravatar = req.gravatar;
-    } catch (err) {
-        gravatar = '/dart.jpg'
+    } catch (err: any) {
+        gravatar = '/img/pp.png'
     }
 
     try {
-        const req = await API.post('/history', JSON.stringify({ user: 'justindiceyyo19@gmail.com', server: true, mini: true }))
+        const req = await API.post('/history', JSON.stringify({ user: email, server: true, mini: true }))
         transaction = req.transaction;
         find = req.find
-    } catch (err) {
+    } catch (err: any) {
         error = true
     }
 

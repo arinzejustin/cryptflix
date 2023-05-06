@@ -7,6 +7,7 @@ from werkzeug.security import check_password_hash, generate_password_hash
 
 from jwt_token import generate, acct_token
 from netrequest import post, get
+from wallet import demo_wallet, device_id, safe_url_auth
 
 load_dotenv()
 
@@ -50,10 +51,11 @@ def db_login(email: str, password: str):
         if user:
             verify = check_password_hash(user[4], password)
             if verify:
+                ssid = uuid.uuid4().hex
                 token = generate(
-                    uuid=user[1], email=email, key=user[0], name=user[2])
-                result = dict(message='Login successful', status=True, uuid=user[1], account=user[7], name=user[2], email=email,
-                              bearer=token)
+                    uuid=user[1], email=email, key=user[0], name=user[2], ssid=ssid)
+                result = dict(message='Login successful', status=True, uuid=user[1], account=user[8], name=user[2], email=email,
+                              bearer=token, role=user[5] or 'user', maogic=user[9], ssid=ssid)
                 return result
             else:
                 result = dict(message='Invalid credentials',
@@ -62,7 +64,8 @@ def db_login(email: str, password: str):
         else:
             result = dict(message='User not found', status=False)
             return result
-    except:
+    except Exception as e:
+        print(str(e))
         return except_func('Login')
 
 
@@ -81,29 +84,40 @@ def db_onboard(email: str, name: str, tel: str):
     try:
         cursor.execute('SELECT * FROM users WHERE email = %s', (email,))
         account = cursor.fetchone()
+        print(account)
         if account:
             if account[4] is None:
-                return dict(message='Set your passcode', status=True, double=True, uuid=account[1])
+                query = "DELETE FROM users WHERE email = %s"
+                query2 = f"DROP TABLE IF EXISTS user_{account[1]}"
+                value = (email, )
+                cursor.execute(query, value)
+                cursor.execute(query2)
+                mydb.commit()
+                return db_onboard(email=account[3], name=name, tel=tel)
             return dict(message='Account already exists!', status=False)
-        query = 'INSERT INTO users (uuid, name, email, tel) VALUES (%s, %s, %s, %s)'
+        query = 'INSERT INTO users (uuid, name, email, tel, a_type, wallet, theme, balance, magic_auth, referral, device_id) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)'
         uid = uuid.uuid4().hex
-        values = (uid, name, email, tel)
+        wallet = demo_wallet()
+        magic_link = safe_url_auth()
+        _id = device_id()
+        values = (uid, name, email, tel, 'Plan 1', wallet, 'light', '$50.00', magic_link, '0', _id)
         cursor.execute(query, values)
         mydb.commit()
         onboard = db_verify(email=email, insert=True)
         if onboard['status']:
             try:
                 cursor.execute(
-                    f'CREATE TABLE user_{uid} (ID INT AUTO_INCREMENT PRIMARY KEY, ADDRESS VARCHAR(255), TRANSACTION VARCHAR(100), STATUS VARCHAR(100), TIME VARCHAR(100), TYPE VARCHAR(100), THEME VARCHAR(10), TRANS_PASS VARCHAR(100))')
-                cursor.execute('UPDATE user_' + uid +
-                               ' SET TYPE = %s', ('Plan 1',))
+                    f'CREATE TABLE user_{uid} (ID INT AUTO_INCREMENT PRIMARY KEY, ADDRESS VARCHAR(255), TRANSACTION VARCHAR(100), STATUS VARCHAR(100), TIME VARCHAR(100), TRANS_PASS VARCHAR(100))')
                 mydb.commit()
                 onboard.update({'uuid': uid})
-            except:
+            except Exception as e:
                 query = "DELETE FROM users WHERE uuid = %s"
+                query2 = f"DROP TABLE IF EXISTS user_{uid}"
                 value = (uid, )
                 cursor.execute(query, value)
+                cursor.execute(query2)
                 mydb.commit()
+                print(str(e))
                 return except_func('Accounts')
         else:
             query = "DELETE FROM users WHERE uuid = %s"
@@ -111,11 +125,13 @@ def db_onboard(email: str, name: str, tel: str):
             cursor.execute(query, value)
             mydb.commit()
         return onboard
-    except:
+    except Exception as e:
+        mydb.rollback()
         query = "DELETE FROM users WHERE email = %s"
         value = (email, )
         cursor.execute(query, value)
         mydb.commit()
+        print(str(e))
         return except_func('Sign up')
 
 
@@ -144,6 +160,7 @@ def db_verify(email: str, insert: bool, code: str = ''):
             request = post(url=EMAIL_URL, params=params, headers=headers)
             return request
         except:
+            mydb.rollback()
             return except_func('Verification')
     else:
         try:
@@ -170,17 +187,19 @@ def db_verify(email: str, insert: bool, code: str = ''):
             else:
                 result = dict(message='Invalid code', status=False)
                 return result
-        except:
+        except Exception as e:
+            mydb.rollback()
+            print(str(e))
             return except_func('Verification')
 
 
-def db_passcode(uuid: str, passcode: str):
+def db_passcode(uid: str, passcode: str):
     """
-    It takes a uuid and a passcode, hashes the passcode, and updates the database with the hashed
+    It takes a uid and a passcode, hashes the passcode, and updates the database with the hashed
     passcode
 
-    :param uuid: The user's uuid
-    :type uuid: str
+    :param uid: The user's uid
+    :type uid: str
     :param passcode: str
     :type passcode: str
     :return: A dictionary with a message and a status.
@@ -189,11 +208,19 @@ def db_passcode(uuid: str, passcode: str):
         password=passcode, method=f"{SALT}", salt_length=57)
     try:
         query = "UPDATE users SET passcode = %s WHERE uuid = %s"
-        values = (pass_hash, uuid)
+        values = (pass_hash, uid)
         cursor.execute(query, values)
+        cursor.execute('SELECT * FROM users WHERE uuid = %s', (uid,))
+        user = cursor.fetchone()
+        ssid = uuid.uuid4().hex
+        token = generate(
+            uuid=uid, email=user[3], key=user[0], name=user[2], ssid=ssid)
         mydb.commit()
-        return dict(message='Passcode Set', status=True)
-    except:
+        return dict(message='Passcode Set', status=True, uuid=user[1], account=user[8], name=user[2], email=user[3],
+                    bearer=token, role=user[5] or 'user', maogic=user[9], ssid=ssid)
+    except Exception as e:
+        mydb.rollback()
+        print(str(e))
         return except_func('Sign up')
 
 
@@ -223,11 +250,15 @@ def db_safe_(magic: str, uuid: str):
     :type uuid: str
     :return: A dictionary with the key 'token' and the value of the magic string.
     """
+    if not uuid or uuid is None:
+        return dict(token=None, status=False)
     try:
         query = "UPDATE users SET magic_auth = %s WHERE uuid = %s"
         values = (magic, uuid)
         cursor.execute(query, values)
         mydb.commit()
         return dict(token=magic, status=True)
-    except:
+    except Exception as e:
+        mydb.rollback()
+        print(str(e))
         return except_func('Magic authentication')

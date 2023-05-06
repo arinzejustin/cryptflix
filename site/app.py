@@ -1,9 +1,10 @@
 import hashlib
 import os
-from datetime import datetime
+from datetime import datetime, timedelta
 
 from dotenv import load_dotenv
 from flask import Flask, render_template, request, jsonify, send_from_directory, make_response
+from jwt_token import authorize
 
 from query import db_login, db_verify, db_passcode, db_onboard, db_safe_
 from netrequest import get
@@ -18,6 +19,7 @@ ALLOWED_HOST = os.getenv('ALLOWED_HOST')
 AVI_URL = os.getenv('AVI_URL')
 NEWS_KEY = os.getenv('NEWS_KEY')
 HOST = os.getenv('NEWS_HOST')
+cookie_domain = os.getenv('COOKIE_DOMAIN')
 
 
 @app.route('/index')
@@ -31,6 +33,7 @@ def index():
 @app.route('/about/')
 def about():
     return send_from_directory('.svelte-kit/output/prerendered/pages', 'about.html')
+
 
 @app.route('/news')
 def news_():
@@ -84,8 +87,22 @@ def passcode():
         uuid = data['uuid']
         if password != confirm:
             return _corsify_actual_response(jsonify({'message': 'Passcode does not match', 'status': False}))
-        insert = db_passcode(uuid=uuid, passcode=confirm)
-        return _corsify_actual_response(jsonify(insert))
+        insert = db_passcode(uid=uuid, passcode=confirm)
+        response = make_response(jsonify(insert))
+        response = _corsify_actual_response(response)
+        if insert['status']:
+            # set cookies
+            response.set_cookie(key='uuid', value=insert['uuid'], expires=datetime.now(
+            ) + timedelta(days=30), path='/', domain=cookie_domain, secure=True, httponly=True, samesite='lax')
+            response.set_cookie(key='user', value=insert['email'], max_age=3600, expires=datetime.now(
+            ) + timedelta(days=30), path='/', domain=cookie_domain, secure=True, httponly=True, samesite='lax')
+            response.set_cookie(key='token', value=insert['bearer'], expires=datetime.now(
+            ) + timedelta(days=30), path='/', domain=cookie_domain, secure=True, httponly=True, samesite='lax')
+            response.set_cookie(key='card', value=insert['role'], expires=datetime.now(
+            ) + timedelta(days=30), path='/', domain=cookie_domain, secure=True, httponly=True, samesite='lax')
+            response.set_cookie(key='ssid', value=insert['ssid'], expires=datetime.now(
+            ) + timedelta(days=30), path='/', domain=cookie_domain, secure=True, httponly=True, samesite='lax')
+        return response
     else:
         raise RuntimeError(
             "Weird - don't know how to handle method {}".format(request.method))
@@ -93,6 +110,7 @@ def passcode():
 
 @app.route('/api/bob/login', methods=['POST', 'OPTIONS'])
 def login():
+    response = make_response()
     if request.method == "OPTIONS":  # CORS preflight
         return _build_cors_preflight_response()
     elif request.method == "POST":
@@ -102,7 +120,21 @@ def login():
         if not email or not passcode:
             return _corsify_actual_response(jsonify({'message': 'Invalid Credentials', 'status': False}))
         login_query = db_login(email=email, password=passcode)
-        return _corsify_actual_response(jsonify(login_query))
+        response = make_response(jsonify(login_query))
+        response = _corsify_actual_response(response)
+        if login_query['status']:
+            # set cookies
+            response.set_cookie(key='uuid', value=login_query['uuid'], expires=datetime.now(
+            ) + timedelta(days=30), path='/', domain=cookie_domain, secure=True, httponly=True, samesite='lax')
+            response.set_cookie(key='user', value=login_query['email'], max_age=3600, expires=datetime.now(
+            ) + timedelta(days=30), path='/', domain=cookie_domain, secure=True, httponly=True, samesite='lax')
+            response.set_cookie(key='token', value=login_query['bearer'], expires=datetime.now(
+            ) + timedelta(days=30), path='/', domain=cookie_domain, secure=True, httponly=True, samesite='lax')
+            response.set_cookie(key='card', value=login_query['role'], expires=datetime.now(
+            ) + timedelta(days=30), path='/', domain=cookie_domain, secure=True, httponly=True, samesite='lax')
+            response.set_cookie(key='ssid', value=login_query['ssid'], expires=datetime.now(
+            ) + timedelta(days=30), path='/', domain=cookie_domain, secure=True, httponly=True, samesite='lax')
+        return response
     else:
         raise RuntimeError(
             "Weird - don't know how to handle method {}".format(request.method))
@@ -172,8 +204,15 @@ def magic_auth():
     if request.method == "OPTIONS":  # CORS preflight
         return _build_cors_preflight_response()
     if request.method == "POST":
+        authorization = request.headers.get('authorization')
+        cookies = dict(uuid=request.cookies.get('uuid'),
+                       ssid=request.cookies.get('ssid'))
+        auth = authorize(cookie=cookies, token=authorization)
+        if not auth:
+            return _corsify_actual_response(jsonify(dict(status=False, message='Failed verification')))
+        uuid = request.cookies.get('uuid')
         token = safe_url_auth()
-        res = db_safe_(magic=token, uuid='')
+        res = db_safe_(magic=token, uuid=uuid)
         return _corsify_actual_response(jsonify(res))
 
 
@@ -186,15 +225,30 @@ def news():
         query = data['query']
         from_ = data['from']
         to = data['to']
-        res = get(url = f'{HOST}/news', params = dict(apiKey=NEWS_KEY,q=query, from_date=from_, to_date=to))
+        res = get(url=f'{HOST}/news', params=dict(apiKey=NEWS_KEY,
+                  q=query, from_date=from_, to_date=to))
         return _corsify_actual_response(jsonify(res))
+
 
 @app.errorhandler(404)
 def page_not_found(error):
     return render_template('error.html', type='404', description=error)
 
-def cookie():
-    return
+
+@app.route('/api/bob/user', methods=['POST', 'OPTIONS'])
+def user():
+    if request.method == "OPTIONS":  # CORS preflight
+        return _build_cors_preflight_response()
+    if request.method == "POST":
+        authorization = request.headers.get('authorization')
+        uuid = request.headers.get('uuid')
+        ssid = request.headers.get('ssid')
+        cookies = dict(uuid=uuid,
+                       ssid=ssid)
+        auth = authorize(cookie=cookies, token=authorization)
+        if not auth:
+            return _corsify_actual_response(jsonify(dict(status=False, message='Failed verification')))
+
 
 def _build_cors_preflight_response():
     """
@@ -206,7 +260,7 @@ def _build_cors_preflight_response():
     response.headers.add("Access-Control-Allow-Origin",
                          ALLOWED_HOST)
     response.headers.add('Access-Control-Allow-Headers',
-                         "Origin, X-Requested-With, Content-Type, Accept, Authorization, TRACK-ID")
+                         "Origin, X-Requested-With, Content-Type, Accept, Authorization")
     response.headers.add('Access-Control-Allow-Methods', "OPTIONS")
     response.headers.add('Access-Control-Allow-Credentials', 'true')
     return response
@@ -218,7 +272,7 @@ def _corsify_actual_response(response):
 
     Access-Control-Allow-Origin: ALLOWED_HOST
     Access-Control-Allow-Headers: Origin, X-Requested-With, Content-Type, Accept, Authorization,
-    Verification, TRACK-ID
+    Verification
     Access-Control-Allow-Methods: POST, GET
     Content-Type: application/json; charset=UTF-8
     Access-Control-Allow-Credentials: true
@@ -227,7 +281,7 @@ def _corsify_actual_response(response):
     response.headers.add("Access-Control-Allow-Origin",
                          ALLOWED_HOST)
     response.headers.add('Access-Control-Allow-Headers',
-                         "Origin, X-Requested-With, Content-Type, Accept, Authorization, TRACK-ID")
+                         "Origin, X-Requested-With, Content-Type, Accept, Authorization")
     response.headers.add('Access-Control-Allow-Methods', "POST")
     response.headers.add('Content-Type', 'application/json; charset=UTF-8')
     response.headers.add('Access-Control-Allow-Credentials', 'true')

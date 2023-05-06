@@ -27,7 +27,8 @@
 		alert = false,
 		msg = '',
 		err = true,
-		value = $retry;
+		value = $retry,
+		loggedIn = false;
 
 	var isValid = (email: string) => {
 			var regExp =
@@ -67,7 +68,13 @@
 					toast(req.message, !req.status);
 					emailGif = false;
 					setStorage('token', req.bearer);
-					if (req.status) setTimeout(() => goto('/', { replaceState: true }), 3000);
+					setStorage('maogic', req.maogic)
+					if (req.status) {
+						setTimeout(() => {
+							loggedIn = true
+							goto('/', { replaceState: true })
+						}, 3000);
+					}
 					return;
 				}
 				emailGif = false;
@@ -104,7 +111,7 @@
 
 <cryptflixinvest-login class="md:mx-10">
 	<Alert {alert} message={msg} error={err} onClose={() => (alert = false)} />
-	<div class="pg9a5nd hak0fbu">
+	<div class="pg9a5nd hak0fbu {loggedIn ? 'hidden' : ''}">
 		<div class="jonfdgct mx-4 sm:mx-20 sm:my-5 md:mt-2">
 			<div class="lg:w-1/2 xl:w-5/12 px-2 py-6 sm:p-12 flex flex-col justify-center">
 				<div class="intro-x mb-6 md:mb-4 flex items-center justify-center">
@@ -112,7 +119,7 @@
 				</div>
 				<div class="my-6 lg:my-2.5 _0itw21asd">
 					<h1 class="text-xl lg:text-2xl xl:text-3xl font-bold text-center">
-						SIGN INTO YOUR ACCOUNT {value}
+						SIGN INTO YOUR ACCOUNT
 					</h1>
 					<div class="hak0fbu flex-1 mt-8">
 						<div class="_0itw21asd font-open">
@@ -247,7 +254,7 @@
 												duration: 1000,
 												easing: cubicIn
 											}}
-											class="hak0fbu transition duration-300 appearance-none block border-solid focus:ring-0 px-8 py-4 rounded-lg font-medium bg-gray-50 border-2 border-gray-300 text-sm focus:outline-none focus:bg-white peer"
+											class="hak0fbu transition duration-300 appearance-none block border-solid focus:ring-0 px-8 pl-4 py-4 rounded-lg font-medium bg-gray-50 border-2 border-gray-300 text-sm focus:outline-none focus:bg-white peer"
 											type="email"
 											aria-describedby="email_help"
 											placeholder=" "
@@ -323,7 +330,7 @@
 											<div class="relative">
 												<input
 													on:keyup={() => (valid = true)}
-													class="hak0fbu border-solid px-8 py-4 rounded-l-lg font-medium bg-gray-50 border-2 transition duration-300 border-gray-300 placeholder-gray-500 text-sm focus:outline-none focus:bg-white peer appearance-none"
+													class="hak0fbu border-solid px-8 pl-4 py-4 rounded-l-lg font-medium bg-gray-50 border-2 transition duration-300 border-gray-300 placeholder-gray-500 text-sm focus:outline-none focus:bg-white peer appearance-none"
 													type="password"
 													id={`p${geneId}`}
 													placeholder=" "

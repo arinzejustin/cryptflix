@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { API_URL, TRACK_ID, KEY } from '$lib/env';
+import { API_URL, KEY } from '$lib/env';
 
 let key = {'Authorization': KEY}
 
@@ -7,8 +7,7 @@ let key = {'Authorization': KEY}
 const axiosAPI = axios.create({
     baseURL: `${API_URL}/`,
     headers: {
-        "Content-Type": "application/json",
-        "TRACK-ID": TRACK_ID
+        "Content-Type": "application/json"
     },
     withCredentials: true,
     timeout: 40000

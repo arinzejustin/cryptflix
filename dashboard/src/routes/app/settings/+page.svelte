@@ -35,8 +35,11 @@
 	var gen = async () => {
 			load = false;
 			try {
-				const req = await API.post('/magic_auth', JSON.stringify({}), { Authorization: token });
-				if (req.status) magic = req.token;
+				const req = await API.post('/magic_auth', JSON.stringify({uuid: '******'}), { Authorization: token });
+				if (req.status) {
+					magic = req.token;
+					setStorage('maogic', req.token)
+				}
 				load = true;
 			} catch (err) {
 				load = true;
@@ -62,7 +65,7 @@
 			}
 			delin = true;
 			try {
-				const del = await API.post('/remove', JSON.stringify({ password: pass }), {
+				const del = await API.post('/remove', JSON.stringify({ password: pass, uuid: '' }), {
 					Authorization: token
 				});
 				toast(del.message, !del.status);
@@ -88,6 +91,7 @@
 		};
 		token = getStorage('token') || '';
 		mode = getStorage('mode') || 'light';
+		magic = getStorage('maogic') || magic;
 		getOS = () => {
 			//@ts-ignore
 			var uA = navigator.userAgent || navigator.vendor || window.opera;

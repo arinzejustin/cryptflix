@@ -23,7 +23,7 @@
 			loading = true;
 			try {
 				list = [];
-				const req = await API.post('/transactions', JSON.stringify({ email: '' }), {
+				const req = await API.post('/transactions', JSON.stringify({ uuid: '' }), {
 					Authorization: token
 				});
 				list = [...list, req.data];

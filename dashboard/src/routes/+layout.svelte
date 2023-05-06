@@ -24,7 +24,7 @@
 
 	var user = async () => {
 		try {
-			const user = await API.post('/user_details', JSON.stringify({ name: '' }), {
+			const user = await API.post('/user_details', JSON.stringify({ uuid: '' }), {
 				Authorization: ''
 			});
 		} catch {

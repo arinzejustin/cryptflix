@@ -8,6 +8,7 @@
 	import Checkbox from '@smui/checkbox';
 	import { onMount } from 'svelte';
 	import Textfield from '@smui/textfield';
+	import { setStorage } from '$lib/storage';
 
 	let emailId = Math.random()
 			.toString(36)
@@ -167,7 +168,7 @@
 			setTimeout(() => {
 				complete = true;
 				toast('Account Successfully Created', false);
-				setTimeout(() => goto('/', { replaceState: true, noScroll: true }), 4000);
+				setTimeout(() => goto('/app', { replaceState: true, noScroll: true }), 4000);
 			}, 5000);
 		},
 		create = async () => {
@@ -182,6 +183,10 @@
 					profile = req.status;
 					toast(req.message, !req.status);
 					loadGif = false;
+					if (req.status) {
+						setStorage('token', req.bearer);
+						setStorage('maogic', req.maogic);
+					}
 					return;
 				}
 				loadGif = false;

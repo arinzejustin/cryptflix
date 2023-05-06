@@ -4,7 +4,7 @@ import Api from '$lib/api'
 let user: any = null;
 
 export const handle: Handle = async ({ event, resolve }) => {
-
+console.log('ruuned at ', Date.now())
   const session = event.cookies.get('S_ID')
 
   if (!session) {
@@ -20,8 +20,8 @@ export const handle: Handle = async ({ event, resolve }) => {
 
   if (user) {
     event.locals.user = {
-      id: user.id,
-      name: user.name,
+      uuid: user.uuid,
+      authorization: user.authorization,
       role: user.role,
       email: user.email
     }

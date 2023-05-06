@@ -2,7 +2,6 @@
 	import API from '$lib/api';
 	import { onMount } from 'svelte';
 	import { fly } from 'svelte/transition';
-	import Loader from '$lib/Loader.svelte';
 	import Password from '../../../components/Password.svelte';
 	import { getStorage } from '$lib/storage';
 	import Alert from '$lib/Alert.svelte';
@@ -14,7 +13,9 @@
 		avi: string = '/img/default.png',
 		verified = true,
 		country = 'ng',
-		change = false;
+		change = false,
+		name = '',
+		email = '';
 
 	var toast = (message: any, error: boolean) => {
 		msg = message;
@@ -106,6 +107,7 @@
 							type="text"
 							name="display"
 							id=""
+							bind:value={name}
 							class="w-full py-2.5 pl-2 rounded-lg border-2 dark:bg-accent border-solid border-color"
 						/>
 					</div>
@@ -115,6 +117,7 @@
 							type="text"
 							name="email"
 							id=""
+							bind:value={email}
 							disabled
 							class="w-full py-2.5 pl-2 rounded-lg border-2 dark:bg-accent border-solid border-color"
 						/>
