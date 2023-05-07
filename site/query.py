@@ -1,3 +1,4 @@
+import json
 import mysql.connector as mc
 import os
 import uuid
@@ -69,7 +70,7 @@ def db_login(email: str, password: str):
         return except_func('Login')
 
 
-def db_onboard(email: str, name: str, tel: str):
+def db_onboard(email: str, name: str, tel: str, time: str):
     """
     It inserts a new user into the database
 
@@ -95,19 +96,20 @@ def db_onboard(email: str, name: str, tel: str):
                 mydb.commit()
                 return db_onboard(email=account[3], name=name, tel=tel)
             return dict(message='Account already exists!', status=False)
-        query = 'INSERT INTO users (uuid, name, email, tel, a_type, wallet, theme, balance, magic_auth, referral, device_id) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)'
+        query = 'INSERT INTO users (uuid, name, email, tel, a_type, wallet, theme, balance, magic_auth, referral, device_id, deposit, created) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)'
         uid = uuid.uuid4().hex
         wallet = demo_wallet()
         magic_link = safe_url_auth()
         _id = device_id()
-        values = (uid, name, email, tel, 'Plan 1', wallet, 'light', '$50.00', magic_link, '0', _id)
+        values = (uid, name, email, tel, 'Plan 1', wallet, 'light',
+                  '$50.00', magic_link, '0', _id, '$50.00', time)
         cursor.execute(query, values)
         mydb.commit()
         onboard = db_verify(email=email, insert=True)
         if onboard['status']:
             try:
                 cursor.execute(
-                    f'CREATE TABLE user_{uid} (ID INT AUTO_INCREMENT PRIMARY KEY, ADDRESS VARCHAR(255), TRANSACTION VARCHAR(100), STATUS VARCHAR(100), TIME VARCHAR(100), TRANS_PASS VARCHAR(100))')
+                    f'CREATE TABLE user_{uid} (ID INT AUTO_INCREMENT PRIMARY KEY, ADDRESS VARCHAR(255), AMOUNT VARCHAR(100), STATUS VARCHAR(100), TIME VARCHAR(100), TYPE VARCHAR(100), COIN VARCHAR(100), SESSION_ID VARCHAR(100), TRANS_ID VARCHAR(100))')
                 mydb.commit()
                 onboard.update({'uuid': uid})
             except Exception as e:
@@ -224,9 +226,37 @@ def db_passcode(uid: str, passcode: str):
         return except_func('Sign up')
 
 
-def db_user():
-    return
+def db_trans(uuid: str):
+    """
+    This function retrieves data from a MySQL database table for a specific user UUID and returns it as
+    a dictionary with a status flag.
+    
+    :param uuid: The uuid parameter is a string that represents a unique identifier for a user. It is
+    used to query a specific table in a database that contains information about that user
+    :type uuid: str
+    :return: A dictionary with two keys: 'data' and 'status'. The value of 'data' is either a list of
+    dictionaries containing the results of a SELECT query on a database table, or None if there are no
+    results or an error occurred. The value of 'status' is a boolean indicating whether the query was
+    successful (True) or not (False).
+    """
+    if not uuid:
+        return {'data': None, 'status': False}
+    try:
+        query = f"SELECT * FROM user_{uuid}"
+        cursor.execute(query)
+        rows = cursor.fetchall()
 
+        if rows:
+            columns = [desc[0] for desc in cursor.description]
+            result = [dict(zip(columns, row)) for row in rows]
+            print(result)
+            return {'data': result, 'status': True}
+        else:
+            return {'data': None, 'status': False}
+    except Exception as e:
+        print(f"An error occurred: {e}")
+        mydb.rollback()
+        return {'data': None, 'status': False}
 
 def except_func(error: str):
     """
@@ -262,3 +292,81 @@ def db_safe_(magic: str, uuid: str):
         mydb.rollback()
         print(str(e))
         return except_func('Magic authentication')
+
+
+def db_password__(uuid: str, update: bool):
+    if not uuid or uuid is None:
+        return dict(token=None, status=False)
+    return
+
+def fetch_user(uuid: str):
+    """
+    The function fetches user data from a database based on a given UUID and returns a dictionary with
+    the user's information or an error message.
+
+    :param uuid: The uuid parameter is a string that represents the unique identifier of a user. It is
+    used to fetch the user's information from a database
+    :type uuid: str
+    :return: a dictionary with information about a user, including their name, telephone number, account
+    status, UUID, email, magic, balance, account, wallet, device ID, referral, and status. If the UUID
+    is invalid or the user is not found, a different dictionary with a status of False and an
+    appropriate message is returned.
+    """
+    if not uuid:
+        return dict(status=False, message="Invalid User")
+    try:
+        query = 'SELECT * FROM users WHERE uuid = %s'
+        value = (uuid, )
+        cursor.execute(query, value)
+        user = cursor.fetchone()
+        if user:
+            result = dict(name=user[2], tel=user[6], acc_status=user[8], uuid=user[1], email=user[3], magic=user[9], balance=user[11],
+                          account=user[12], wallet=user[13], device_id=user[15], referral=user[14], deposit=user[5], created=user[16], status=True)
+            return result
+        else:
+            return dict(status=False, message='User not found')
+    except Exception as e:
+        print(str(e))
+        return except_func('User')
+
+
+def add(amount: str, status: str, time: any, coin: str, address: str, type_: str, uuid: str, session:str):
+    """
+    The function adds transaction details to a user's database table and returns a success message or an
+    error message.
+    
+    :param amount: The amount of the transaction as a string
+    :type amount: str
+    :param status: The status of the transaction (e.g. "pending", "completed", "failed")
+    :type status: str
+    :param time: The time parameter is of type 'any', which means it can accept any data type. However,
+    based on its usage in the code, it is expected to be a timestamp indicating the time of the
+    transaction
+    :type time: any
+    :param coin: The type of cryptocurrency being transacted (e.g. Bitcoin, Ethereum, Litecoin, etc.)
+    :type coin: str
+    :param address: The address of the recipient of the transaction
+    :type address: str
+    :param type_: The type of transaction being performed (e.g. deposit, withdrawal, transfer)
+    :type type_: str
+    :param uuid: The uuid parameter is a unique identifier for a user. It is used to identify the
+    specific user's table in the database where their transaction information will be stored
+    :type uuid: str
+    :param session: The session parameter is a string that represents the session ID of the user who
+    initiated the transaction. It is used to identify the user and link the transaction to their account
+    :type session: str
+    :return: a dictionary with the message 'Your transaction is being processed' and a status of True if
+    the try block is successfully executed. If there is an exception, the function returns the output of
+    the except_func('Transaction') function.
+    """
+    try:
+        trans_id = device_id(ranges=11)
+        query = f"INSERT INTO user_{uuid} (ADDRESS, AMOUNT, STATUS, TIME, TYPE, COIN, SESSION_ID, TRANS_ID) VALUES (%s, %s, %s, %s, %s, %s, %s, %s)"
+        values = (address, amount, status, time, type_, coin, session, str(trans_id))
+        cursor.execute(query, values)
+        mydb.commit()
+        return dict(message='Your transaction is being processed', status=True)
+    except Exception as e:
+        mydb.rollback()
+        print(str(e))
+    return except_func('Transaction')

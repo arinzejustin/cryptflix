@@ -8,7 +8,8 @@
 		onClose: any,
 		detail: string,
 		open: boolean = false,
-        session: string;
+        session: string,
+		trans_id: string;
 </script>
 
 {#if open}
@@ -80,7 +81,7 @@
 						<p class="text-sm uppercase font-mono leading-relaxed text-gray-500 dark:text-gray-400">
 							wallet
 						</p>
-						<p class="text-sm leading-relaxed text-black dark:text-white">
+						<p class="text-sm leading-relaxed truncate text-right text-black dark:text-white">
 							{wallet}
 						</p>
 					</div>
@@ -102,7 +103,7 @@
 						<p class="text-sm uppercase font-mono leading-relaxed text-gray-500 dark:text-gray-400">
 							session id
 						</p>
-						<p class="text-sm uppercase leading-relaxed text-black dark:text-white">
+						<p class="text-sm uppercase truncate leading-relaxed text-black dark:text-white">
                             {session}
                         </p>
 					</div>
@@ -111,7 +112,7 @@
 					<p class="text-sm uppercase font-mono leading-relaxed text-gray-500 dark:text-gray-400">
 						Transaction number
 					</p>
-					<p class="text-sm leading-relaxed text-black dark:text-white">1234567890</p>
+					<p class="text-sm leading-relaxed text-black dark:text-white">{trans_id}</p>
 				</div>
 				<div
 					class="flex justify-center items-center p-6 space-x-2 border-t border-gray-200 rounded-b dark:border-gray-600"

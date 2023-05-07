@@ -5,9 +5,12 @@
 	import Loader from '$lib/Loader.svelte';
 	import { getStorage } from '$lib/storage';
 	import Receipt from '../../../components/Receipt.svelte';
+	import type { PageData } from './$types';
+
+	export let data: PageData;
 
 	let date: string,
-		wallet: string,
+		wallet = data.user.wallet,
 		status: string,
 		error = true,
 		find: boolean,
@@ -16,16 +19,24 @@
 		open = false,
 		session: string,
 		amount: string,
-		name = 'Arinze Justin',
-		detail: string;
+		name = data.user.name,
+		detail: string,
+		trans_id: string,
+		empty = false;
 
 	var transactions = async () => {
 			loading = true;
 			try {
 				list = [];
-				const req = await API.post('/transactions', JSON.stringify({ uuid: '' }), {
+				const req = await API.post('/transactions', JSON.stringify({ uuid: '******' }), {
 					Authorization: token
 				});
+				if(!req.status) {
+					empty = true;
+					error = true;
+				loading = false;
+					return;
+				}
 				list = [...list, req.data];
 				setTimeout(() => {
 					error = false;
@@ -39,25 +50,31 @@
 		},
 		list: any[] = [];
 
-	const receipt = ({ date_, amount_, detail_, status_ }: any) => {
+	const receipt = ({ date_, amount_, detail_, status_, session_, trans_id_ }: any) => {
 		open = true;
 		date = date_;
 		amount = amount_;
 		detail = detail_;
 		status = status_;
+		session = session_;
+		trans_id = trans_id_
 	};
 
 	onMount(() => {
-		token = getStorage('token');
+		token = getStorage('token') ?? '';
 		transactions();
 	});
 </script>
+
+<svelte:head>
+	<title>Transaction Histroy | cryptflixinvest.com</title>
+</svelte:head>
 
 <div in:fly={{ x: 400, delay: 1000 }} out:fly={{ x: -400, duration: 800 }} class="container">
 	<div class="override">
 		<div class="bg-slate-100 dark:bg-accent py-3 w-full rounded-sm {loading ? 'mb-16' : ''}">
 			<p class="text-center font-medium uppercase text-xs sm:text-sm md:text-base lg:text-lg">
-				Created account on 12/01/2023 at 12:48:01 pm
+				Created account on { data.user.created ?? '12/01/2023 at 12:48:01'}
 			</p>
 		</div>
 		{#if error}
@@ -68,7 +85,7 @@
 			</div>
 			{:else}
 				<div class="text-center mt-8">
-					<p class="text-sm font-open">Error: Can't Load Your Transaction Histroy</p>
+					<p class="text-sm font-open">{empty ? 'No Transaction Activity Exists' : 'Error: Can\'t Load Your Transaction Histroy'}</p>
 					<button
 						on:click={transactions}
 						class="bg-yellow-100 my-4 px-3.5 py-1 dark:bg-yellow-100/30 hover:ring-1 ring-yellow-300 dark:ring-yellow-100/50 ring-offset-2 theme-text-app rounded-full"
@@ -82,10 +99,12 @@
 				<div in:fly={{ y: 400 }}
 					on:click={() =>
 						receipt({
-							date_: act.time,
-							detail_: act.type_,
-							status_: act.status,
-							amount_: act.amount
+							date_: act.TIME,
+							detail_: act.TYPE,
+							status_: act.STATUS,
+							amount_: act.AMOUNT,
+							session_: act.SESSION_ID,
+							trans_id_: act.TRANS_ID
 						})}
 					class="bg-white w-full dark:hover:bg-accent my-6 override hover:bg-slate-50 cursor-pointer dark:bg-black rounded-md border-color border-solid border p-2 shadow-lg dark:shadow-md hover:shadow-xl dark:hover:shadow-lg dark:hover:shadow-slate-100/30 dark:shadow-slate-100/30 py-4"
 				>
@@ -156,27 +175,27 @@
 								<div
 									class="p-0 m-0 text-black dark:text-white upperacse font-open text-base md:text-xl overflow-hidden font-semibold text-ellipsis whitespace-nowrap"
 								>
-									{act.type_}
+									{act.TYPE}
 								</div>
 								<div
-									class="{act.status == 'failed' ? 'text-red-500' : 'text-green-500'} {act.status ==
+									class="{act.STATUS == 'failed' ? 'text-red-500' : 'text-green-500'} {act.STATUS ==
 									'pending'
 										? 'text-yellow-500'
 										: ''} m-0 p-0 uppercase font-nunito opacity-70 text-sm overflow-hidden font-semibold text-ellipsis whitespace-nowrap mt-2"
 								>
-									{act.status}
+									{act.STATUS}
 								</div>
 							</div>
 						</div>
 						<div class="flex flex-col items-end align-middle gap-4">
 							<p
-								class="text-lg font-mono {act.status == 'failed'
+								class="text-lg font-mono {act.STATUS == 'failed'
 									? 'text-red-500'
-									: 'text-green-500'} {act.status == 'pending' ? 'text-yellow-500' : ''}"
+									: 'text-green-500'} {act.STATUS == 'pending' ? 'text-yellow-500' : ''}"
 							>
-								{act.amount}
+								{act.AMOUNT}
 							</p>
-							<p class="text-xs md:text-sm">{act.time}</p>
+							<p class="text-xs md:text-sm">{act.TIME}</p>
 						</div>
 					</div>
 				</div>
@@ -197,5 +216,6 @@
 	{wallet}
 	{amount}
 	{date}
+	{trans_id}
 	onClose={() => (open = false)}
 />

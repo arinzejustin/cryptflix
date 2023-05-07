@@ -6,14 +6,25 @@ let gravatar: string,
     transaction: any,
     plan: any,
     error: boolean = false,
-    find: boolean = false;
+    find: boolean = false,
+    _id: string,
+    magic_auth: string,
+    wallet: string,
+    referral: string,
+    name: string,
+    email_u: string,
+    balance: string,
+    deposit: string,
+    created: string | undefined;
 
 export const load = (async ({ cookies }) => {
 
     const email = cookies.get('user');
-    const ssid = cookies.get('uuid');
+    const ssid = cookies.get('ssid');
     const authorization = cookies.get('token');
     const role = cookies.get('card');
+    const token = cookies.get('token') ?? '',
+        uuid = cookies.get('uuid') ?? '';
 
     if (!authorization || !email || !role) {
         throw redirect(307, '/0auth/login');
@@ -29,21 +40,40 @@ export const load = (async ({ cookies }) => {
     }
 
     try {
-        const req = await API.post('/history', JSON.stringify({ user: email, server: true, mini: true }))
-        transaction = req.transaction;
-        find = req.find
+        const req = await API.post('/user', JSON.stringify({ uuid: '******' }), { Authorization: token, UUID: uuid, SSID: ssid })
+        if (!req.status) throw redirect(307, '/0auth/login');
+        console.log(req)
+        _id = req.device_id;
+        magic_auth = req.magic;
+        plan = req.account;
+        wallet = req.wallet;
+        referral = req.referral;
+        name = req.name;
+        email_u = req.email;
+        balance = req.balance;
+        deposit = req.deposit;
+        created = req.created ?? undefined
     } catch (err: any) {
-        error = true
+        console.log(err)
     }
 
     return {
         user: {
             gravatar: gravatar,
             load: false,
-            plan: 'Plan 2',
+            plan: plan,
             transaction: transaction,
             error: error,
-            find: find
+            find: find,
+            device_id: _id,
+            magic_auth: magic_auth,
+            wallet: wallet,
+            referral: referral,
+            name: name,
+            email: email_u,
+            balance: balance,
+            deposit: deposit,
+            created: created
         }
     }
 

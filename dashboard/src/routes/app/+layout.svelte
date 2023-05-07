@@ -74,6 +74,7 @@
 				src={data.user.gravatar}
 				loading={data.user.load}
 				plan={data.user.plan}
+				name={data.user.name}
 				bind:height={h}
 			/>
 		</div>

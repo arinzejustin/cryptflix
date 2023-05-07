@@ -6,7 +6,7 @@ from dotenv import load_dotenv
 from flask import Flask, render_template, request, jsonify, send_from_directory, make_response
 from jwt_token import authorize
 
-from query import db_login, db_verify, db_passcode, db_onboard, db_safe_
+from query import add, db_login, db_password__, db_trans, db_verify, db_passcode, db_onboard, db_safe_, fetch_user
 from netrequest import get
 from wallet import safe_url_auth
 
@@ -14,6 +14,7 @@ app = Flask(__name__)
 load_dotenv()
 now = datetime.now()
 curr_time = now.strftime("%B %d, %Y %H:%M:%S")
+created = f"{now.strftime('%B %d, %Y')} at {now.strftime('%H:%M:%S')}"
 
 ALLOWED_HOST = os.getenv('ALLOWED_HOST')
 AVI_URL = os.getenv('AVI_URL')
@@ -54,7 +55,7 @@ def onboard():
         email = data['email']
         name = data['name']
         tel = data['tel']
-        reg = db_onboard(email=email, name=name, tel=tel)
+        reg = db_onboard(email=email, name=name, tel=tel, time=created)
         return _corsify_actual_response(jsonify(reg))
     else:
         raise RuntimeError(
@@ -87,6 +88,8 @@ def passcode():
         uuid = data['uuid']
         if password != confirm:
             return _corsify_actual_response(jsonify({'message': 'Passcode does not match', 'status': False}))
+        if len(password) < 8:
+            return _corsify_actual_response(jsonify({'message': 'Passcode is too short', 'status': False}))
         insert = db_passcode(uid=uuid, passcode=confirm)
         response = make_response(jsonify(insert))
         response = _corsify_actual_response(response)
@@ -174,26 +177,15 @@ def transactions():
     if request.method == "OPTIONS":  # CORS preflight
         return _build_cors_preflight_response()
     if request.method == "POST":
-        data = request.get_json(force=True)
-        res = dict(data=[{
-            'type_': 'Withdraw',
-            'status': 'failed',
-            'time': curr_time,
-            'amount': '-$2,000'
-        },
-            {
-            'type_': 'Deposit',
-            'status': 'success',
-            'time': curr_time,
-            'amount': '$1,000'
-        },
-            {
-            'type_': 'Deposit',
-            'status': 'pending',
-            'time': curr_time,
-            'amount': '$4,000'
-        }])
-        return _corsify_actual_response(jsonify(res))
+        authorization = request.headers.get('authorization')
+        uuid = request.cookies.get('uuid')
+        cookies = dict(uuid=uuid,
+                       ssid=request.cookies.get('ssid'))
+        auth = authorize(cookie=cookies, token=authorization)
+        if not auth:
+            return _corsify_actual_response(jsonify(dict(status=False, message='Failed verification')))
+        data = db_trans(uuid=uuid)
+        return _corsify_actual_response(jsonify(data))
     else:
         raise RuntimeError(
             "Weird - don't know how to handle method {}".format(request.method))
@@ -213,6 +205,23 @@ def magic_auth():
         uuid = request.cookies.get('uuid')
         token = safe_url_auth()
         res = db_safe_(magic=token, uuid=uuid)
+        return _corsify_actual_response(jsonify(res))
+
+
+@app.route('/api/bob/password__', methods=['POST', 'OPTIONS'])
+def password__():
+    if request.method == "OPTIONS":  # CORS preflight
+        return _build_cors_preflight_response()
+    if request.method == "POST":
+        authorization = request.headers.get('authorization')
+        cookies = dict(uuid=request.cookies.get('uuid'),
+                       ssid=request.cookies.get('ssid'))
+        auth = authorize(cookie=cookies, token=authorization)
+        if not auth:
+            return _corsify_actual_response(jsonify(dict(status=False, message='Failed verification')))
+        uuid = request.cookies.get('uuid')
+        password = db_password__()
+        res = db_safe_(magic='', uuid=uuid)
         return _corsify_actual_response(jsonify(res))
 
 
@@ -248,6 +257,43 @@ def user():
         auth = authorize(cookie=cookies, token=authorization)
         if not auth:
             return _corsify_actual_response(jsonify(dict(status=False, message='Failed verification')))
+        user = fetch_user(uuid=uuid)
+        return _corsify_actual_response(jsonify(user))
+
+
+@app.route('/api/bob/add_trans', methods=['POST', 'OPTIONS'])
+def add_trans():
+    if request.method == "OPTIONS":  # CORS preflight
+        return _build_cors_preflight_response()
+    if request.method == "POST":
+        data = request.get_json(force=True)
+        authorization = request.headers.get('authorization')
+        ssid = request.cookies.get('ssid')
+        cookies = dict(uuid=request.cookies.get('uuid'),
+                       ssid=ssid)
+        auth = authorize(cookie=cookies, token=authorization)
+        if not auth:
+            return _corsify_actual_response(jsonify(dict(status=False, message='Failed verification')))
+        uuid = request.cookies.get('uuid')
+        adds = add(amount=str(data['amount']), type_=data['type'], time=curr_time, uuid=uuid, status='pending', coin=data['coin'], address=data['address'], session=ssid)
+        return _corsify_actual_response(jsonify(adds))
+
+
+@app.route('/api/bob/user_details', methods=['POST', 'OPTIONS'])
+def user_details():
+    if request.method == "OPTIONS":  # CORS preflight
+        return _build_cors_preflight_response()
+    if request.method == "POST":
+        authorization = request.cookies.get('token')
+        uuid = request.cookies.get('uuid')
+        ssid = request.cookies.get('ssid')
+        cookies = dict(uuid=uuid,
+                       ssid=ssid)
+        auth = authorize(cookie=cookies, token=authorization)
+        if not auth:
+            return _corsify_actual_response(jsonify(dict(status=False, data={'authenticate': False, 'message': 'Invalid user keys'})))
+        user = dict(status=True, data=dict(authorization=authorization, ssid=ssid, authenticate=True))
+        return _corsify_actual_response(jsonify(user))
 
 
 def _build_cors_preflight_response():

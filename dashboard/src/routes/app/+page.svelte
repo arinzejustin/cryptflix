@@ -6,14 +6,17 @@
 	import Alert from '$lib/Alert.svelte';
 	import { onMount } from 'svelte';
 	import { getStorage, setStorage } from '$lib/storage';
+	import type { PageData } from './$types';
+
+	export let data: PageData;
 
 	let msg: string,
 		plan = false,
 		err: boolean,
 		alert: boolean,
 		timeout: any,
-		referred: number = 0,
-		refer_link: string = 'https://cryptoflixinvest.com/ref/1234567?token=',
+		referred: number = Number(data.user.referral),
+		refer_link: string = `https://cryptoflixinvest.com/ref/${data.user.device_id}`,
 		visible = false,
 		change = false;
 
@@ -30,7 +33,7 @@
 			alert = true;
 			timeout = setTimeout(() => (alert = false), 4400);
 		},
-		wallet = '19ijqZ22wq7G8oVGQL8i3RxXrVYadsoJPU',
+		wallet = data.user.wallet,
 		acct_vis = () => {};
 	onMount(() => {
 		visible = getStorage('balance_visible') || false;
@@ -48,7 +51,7 @@
 	<div
 		class="bg-yellow-100 w-full dark:bg-yellow-100/30 border border-solid border-yellow-200 shadow-lg rounded-md p-1 md:p-4"
 	>
-		<p class="font-bold font-open text-2xl md:text-3xl text-center pb-4 text-black dark:text-white">Welcome Arinze Justin</p>
+		<p class="font-bold font-open text-2xl md:text-3xl text-center pb-4 text-black dark:text-white">Welcome {data.user.name}</p>
 		<div class="flex flex-col md:flex-row justify-between align-middle mx-1 md:mx-4 lg:mx-8">
 			<div class="">
 				<div class="grid grid-cols-5 gap-1 md:grid-cols-2 md:gap-4 items-center align-middle">
@@ -74,7 +77,7 @@
 				</div>
 				<div class="py-2">
 					{#if visible}
-						<p class="text-xl w-1/2 text-center font-open font-medium">$105.5k</p>
+						<p class="text-xl w-1/2 text-center font-open font-medium">{data.user.balance}</p>
 					{:else}
 						<p class="text-xl w-1/2 text-center font-open font-medium">******</p>
 					{/if}
@@ -144,7 +147,7 @@
 			class="bg-white dark:bg-black hover:bg-slate-100 border relative my-5 border-solid border-color rounded-md shadow-md hover:shadow-lg dark:shadow-gray-100/50 dark:hover:bg-accent py-4 px-6 md:py-6 md:px-8"
 		>
 			<Icon className={'icon material-icons'} name={'card_membership'} />
-			<p class="theme-text-app text-right truncate text-3xl font-open font-bold pt-5">Plan 2</p>
+			<p class="theme-text-app text-right truncate text-3xl font-open font-bold pt-5">{data.user.plan}</p>
 			<p class="font-mono text-right">Account Type</p>
 			<a
 				on:click={(e) => {
@@ -161,7 +164,7 @@
 			class="bg-white dark:bg-black hover:bg-slate-100 border relative my-5 border-solid border-color rounded-md shadow-md hover:shadow-lg dark:shadow-gray-100/50 dark:hover:bg-accent py-4 px-6 md:py-6 md:px-8"
 		>
 			<Icon className={'icon material-icons'} name={'currency_bitcoin'} />
-			<p class="theme-text-app text-right truncate text-3xl font-bold">$100k</p>
+			<p class="theme-text-app text-right truncate text-3xl font-bold">{data.user.deposit}</p>
 			<p class="font-mono text-right">Total Deposit</p>
 			<a
 				href="/app/transaction/deposit"

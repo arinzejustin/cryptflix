@@ -1,21 +1,24 @@
 <script lang="ts">
-	import API from '$lib/api';
 	import { onMount } from 'svelte';
 	import { fly } from 'svelte/transition';
 	import Password from '../../../components/Password.svelte';
 	import { getStorage } from '$lib/storage';
 	import Alert from '$lib/Alert.svelte';
+	import type { PageData } from './$types';
+
+	export let data: PageData;
 
 	let msg: string,
 		err: boolean,
 		alert: boolean,
 		fileinput: HTMLInputElement,
-		avi: string = '/img/default.png',
+		avi: string = data.user.gravatar,
 		verified = true,
 		country = 'ng',
 		change = false,
-		name = '',
-		email = '';
+		name = data.user.name,
+		email = data.user.email,
+		token: string;
 
 	var toast = (message: any, error: boolean) => {
 		msg = message;
@@ -26,10 +29,10 @@
 	const onFileSelected = (e: Event) => {
 		//@ts-ignore
 		let image = e.target.files[0];
-		let type = ['image/png', 'image/jpg', 'image/jpeg']
-		if(!type.includes(image.type)) {
-			toast('Files format not supported', true)
-			return
+		let type = ['image/png', 'image/jpg', 'image/jpeg'];
+		if (!type.includes(image.type)) {
+			toast('Files format not supported', true);
+			return;
 		}
 		let reader = new FileReader();
 		reader.readAsDataURL(image);
@@ -41,6 +44,9 @@
 			toast(`ERROR: ${e}`, true);
 		};
 	};
+	onMount(() => {
+		token = getStorage('token') ?? '';
+	});
 </script>
 
 <svelte:head>
@@ -173,7 +179,9 @@
 					<div class="py-3 my-2">
 						<div class="intro-y flex items-center justify-center mt-5 group/item">
 							<a
-								on:click={(e) => {e.preventDefault(), change = true}}
+								on:click={(e) => {
+									e.preventDefault(), (change = true);
+								}}
 								class="transition p-4 w-full theme-text-app font-medium rounded-lg flex items-center justify-around bg-yellow-100 dark:bg-yellow-100/30 hover:ring-yellow-200 ring-2 ring-offset-2 ring-offset-transparent ring-transparent"
 								href="/0auth/change-password"
 								>Change Password <svg
@@ -198,4 +206,4 @@
 		</div>
 	</div>
 </div>
-<Password {change} onClose={() => (change = false)} />
+<Password {change} onClose={() => (change = false)} {token} />

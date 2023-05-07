@@ -12,7 +12,8 @@
 	export let loading = true,
 		src: string,
 		height: number,
-		plan: string;
+		plan: string,
+		name: string;
 
 	let shadow = false,
 		menu = false,
@@ -167,7 +168,7 @@
 										<p
 											class="text-slate-700 relative inline-block dark:text-slate-50 pt-1.5 pr-2 text-xl font-semibold font-nunito"
 										>
-											Arinze Justin
+											{name}
 											<Badge class="badge theme-text-app">{plan}</Badge>
 										</p>
 									</div>

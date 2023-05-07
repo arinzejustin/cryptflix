@@ -9,6 +9,9 @@
 	import Alert from '$lib/Alert.svelte';
 	import Loader from '$lib/Loader.svelte';
 	import { goto } from '$app/navigation';
+	import type { PageData } from './$types';
+
+	export let data: PageData;
 
 	let mode: any,
 		token: string = '',
@@ -91,7 +94,8 @@
 		};
 		token = getStorage('token') || '';
 		mode = getStorage('mode') || 'light';
-		magic = getStorage('maogic') || magic;
+		magic = getStorage('maogic') || data.user.magic_auth;
+		id = data.user.device_id
 		getOS = () => {
 			//@ts-ignore
 			var uA = navigator.userAgent || navigator.vendor || window.opera;

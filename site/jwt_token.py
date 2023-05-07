@@ -49,7 +49,6 @@ def authenticate(token: str):
     """
     try:
        decode = jwt.decode(token, SECRET, algorithms=['HS256'])
-       print(decode, f'{decode["name"]} {decode}')
        return decode
     except Exception as e:
         print(str(e))

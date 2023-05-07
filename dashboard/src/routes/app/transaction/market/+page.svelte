@@ -70,7 +70,7 @@
 		},
 		format = (value: any, money: boolean = false) => {};
 	onMount(() => {
-		token = getStorage('token');
+		token = getStorage('token') ?? '';
 		ticker(true);
 		hourly();
 		format = (value: any, money: boolean = false) => {

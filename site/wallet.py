@@ -29,11 +29,11 @@ def safe_url_auth():
     token = token[:-1]
     return token
 
-def device_id():
+def device_id(ranges: int = 8):
     """
     The function generates a random 8-digit device ID.
     :return: The function `device_id()` returns a randomly generated string of 8 digits as the device
     ID.
     """
-    dev_id = ''.join([str(random.randint(0, 9)) for _ in range(8)])
+    dev_id = ''.join([str(random.randint(0, 9)) for _ in range(ranges)])
     return dev_id
