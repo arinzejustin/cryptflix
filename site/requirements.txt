@@ -1,6 +1,6 @@
 autopep8==1.6.0
 base58==2.1.1
-bech32==1.2.0
+bech32>=1.2.0
 bitcoinaddress==0.1.5
 certifi>=2022.12.07
 charset-normalizer==2.0.10
