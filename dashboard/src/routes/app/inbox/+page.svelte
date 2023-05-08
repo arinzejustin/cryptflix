@@ -17,6 +17,10 @@
 	let active = tabs[0];
 </script>
 
+<svelte:head>
+	<title>Inbox | cryptflixinvest.com</title>
+</svelte:head>
+
 <div in:fly={{ x: 300, delay: 1000 }} out:fly={{ x: -400, duration: 800 }} class="container">
 	<div class="mb-8">
 		<TabBar {tabs} let:tab bind:active class="override relative">

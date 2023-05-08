@@ -5,14 +5,51 @@
 	import Ripple from '@smui/ripple';
 	import Alert from '$lib/Alert.svelte';
 
-	export let change = false, onClose: any;
+	export let change = false,
+		onClose: any,
+		token: string;
 
 	let msg: string,
 		err: boolean,
 		alert: boolean,
 		pass: string,
-		next = () => {},
-		load__ = false;
+		next = async () => {
+			load__ = true;
+			try {
+				const check = await API.post('/password__', JSON.stringify({ uuid: '******', passcode: pass, update: false }), {
+					Authorization: token
+				});
+				load__ = false;
+				if (check.status) {
+					con = true;
+					return;
+				}
+				toast(check.message, !check.status);
+			} catch (err) {
+				load__ = false;
+				toast('An error occurred', true);
+			}
+		},
+		update = async () => {
+			load__ = true;
+			try {
+				const check = await API.post('/password__', JSON.stringify({ uuid: '******', passcode: newpass, update: true }), {
+					Authorization: token
+				});
+				load__ = false;
+				toast(check.message, !check.status);
+				if (check.status) {
+					setTimeout(() => {change = false; con = false}, 3000)
+					pass = ''
+				}
+			} catch (err) {
+				load__ = false;
+				toast('An error occurred', true);
+			}
+		},
+		load__ = false,
+		con = false,
+		newpass = '';
 
 	var toast = (message: any, error: boolean) => {
 		msg = message;
@@ -59,12 +96,21 @@
 					</button>
 				</div>
 				<div class="py-3">
-					<p class="text-center pb-4 font-semibold font-open">Enter Current Password</p>
-					<input
-						type="text"
-						bind:value={pass}
-						class="rounded-md pl-2 border-solid border-color border w-9/10 mx-4 py-2 bg-transparent"
-					/>
+					{#if !con}
+						<p class="text-center pb-4 font-semibold font-open">Enter Current Password</p>
+						<input
+							type="text"
+							bind:value={pass}
+							class="rounded-md pl-2 border-solid border-color border w-9/10 mx-4 py-2 bg-transparent"
+						/>
+					{:else}
+						<p class="text-center pb-4 font-semibold font-open">Enter New Password</p>
+						<input
+							type="text"
+							bind:value={newpass}
+							class="rounded-md pl-2 border-solid border-color border w-9/10 mx-4 py-2 bg-transparent"
+						/>
+					{/if}
 				</div>
 				<div
 					class="grid grid-cols-2 items-center align-middle mt-2 border-t border-solid border-color"
@@ -76,18 +122,33 @@
 						class="text-gray-400 py-4 text-center text-base border-r border-solid border-color"
 						>Cancel</button
 					>
-					<button
-						use:Ripple={{ surface: true, color: 'secondary' }}
-						tabindex="0"
-						on:click={next}
-						class="text-black dark:text-white py-4 text-center text-base border-l border-solid border-color"
-					>
-						{#if !load__}
-							<span>Next</span>
-						{:else}
-							<Loader width={'20px'} height={'20px'} />
-						{/if}
-					</button>
+					{#if !con}
+						<button
+							use:Ripple={{ surface: true, color: 'secondary' }}
+							tabindex="0"
+							on:click={next}
+							class="text-black dark:text-white py-4 text-center text-base border-l border-solid border-color"
+						>
+							{#if !load__}
+								<span>Next</span>
+							{:else}
+								<Loader width={'20px'} height={'20px'} />
+							{/if}
+						</button>
+					{:else}
+						<button
+							use:Ripple={{ surface: true, color: 'secondary' }}
+							tabindex="0"
+							on:click={update}
+							class="text-black dark:text-white py-4 text-center text-base border-l border-solid border-color"
+						>
+							{#if !load__}
+								<span>Proceed</span>
+							{:else}
+								<Loader width={'20px'} height={'20px'} />
+							{/if}
+						</button>
+					{/if}
 				</div>
 			</div>
 		</div>

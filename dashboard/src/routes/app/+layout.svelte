@@ -9,7 +9,6 @@
 	import type { LayoutData } from './$types';
 	import { getStorage } from '$lib/storage';
 
-
 	export let data: LayoutData;
 
 	let open = false,
@@ -60,13 +59,17 @@
 	});
 </script>
 
+<svelte:head>
+	<title>Dashboard | cryptflixinvest.com</title>
+</svelte:head>
+
 <cryptflixinvest-dashboard class="flex overflow-hidden w-full flex-col">
 	<Drawer
 		variant="dismissible"
 		bind:open
 		class="shadow-lg dark:border-slate-500 border-slate-300 dark:bg-black"
 	>
-		<Sidebar {open} />
+		<Sidebar {open} admin={data.user.admin} />
 	</Drawer>
 	<AppContent class="app-content">
 		<div>
@@ -75,6 +78,7 @@
 				loading={data.user.load}
 				plan={data.user.plan}
 				name={data.user.name}
+				admin={data.user.admin}
 				bind:height={h}
 			/>
 		</div>

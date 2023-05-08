@@ -3,22 +3,12 @@ import type { LayoutServerLoad } from './$types';
 import API from '$lib/api'
 
 let gravatar: string,
-    transaction: any,
-    plan: any,
     error: boolean = false,
     find: boolean = false,
-    _id: string,
-    magic_auth: string,
-    wallet: string,
-    referral: string,
     name: string,
-    email_u: string,
-    balance: string,
-    deposit: string,
-    created: string | undefined,
-    country: string,
-    last: string,
-    admin: boolean;
+    user: string,
+    newUser: string,
+    amount: string;
 
 export const load = (async ({ cookies }) => {
 
@@ -33,7 +23,7 @@ export const load = (async ({ cookies }) => {
         throw redirect(307, '/0auth/login');
     }
 
-    if (role == 'admin') throw redirect(307, '/admin')
+    if (role == 'user') throw redirect(307, '/app')
 
     try {
         const req = await API.get('/gravatar', JSON.stringify({ user: email }))
@@ -45,18 +35,20 @@ export const load = (async ({ cookies }) => {
     try {
         const req = await API.post('/user', JSON.stringify({ uuid: '******' }), { Authorization: token, UUID: uuid, SSID: ssid })
         if (!req.status) throw redirect(307, '/0auth/login');
-        _id = req.device_id;
-        magic_auth = req.magic;
-        plan = req.account;
-        wallet = req.wallet;
-        referral = req.referral;
-        name = req.name;
-        email_u = req.email;
-        balance = req.balance;
-        deposit = req.deposit;
-        created = req.created ?? undefined;
-        country = req.country;
-        last = req.last
+        user = req.user;
+        newUser = req.newUser;
+        amount = req.amount
+    } catch (err: any) {
+        console.log(err)
+        throw redirect(307, '/0auth/login');
+    }
+
+    try {
+        const req = await API.post('/admin__', JSON.stringify({ uuid: '******' }), { Authorization: token, UUID: uuid, SSID: ssid })
+        console.log(req)
+        if (!req.status) throw redirect(307, '/0auth/login');
+        user = req.users;
+        amount = req.amount
     } catch (err: any) {
         console.log(err)
         throw redirect(307, '/0auth/login');
@@ -66,22 +58,13 @@ export const load = (async ({ cookies }) => {
         user: {
             gravatar: gravatar,
             load: false,
-            plan: plan,
-            transaction: transaction,
             error: error,
             find: find,
-            device_id: _id,
-            magic_auth: magic_auth,
-            wallet: wallet,
-            referral: referral,
             name: name,
-            email: email_u,
-            balance: balance,
-            deposit: deposit,
-            created: created,
-            country: country,
-            last: last,
-            admin: false
+            admin: true,
+            amount: amount,
+            newUser: newUser,
+            user: user
         }
     }
 

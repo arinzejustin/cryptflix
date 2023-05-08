@@ -7,6 +7,10 @@
 	});
 </script>
 
+<svelte:head>
+	<title>Log In | cryptflixinvest.com</title>
+</svelte:head>
+
 <div>
 	<Login />
 </div>

@@ -51,6 +51,10 @@
 	});
 </script>
 
+<svelte:head>
+	<title>Latest news about crypto market | cryptflixinvest.com</title>
+</svelte:head>
+
 <div
 	in:fly={{ x: 300, delay: 1000 }}
 	out:fly={{ x: -400, duration: 800 }}

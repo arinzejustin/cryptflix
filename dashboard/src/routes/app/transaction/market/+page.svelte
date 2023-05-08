@@ -109,6 +109,7 @@
 </script>
 
 <svelte:head>
+	<title>Market | cryptflixinvest.com</title>
 	<script src="https://widgets.coingecko.com/coingecko-coin-price-marquee-widget.js"></script>
 </svelte:head>
 

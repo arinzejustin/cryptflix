@@ -25,7 +25,8 @@
 		profile = false,
 		complete = false,
 		resendGif = false,
-		ok = true;
+		ok = true,
+		country: string;
 
 	var valid = true,
 		checked = false,
@@ -73,6 +74,7 @@
 			var input = document.querySelector('#phone')!;
 			intlTelInput(input, {
 				customPlaceholder: function (selectedCountryPlaceholder: string, selectedCountryData: any) {
+					country = selectedCountryData.iso2;
 					return 'e.g. ' + selectedCountryPlaceholder;
 				},
 				initialCountry: 'auto',
@@ -100,7 +102,7 @@
 			try {
 				const req = await Api.post(
 					'/onboard',
-					JSON.stringify({ email: e_mail, name: `${first} ${last}`, tel: tel })
+					JSON.stringify({ email: e_mail, name: `${first} ${last}`, tel: tel, country: country })
 				);
 				if ('status' in req) {
 					register = req.status;
@@ -205,7 +207,7 @@
 </script>
 
 <svelte:head>
-	<title>App Sign Up | cryptflixinvest.com</title>
+	<title>Sign Up | cryptflixinvest.com</title>
 	<link rel="stylesheet" href="/css/intlTelInput.min.css" />
 </svelte:head>
 

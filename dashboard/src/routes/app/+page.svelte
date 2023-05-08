@@ -18,7 +18,8 @@
 		referred: number = Number(data.user.referral),
 		refer_link: string = `https://cryptoflixinvest.com/ref/${data.user.device_id}`,
 		visible = false,
-		change = false;
+		change = false,
+		token: string;
 
 	var copy = (e: Event, { message, text }: any) => {
 			e.preventDefault();
@@ -36,20 +37,23 @@
 		wallet = data.user.wallet,
 		acct_vis = () => {};
 	onMount(() => {
-		visible = getStorage('balance_visible') || false;
+		visible = getStorage('balance_visible') ?? false;
 		acct_vis = () => {
 			visible = !visible;
 			setStorage('balance_visible', visible);
 		};
+		token = getStorage('token') ?? ''
 	});
 </script>
 
-<svelte:head />
+<svelte:head>
+	<title>Dashboard | cryptflixinvest.com</title>
+</svelte:head>
 
 <div in:fly={{ x: 300, delay: 1000 }} out:fly={{ x: -400, duration: 800 }} class="mt-4 pt-5">
 	<Alert {alert} message={msg} error={err} onClose={() => (alert = false)} />
 	<div
-		class="bg-yellow-100 w-full dark:bg-yellow-100/30 border border-solid border-yellow-200 shadow-lg rounded-md p-1 md:p-4"
+		class="bg-slate-100 drop-shadow-md w-full dark:bg-yellow-100/30 border border-solid border-yellow-200 shadow-lg rounded-md p-1 md:p-4"
 	>
 		<p class="font-bold font-open text-2xl md:text-3xl text-center pb-4 text-black dark:text-white">Welcome {data.user.name}</p>
 		<div class="flex flex-col md:flex-row justify-between align-middle mx-1 md:mx-4 lg:mx-8">
@@ -86,7 +90,7 @@
 					<span class="bg-black/20 dark:bg-black/40 p-1.5 mt-1.5 rounded-md block text-white">
 						<Icon className={'material-icons inline align-middle mr-2 theme-text-app'} name={'date_range'} />
 						Last Access at
-						<b class="align-middle ml-1"> 3/3/2023, 12:05:49 AM </b>
+						<b class="align-middle ml-1"> {data.user.last} </b>
 					</span>
 				</div>
 			</div>
@@ -229,4 +233,4 @@
 	</div>
 </div>
 <Plan active={plan} onClose={() => (plan = false)} />
-<Password {change} onClose={() => (change = false)} />
+<Password {change} onClose={() => (change = false)} {token} />

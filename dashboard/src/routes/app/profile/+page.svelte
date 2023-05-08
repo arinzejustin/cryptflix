@@ -14,7 +14,7 @@
 		fileinput: HTMLInputElement,
 		avi: string = data.user.gravatar,
 		verified = true,
-		country = 'ng',
+		country = data.user.country ?? 'us',
 		change = false,
 		name = data.user.name,
 		email = data.user.email,
@@ -172,7 +172,7 @@
 							</div>
 						</div>
 						<div class="">
-							<p class="block mb-2 text-base font-mono">Currency</p>
+							<p class="block mb-2 text-base font-mono">App currency</p>
 							<p>USD - (Dollar)</p>
 						</div>
 					</div>

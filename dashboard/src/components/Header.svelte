@@ -13,7 +13,8 @@
 		src: string,
 		height: number,
 		plan: string,
-		name: string;
+		name: string,
+		admin: boolean;
 
 	let shadow = false,
 		menu = false,
@@ -169,96 +170,100 @@
 											class="text-slate-700 relative inline-block dark:text-slate-50 pt-1.5 pr-2 text-xl font-semibold font-nunito"
 										>
 											{name}
-											<Badge class="badge theme-text-app">{plan}</Badge>
+											<Badge class="badge theme-text-app">{admin ? 'Admin' : plan}</Badge>
 										</p>
 									</div>
-									<div>
-										{#if plan == 'Share 2'}
+									{#if !admin}
+										<div>
+											{#if plan == 'Share 2'}
+												<svg
+													class="w-7 h-7"
+													xmlns="http://www.w3.org/2000/svg"
+													width="1em"
+													height="1em"
+													viewBox="0 0 24 24"
+													><rect x="0" y="0" width="24" height="24" fill="none" stroke="none" /><g
+														fill="none"
+														stroke="skyblue"
+														stroke-width="1.5"
+														><path
+															d="M11.607 2.342a.6.6 0 0 1 .787 0l1.948 1.692a.6.6 0 0 0 .445.145l2.572-.224a.6.6 0 0 1 .636.463l.582 2.514a.6.6 0 0 0 .275.38l2.212 1.33a.6.6 0 0 1 .243.748l-1.008 2.376a.6.6 0 0 0 0 .468l1.008 2.376a.6.6 0 0 1-.243.749l-2.212 1.33a.6.6 0 0 0-.275.379l-.582 2.514a.6.6 0 0 1-.636.463l-2.572-.224a.6.6 0 0 0-.445.144l-1.949 1.693a.6.6 0 0 1-.787 0l-1.948-1.693a.6.6 0 0 0-.445-.144l-2.572.224a.6.6 0 0 1-.636-.463l-.582-2.514a.6.6 0 0 0-.275-.38l-2.212-1.33a.6.6 0 0 1-.243-.748l1.008-2.376a.6.6 0 0 0 0-.468L2.693 9.39a.6.6 0 0 1 .243-.749l2.212-1.33a.6.6 0 0 0 .275-.379l.582-2.514a.6.6 0 0 1 .636-.463l2.572.224a.6.6 0 0 0 .445-.145l1.949-1.692Z"
+														/><path
+															stroke-linecap="round"
+															stroke-linejoin="round"
+															d="m9 13l2 2l5-5"
+														/></g
+													></svg
+												>
+											{:else}
+												<button
+													on:click={() => {
+														(menu = false), (active = true);
+													}}
+													class="bg-blue-600 text-white rounded-full text-sm p-1.5 ring-offset-2 hover:ring-2 ring-blue-500 hover:shadow-lg"
+													>Upgrade</button
+												>
+											{/if}
+										</div>
+									{/if}
+								</div>
+								{#if !admin}
+									<div
+										class="pt-3 group/item px-2 {$page.url.pathname === '/app/profile'
+											? 'mb-1'
+											: undefined}"
+									>
+										<!-- svelte-ignore a11y-missing-content -->
+										<a
+											href="/app/profile"
+											class="{$page.url.pathname === '/app/profile'
+												? 'bg-yellow-100 theme-text-app dark:bg-yellow-100/20 group-hover/item:bg-bg-yellow-100 dark:group-hover/item:bg-yellow-100/20'
+												: 'group-hover/item:bg-slate-500/10 dark:group-hover/item:bg-slate-500/30'} flex flex-auto px-2 items-center rounded-md transition-all duration-500 py-3"
+										>
 											<svg
-												class="w-7 h-7"
+												class="w-6 h-6 mr-3 text-slate-700 dark:text-slate-50"
+												xmlns="http://www.w3.org/2000/svg"
+												width="1.13em"
+												height="1em"
+												viewBox="0 0 36 32"
+												><rect x="0" y="0" width="36" height="32" fill="none" stroke="none" /><path
+													fill="currentColor"
+													d="M.5 31.983a.503.503 0 0 0 .612-.354c1.03-3.843 5.216-4.839 7.718-5.435c.627-.149 1.122-.267 1.444-.406c2.85-1.237 3.779-3.227 4.057-4.679a.5.5 0 0 0-.165-.473c-1.484-1.281-2.736-3.204-3.526-5.416a.492.492 0 0 0-.103-.171c-1.045-1.136-1.645-2.337-1.645-3.294c0-.559.211-.934.686-1.217a.5.5 0 0 0 .243-.408C10.042 5.036 13.67 1.026 18.12 1l.107.007c4.472.062 8.077 4.158 8.206 9.324a.498.498 0 0 0 .178.369c.313.265.459.601.459 1.057c0 .801-.427 1.786-1.201 2.772a.522.522 0 0 0-.084.158c-.8 2.536-2.236 4.775-3.938 6.145a.502.502 0 0 0-.178.483c.278 1.451 1.207 3.44 4.057 4.679c.337.146.86.26 1.523.403c2.477.536 6.622 1.435 7.639 5.232a.5.5 0 0 0 .966-.26c-1.175-4.387-5.871-5.404-8.393-5.95c-.585-.127-1.09-.236-1.336-.344c-1.86-.808-3.006-2.039-3.411-3.665c1.727-1.483 3.172-3.771 3.998-6.337c.877-1.14 1.359-2.314 1.359-3.317c0-.669-.216-1.227-.644-1.663C27.189 4.489 23.19.076 18.227.005l-.149-.002c-4.873.026-8.889 4.323-9.24 9.83c-.626.46-.944 1.105-.944 1.924c0 1.183.669 2.598 1.84 3.896c.809 2.223 2.063 4.176 3.556 5.543c-.403 1.632-1.55 2.867-3.414 3.676c-.241.105-.721.22-1.277.352c-2.541.604-7.269 1.729-8.453 6.147a.5.5 0 0 0 .354.612z"
+												/></svg
+											>
+											<span class="ml-1 text-lg">Profile</span>
+										</a>
+									</div>
+									<div
+										class="group/item px-2 {$page.url.pathname === '/app/settings'
+											? 'mt-1'
+											: undefined}"
+									>
+										<!-- svelte-ignore a11y-missing-content -->
+										<a
+											href="/app/settings"
+											class="{$page.url.pathname === '/app/settings'
+												? 'bg-yellow-100 theme-text-app dark:bg-yellow-100/20 group-hover/item:bg-bg-yellow-100 dark:group-hover/item:bg-yellow-100/20'
+												: 'group-hover/item:bg-slate-500/10 dark:group-hover/item:bg-slate-500/30'} flex flex-auto px-2 items-center rounded-md transition-all duration-500 py-3"
+										>
+											<svg
+												class="w-6 h-6 text-slate-700 dark:text-slate-50 mr-3"
 												xmlns="http://www.w3.org/2000/svg"
 												width="1em"
 												height="1em"
 												viewBox="0 0 24 24"
 												><rect x="0" y="0" width="24" height="24" fill="none" stroke="none" /><g
-													fill="none"
-													stroke="skyblue"
-													stroke-width="1.5"
+													transform="rotate(180 12 12)"
 													><path
-														d="M11.607 2.342a.6.6 0 0 1 .787 0l1.948 1.692a.6.6 0 0 0 .445.145l2.572-.224a.6.6 0 0 1 .636.463l.582 2.514a.6.6 0 0 0 .275.38l2.212 1.33a.6.6 0 0 1 .243.748l-1.008 2.376a.6.6 0 0 0 0 .468l1.008 2.376a.6.6 0 0 1-.243.749l-2.212 1.33a.6.6 0 0 0-.275.379l-.582 2.514a.6.6 0 0 1-.636.463l-2.572-.224a.6.6 0 0 0-.445.144l-1.949 1.693a.6.6 0 0 1-.787 0l-1.948-1.693a.6.6 0 0 0-.445-.144l-2.572.224a.6.6 0 0 1-.636-.463l-.582-2.514a.6.6 0 0 0-.275-.38l-2.212-1.33a.6.6 0 0 1-.243-.748l1.008-2.376a.6.6 0 0 0 0-.468L2.693 9.39a.6.6 0 0 1 .243-.749l2.212-1.33a.6.6 0 0 0 .275-.379l.582-2.514a.6.6 0 0 1 .636-.463l2.572.224a.6.6 0 0 0 .445-.145l1.949-1.692Z"
-													/><path
-														stroke-linecap="round"
-														stroke-linejoin="round"
-														d="m9 13l2 2l5-5"
+														fill="currentColor"
+														d="m9.25 22l-.4-3.2q-.325-.125-.612-.3q-.288-.175-.563-.375L4.7 19.375l-2.75-4.75l2.575-1.95Q4.5 12.5 4.5 12.337v-.675q0-.162.025-.337L1.95 9.375l2.75-4.75l2.975 1.25q.275-.2.575-.375q.3-.175.6-.3l.4-3.2h5.5l.4 3.2q.325.125.613.3q.287.175.562.375l2.975-1.25l2.75 4.75l-2.575 1.95q.025.175.025.337v.675q0 .163-.05.338l2.575 1.95l-2.75 4.75l-2.95-1.25q-.275.2-.575.375q-.3.175-.6.3l-.4 3.2Zm2.8-6.5q1.45 0 2.475-1.025Q15.55 13.45 15.55 12q0-1.45-1.025-2.475Q13.5 8.5 12.05 8.5q-1.475 0-2.488 1.025Q8.55 10.55 8.55 12q0 1.45 1.012 2.475Q10.575 15.5 12.05 15.5Z"
 													/></g
 												></svg
 											>
-										{:else}
-											<button
-												on:click={() => {
-													(menu = false), (active = true);
-												}}
-												class="bg-blue-600 text-white rounded-full text-sm p-1.5 ring-offset-2 hover:ring-2 ring-blue-500 hover:shadow-lg"
-												>Upgrade</button
-											>
-										{/if}
+											<span class="ml-1 text-lg">Settings</span>
+										</a>
 									</div>
-								</div>
-								<div
-									class="pt-3 group/item px-2 {$page.url.pathname === '/app/profile'
-										? 'mb-1'
-										: undefined}"
-								>
-									<!-- svelte-ignore a11y-missing-content -->
-									<a
-										href="/app/profile"
-										class="{$page.url.pathname === '/app/profile'
-											? 'bg-yellow-100 theme-text-app dark:bg-yellow-100/20 group-hover/item:bg-bg-yellow-100 dark:group-hover/item:bg-yellow-100/20'
-											: 'group-hover/item:bg-slate-500/10 dark:group-hover/item:bg-slate-500/30'} flex flex-auto px-2 items-center rounded-md transition-all duration-500 py-3"
-									>
-										<svg
-											class="w-6 h-6 mr-3 text-slate-700 dark:text-slate-50"
-											xmlns="http://www.w3.org/2000/svg"
-											width="1.13em"
-											height="1em"
-											viewBox="0 0 36 32"
-											><rect x="0" y="0" width="36" height="32" fill="none" stroke="none" /><path
-												fill="currentColor"
-												d="M.5 31.983a.503.503 0 0 0 .612-.354c1.03-3.843 5.216-4.839 7.718-5.435c.627-.149 1.122-.267 1.444-.406c2.85-1.237 3.779-3.227 4.057-4.679a.5.5 0 0 0-.165-.473c-1.484-1.281-2.736-3.204-3.526-5.416a.492.492 0 0 0-.103-.171c-1.045-1.136-1.645-2.337-1.645-3.294c0-.559.211-.934.686-1.217a.5.5 0 0 0 .243-.408C10.042 5.036 13.67 1.026 18.12 1l.107.007c4.472.062 8.077 4.158 8.206 9.324a.498.498 0 0 0 .178.369c.313.265.459.601.459 1.057c0 .801-.427 1.786-1.201 2.772a.522.522 0 0 0-.084.158c-.8 2.536-2.236 4.775-3.938 6.145a.502.502 0 0 0-.178.483c.278 1.451 1.207 3.44 4.057 4.679c.337.146.86.26 1.523.403c2.477.536 6.622 1.435 7.639 5.232a.5.5 0 0 0 .966-.26c-1.175-4.387-5.871-5.404-8.393-5.95c-.585-.127-1.09-.236-1.336-.344c-1.86-.808-3.006-2.039-3.411-3.665c1.727-1.483 3.172-3.771 3.998-6.337c.877-1.14 1.359-2.314 1.359-3.317c0-.669-.216-1.227-.644-1.663C27.189 4.489 23.19.076 18.227.005l-.149-.002c-4.873.026-8.889 4.323-9.24 9.83c-.626.46-.944 1.105-.944 1.924c0 1.183.669 2.598 1.84 3.896c.809 2.223 2.063 4.176 3.556 5.543c-.403 1.632-1.55 2.867-3.414 3.676c-.241.105-.721.22-1.277.352c-2.541.604-7.269 1.729-8.453 6.147a.5.5 0 0 0 .354.612z"
-											/></svg
-										>
-										<span class="ml-1 text-lg">Profile</span>
-									</a>
-								</div>
-								<div
-									class="group/item px-2 {$page.url.pathname === '/app/settings'
-										? 'mt-1'
-										: undefined}"
-								>
-									<!-- svelte-ignore a11y-missing-content -->
-									<a
-										href="/app/settings"
-										class="{$page.url.pathname === '/app/settings'
-											? 'bg-yellow-100 theme-text-app dark:bg-yellow-100/20 group-hover/item:bg-bg-yellow-100 dark:group-hover/item:bg-yellow-100/20'
-											: 'group-hover/item:bg-slate-500/10 dark:group-hover/item:bg-slate-500/30'} flex flex-auto px-2 items-center rounded-md transition-all duration-500 py-3"
-									>
-										<svg
-											class="w-6 h-6 text-slate-700 dark:text-slate-50 mr-3"
-											xmlns="http://www.w3.org/2000/svg"
-											width="1em"
-											height="1em"
-											viewBox="0 0 24 24"
-											><rect x="0" y="0" width="24" height="24" fill="none" stroke="none" /><g
-												transform="rotate(180 12 12)"
-												><path
-													fill="currentColor"
-													d="m9.25 22l-.4-3.2q-.325-.125-.612-.3q-.288-.175-.563-.375L4.7 19.375l-2.75-4.75l2.575-1.95Q4.5 12.5 4.5 12.337v-.675q0-.162.025-.337L1.95 9.375l2.75-4.75l2.975 1.25q.275-.2.575-.375q.3-.175.6-.3l.4-3.2h5.5l.4 3.2q.325.125.613.3q.287.175.562.375l2.975-1.25l2.75 4.75l-2.575 1.95q.025.175.025.337v.675q0 .163-.05.338l2.575 1.95l-2.75 4.75l-2.95-1.25q-.275.2-.575.375q-.3.175-.6.3l-.4 3.2Zm2.8-6.5q1.45 0 2.475-1.025Q15.55 13.45 15.55 12q0-1.45-1.025-2.475Q13.5 8.5 12.05 8.5q-1.475 0-2.488 1.025Q8.55 10.55 8.55 12q0 1.45 1.012 2.475Q10.575 15.5 12.05 15.5Z"
-												/></g
-											></svg
-										>
-										<span class="ml-1 text-lg">Settings</span>
-									</a>
-								</div>
+								{/if}
 								<div class="border-t border-b border-solid border-color px-2 py-3 mb-2 mt-1.5">
 									<div class="flex flex-row justify-between mx-2">
 										<p class="text-lg peer cursor-pointer">Theme</p>
@@ -326,66 +331,68 @@
 										</labal>
 									</div>
 								</div>
-								<div class="pb-3 group/item px-2">
-									<!-- svelte-ignore a11y-missing-content -->
-									<a
-										href="/app/transaction"
-										class="{$page.url.pathname === '/app/transaction'
-											? 'bg-yellow-100 theme-text-app dark:bg-yellow-100/20 group-hover/item:bg-bg-yellow-100 dark:group-hover/item:bg-yellow-100/20'
-											: 'group-hover/item:bg-slate-500/10 dark:group-hover/item:bg-slate-500/30'} flex flex-auto px-2 items-center rounded-md transition-all duration-500 py-3"
-									>
-										<svg
-											class="w-6 h-6 mr-3 text-slate-700 dark:text-slate-50"
-											xmlns="http://www.w3.org/2000/svg"
-											width="1em"
-											height="1em"
-											viewBox="0 0 1024 1024"
-											><rect
-												x="0"
-												y="0"
-												width="1024"
-												height="1024"
-												fill="none"
-												stroke="none"
-											/><path
-												fill="currentColor"
-												d="M668.6 320c0-4.4-3.6-8-8-8h-54.5c-3 0-5.8 1.7-7.1 4.4l-84.7 168.8H511l-84.7-168.8a8 8 0 0 0-7.1-4.4h-55.7c-1.3 0-2.6.3-3.8 1c-3.9 2.1-5.3 7-3.2 10.8l103.9 191.6h-57c-4.4 0-8 3.6-8 8v27.1c0 4.4 3.6 8 8 8h76v39h-76c-4.4 0-8 3.6-8 8v27.1c0 4.4 3.6 8 8 8h76V704c0 4.4 3.6 8 8 8h49.9c4.4 0 8-3.6 8-8v-63.5h76.3c4.4 0 8-3.6 8-8v-27.1c0-4.4-3.6-8-8-8h-76.3v-39h76.3c4.4 0 8-3.6 8-8v-27.1c0-4.4-3.6-8-8-8H564l103.7-191.6c.5-1.1.9-2.4.9-3.7zM157.9 504.2a352.7 352.7 0 0 1 103.5-242.4c32.5-32.5 70.3-58.1 112.4-75.9c43.6-18.4 89.9-27.8 137.6-27.8c47.8 0 94.1 9.3 137.6 27.8c42.1 17.8 79.9 43.4 112.4 75.9c10 10 19.3 20.5 27.9 31.4l-50 39.1a8 8 0 0 0 3 14.1l156.8 38.3c5 1.2 9.9-2.6 9.9-7.7l.8-161.5c0-6.7-7.7-10.5-12.9-6.3l-47.8 37.4C770.7 146.3 648.6 82 511.5 82C277 82 86.3 270.1 82 503.8a8 8 0 0 0 8 8.2h60c4.3 0 7.8-3.5 7.9-7.8zM934 512h-60c-4.3 0-7.9 3.5-8 7.8a352.7 352.7 0 0 1-103.5 242.4a352.57 352.57 0 0 1-112.4 75.9c-43.6 18.4-89.9 27.8-137.6 27.8s-94.1-9.3-137.6-27.8a352.57 352.57 0 0 1-112.4-75.9c-10-10-19.3-20.5-27.9-31.4l49.9-39.1a8 8 0 0 0-3-14.1l-156.8-38.3c-5-1.2-9.9 2.6-9.9 7.7l-.8 161.7c0 6.7 7.7 10.5 12.9 6.3l47.8-37.4C253.3 877.7 375.4 942 512.5 942C747 942 937.7 753.9 942 520.2a8 8 0 0 0-8-8.2z"
-											/></svg
+								{#if !admin}
+									<div class="pb-3 group/item px-2">
+										<!-- svelte-ignore a11y-missing-content -->
+										<a
+											href="/app/transaction"
+											class="{$page.url.pathname === '/app/transaction'
+												? 'bg-yellow-100 theme-text-app dark:bg-yellow-100/20 group-hover/item:bg-bg-yellow-100 dark:group-hover/item:bg-yellow-100/20'
+												: 'group-hover/item:bg-slate-500/10 dark:group-hover/item:bg-slate-500/30'} flex flex-auto px-2 items-center rounded-md transition-all duration-500 py-3"
 										>
-										<span class="ml-1 text-lg">Transactions</span>
-									</a>
-								</div>
-								<div class="pb-3 group/item px-2">
-									<!-- svelte-ignore a11y-missing-content -->
-									<a
-										href="/help"
-										on:click={(e) => {
-											help(e);
-										}}
-										class="flex flex-auto px-2 items-center group-hover/item:bg-slate-500/10 dark:group-hover/item:bg-slate-500/30 rounded-md transition-all duration-500 py-3"
-									>
-										<svg
-											class="w-6 h-6 mr-3 text-slate-700 dark:text-slate-50"
-											xmlns="http://www.w3.org/2000/svg"
-											width="1em"
-											height="1em"
-											viewBox="0 0 24 24"
-											><rect x="0" y="0" width="24" height="24" fill="none" stroke="none" /><g
-												fill="none"
-												stroke="currentColor"
-												stroke-width="1.5"
-												><path
-													stroke-linecap="round"
-													stroke-linejoin="round"
-													d="M20 11a8 8 0 1 0-16 0"
+											<svg
+												class="w-6 h-6 mr-3 text-slate-700 dark:text-slate-50"
+												xmlns="http://www.w3.org/2000/svg"
+												width="1em"
+												height="1em"
+												viewBox="0 0 1024 1024"
+												><rect
+													x="0"
+													y="0"
+													width="1024"
+													height="1024"
+													fill="none"
+													stroke="none"
 												/><path
-													d="M2 15.438v-1.876a2 2 0 0 1 1.515-1.94l1.74-.436a.6.6 0 0 1 .745.582v5.463a.6.6 0 0 1-.746.583l-1.74-.435A2 2 0 0 1 2 15.439Zm20 0v-1.876a2 2 0 0 0-1.515-1.94l-1.74-.436a.6.6 0 0 0-.745.582v5.463a.6.6 0 0 0 .745.583l1.74-.435A2 2 0 0 0 22 15.439ZM20 18v.5a2 2 0 0 1-2 2h-3.5"
-												/><path d="M13.5 22h-3a1.5 1.5 0 0 1 0-3h3a1.5 1.5 0 0 1 0 3Z" /></g
-											></svg
+													fill="currentColor"
+													d="M668.6 320c0-4.4-3.6-8-8-8h-54.5c-3 0-5.8 1.7-7.1 4.4l-84.7 168.8H511l-84.7-168.8a8 8 0 0 0-7.1-4.4h-55.7c-1.3 0-2.6.3-3.8 1c-3.9 2.1-5.3 7-3.2 10.8l103.9 191.6h-57c-4.4 0-8 3.6-8 8v27.1c0 4.4 3.6 8 8 8h76v39h-76c-4.4 0-8 3.6-8 8v27.1c0 4.4 3.6 8 8 8h76V704c0 4.4 3.6 8 8 8h49.9c4.4 0 8-3.6 8-8v-63.5h76.3c4.4 0 8-3.6 8-8v-27.1c0-4.4-3.6-8-8-8h-76.3v-39h76.3c4.4 0 8-3.6 8-8v-27.1c0-4.4-3.6-8-8-8H564l103.7-191.6c.5-1.1.9-2.4.9-3.7zM157.9 504.2a352.7 352.7 0 0 1 103.5-242.4c32.5-32.5 70.3-58.1 112.4-75.9c43.6-18.4 89.9-27.8 137.6-27.8c47.8 0 94.1 9.3 137.6 27.8c42.1 17.8 79.9 43.4 112.4 75.9c10 10 19.3 20.5 27.9 31.4l-50 39.1a8 8 0 0 0 3 14.1l156.8 38.3c5 1.2 9.9-2.6 9.9-7.7l.8-161.5c0-6.7-7.7-10.5-12.9-6.3l-47.8 37.4C770.7 146.3 648.6 82 511.5 82C277 82 86.3 270.1 82 503.8a8 8 0 0 0 8 8.2h60c4.3 0 7.8-3.5 7.9-7.8zM934 512h-60c-4.3 0-7.9 3.5-8 7.8a352.7 352.7 0 0 1-103.5 242.4a352.57 352.57 0 0 1-112.4 75.9c-43.6 18.4-89.9 27.8-137.6 27.8s-94.1-9.3-137.6-27.8a352.57 352.57 0 0 1-112.4-75.9c-10-10-19.3-20.5-27.9-31.4l49.9-39.1a8 8 0 0 0-3-14.1l-156.8-38.3c-5-1.2-9.9 2.6-9.9 7.7l-.8 161.7c0 6.7 7.7 10.5 12.9 6.3l47.8-37.4C253.3 877.7 375.4 942 512.5 942C747 942 937.7 753.9 942 520.2a8 8 0 0 0-8-8.2z"
+												/></svg
+											>
+											<span class="ml-1 text-lg">Transactions</span>
+										</a>
+									</div>
+									<div class="pb-3 group/item px-2">
+										<!-- svelte-ignore a11y-missing-content -->
+										<a
+											href="/help"
+											on:click={(e) => {
+												help(e);
+											}}
+											class="flex flex-auto px-2 items-center group-hover/item:bg-slate-500/10 dark:group-hover/item:bg-slate-500/30 rounded-md transition-all duration-500 py-3"
 										>
-										<span class="ml-1 text-lg">Help</span>
-									</a>
-								</div>
+											<svg
+												class="w-6 h-6 mr-3 text-slate-700 dark:text-slate-50"
+												xmlns="http://www.w3.org/2000/svg"
+												width="1em"
+												height="1em"
+												viewBox="0 0 24 24"
+												><rect x="0" y="0" width="24" height="24" fill="none" stroke="none" /><g
+													fill="none"
+													stroke="currentColor"
+													stroke-width="1.5"
+													><path
+														stroke-linecap="round"
+														stroke-linejoin="round"
+														d="M20 11a8 8 0 1 0-16 0"
+													/><path
+														d="M2 15.438v-1.876a2 2 0 0 1 1.515-1.94l1.74-.436a.6.6 0 0 1 .745.582v5.463a.6.6 0 0 1-.746.583l-1.74-.435A2 2 0 0 1 2 15.439Zm20 0v-1.876a2 2 0 0 0-1.515-1.94l-1.74-.436a.6.6 0 0 0-.745.582v5.463a.6.6 0 0 0 .745.583l1.74-.435A2 2 0 0 0 22 15.439ZM20 18v.5a2 2 0 0 1-2 2h-3.5"
+													/><path d="M13.5 22h-3a1.5 1.5 0 0 1 0-3h3a1.5 1.5 0 0 1 0 3Z" /></g
+												></svg
+											>
+											<span class="ml-1 text-lg">Help</span>
+										</a>
+									</div>
+								{/if}
 								<div class="border-color border-solid border-t py-2 group/item px-2">
 									<!-- svelte-ignore a11y-missing-content -->
 									<a

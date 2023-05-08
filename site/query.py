@@ -1,4 +1,5 @@
 import json
+import re
 import mysql.connector as mc
 import os
 import uuid
@@ -55,8 +56,8 @@ def db_login(email: str, password: str):
                 ssid = uuid.uuid4().hex
                 token = generate(
                     uuid=user[1], email=email, key=user[0], name=user[2], ssid=ssid)
-                result = dict(message='Login successful', status=True, uuid=user[1], account=user[8], name=user[2], email=email,
-                              bearer=token, role=user[5] or 'user', maogic=user[9], ssid=ssid)
+                result = dict(message='Login successful', status=True, uuid=user[1], account=user[9], name=user[2], email=email,
+                              bearer=token, role=user[5], maogic=user[10], ssid=ssid)
                 return result
             else:
                 result = dict(message='Invalid credentials',
@@ -70,7 +71,7 @@ def db_login(email: str, password: str):
         return except_func('Login')
 
 
-def db_onboard(email: str, name: str, tel: str, time: str):
+def db_onboard(email: str, name: str, tel: str, country: str, time: str):
     """
     It inserts a new user into the database
 
@@ -85,7 +86,6 @@ def db_onboard(email: str, name: str, tel: str, time: str):
     try:
         cursor.execute('SELECT * FROM users WHERE email = %s', (email,))
         account = cursor.fetchone()
-        print(account)
         if account:
             if account[4] is None:
                 query = "DELETE FROM users WHERE email = %s"
@@ -96,13 +96,13 @@ def db_onboard(email: str, name: str, tel: str, time: str):
                 mydb.commit()
                 return db_onboard(email=account[3], name=name, tel=tel)
             return dict(message='Account already exists!', status=False)
-        query = 'INSERT INTO users (uuid, name, email, tel, a_type, wallet, theme, balance, magic_auth, referral, device_id, deposit, created) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)'
+        query = 'INSERT INTO users (uuid, name, email, tel, role, a_type, wallet, theme, balance, magic_auth, referral, device_id, deposit, country, created) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)'
         uid = uuid.uuid4().hex
         wallet = demo_wallet()
         magic_link = safe_url_auth()
         _id = device_id()
-        values = (uid, name, email, tel, 'Plan 1', wallet, 'light',
-                  '$50.00', magic_link, '0', _id, '$50.00', time)
+        values = (uid, name, email, tel, 'user', 'Plan 1', wallet, 'light',
+                  '$50.00', magic_link, '0', _id, '$50.00', country, time)
         cursor.execute(query, values)
         mydb.commit()
         onboard = db_verify(email=email, insert=True)
@@ -218,8 +218,8 @@ def db_passcode(uid: str, passcode: str):
         token = generate(
             uuid=uid, email=user[3], key=user[0], name=user[2], ssid=ssid)
         mydb.commit()
-        return dict(message='Passcode Set', status=True, uuid=user[1], account=user[8], name=user[2], email=user[3],
-                    bearer=token, role=user[5] or 'user', maogic=user[9], ssid=ssid)
+        return dict(message='Passcode Set', status=True, uuid=user[1], account=user[9], name=user[2], email=user[3],
+                    bearer=token, role=user[5], maogic=user[10], ssid=ssid)
     except Exception as e:
         mydb.rollback()
         print(str(e))
@@ -230,7 +230,7 @@ def db_trans(uuid: str):
     """
     This function retrieves data from a MySQL database table for a specific user UUID and returns it as
     a dictionary with a status flag.
-    
+
     :param uuid: The uuid parameter is a string that represents a unique identifier for a user. It is
     used to query a specific table in a database that contains information about that user
     :type uuid: str
@@ -257,6 +257,7 @@ def db_trans(uuid: str):
         print(f"An error occurred: {e}")
         mydb.rollback()
         return {'data': None, 'status': False}
+
 
 def except_func(error: str):
     """
@@ -294,10 +295,57 @@ def db_safe_(magic: str, uuid: str):
         return except_func('Magic authentication')
 
 
-def db_password__(uuid: str, update: bool):
+def db_password__(uuid: str, update: bool, passcode: str):
+    """
+    This is a Python function that updates or verifies a user's password in a database using hashed
+    passwords.
+
+    :param uuid: A string representing the unique identifier of a user in a database
+    :type uuid: str
+    :param update: A boolean value indicating whether to update the password or not
+    :type update: bool
+    :param passcode: The passcode parameter is a string that represents the password that the user wants
+    to set or verify
+    :type passcode: str
+    :return: a dictionary with different key-value pairs depending on the input parameters and the
+    execution of the code. The keys in the dictionary can be 'token', 'status', 'message', and 'reload'.
+    The values for these keys can be None, True, False, or a string message.
+    """
     if not uuid or uuid is None:
         return dict(token=None, status=False)
-    return
+    if update:
+        if len(passcode) < 8:
+            return dict(status=False, message='Passcode is too short')
+        try:
+            pass_hash = generate_password_hash(
+                password=passcode, method=f"{SALT}", salt_length=57)
+            query = "UPDATE users SET passcode = %s WHERE uuid = %s"
+            values = (pass_hash, uuid)
+            cursor.execute(query, values)
+            mydb.commit()
+            return dict(message="Passcode updated successfully", status=True)
+        except Exception as e:
+            mydb.roolback()
+            print(str(e))
+            return except_func('Password update')
+    else:
+        try:
+            query = "SELECT passcode FROM users WHERE uuid = %s"
+            value = (uuid, )
+            cursor.execute(query, value)
+            user = cursor.fetchone()
+            if user:
+                verify = check_password_hash(user[0], passcode)
+                if verify:
+                    return dict(status=True)
+                else:
+                    return dict(status=False, message='Incorrect passcode')
+            else:
+                return dict(status=False, reload=True, message='Incorrect passcode')
+        except Exception as e:
+            print(str(e))
+            return except_func('Passcode ')
+
 
 def fetch_user(uuid: str):
     """
@@ -320,8 +368,8 @@ def fetch_user(uuid: str):
         cursor.execute(query, value)
         user = cursor.fetchone()
         if user:
-            result = dict(name=user[2], tel=user[6], acc_status=user[8], uuid=user[1], email=user[3], magic=user[9], balance=user[11],
-                          account=user[12], wallet=user[13], device_id=user[15], referral=user[14], deposit=user[5], created=user[16], status=True)
+            result = dict(name=user[2], tel=user[7], acc_status=user[9], uuid=user[1], email=user[3], magic=user[10], balance=user[12],
+                          account=user[13], wallet=user[14], device_id=user[16], referral=user[15], deposit=user[6], country=user[17], created=user[18], status=True)
             return result
         else:
             return dict(status=False, message='User not found')
@@ -330,11 +378,11 @@ def fetch_user(uuid: str):
         return except_func('User')
 
 
-def add(amount: str, status: str, time: any, coin: str, address: str, type_: str, uuid: str, session:str):
+def add(amount: str, status: str, time: any, coin: str, address: str, type_: str, uuid: str, session: str):
     """
     The function adds transaction details to a user's database table and returns a success message or an
     error message.
-    
+
     :param amount: The amount of the transaction as a string
     :type amount: str
     :param status: The status of the transaction (e.g. "pending", "completed", "failed")
@@ -362,7 +410,8 @@ def add(amount: str, status: str, time: any, coin: str, address: str, type_: str
     try:
         trans_id = device_id(ranges=11)
         query = f"INSERT INTO user_{uuid} (ADDRESS, AMOUNT, STATUS, TIME, TYPE, COIN, SESSION_ID, TRANS_ID) VALUES (%s, %s, %s, %s, %s, %s, %s, %s)"
-        values = (address, amount, status, time, type_, coin, session, str(trans_id))
+        values = (address, amount, status, time,
+                  type_, coin, session, str(trans_id))
         cursor.execute(query, values)
         mydb.commit()
         return dict(message='Your transaction is being processed', status=True)
@@ -370,3 +419,63 @@ def add(amount: str, status: str, time: any, coin: str, address: str, type_: str
         mydb.rollback()
         print(str(e))
     return except_func('Transaction')
+
+
+def db_ref(user: str):
+    """
+    The function updates the referral count of a user in a database based on their device ID.
+    
+    :param user: The user parameter is a string representing the device ID of a user
+    :type user: str
+    :return: A dictionary with a "status" key indicating whether the function was successful or not. If
+    successful, the value of "status" is True, otherwise it is False.
+    """
+    if not user:
+        return dict(status=False)
+    try:
+        query = "SELECT referral FROM users WHERE device_id = %s"
+        value = (user, )
+        cursor.execute(query, value)
+        users = cursor.fetchone()
+        if users:
+            refers = int(users[0])
+            newref = refers + 1
+            try:
+                query = "UPDATE users SET referral = %s WHERE device_id = %s"
+                values = (str(newref), user)
+                cursor.execute(query, values)
+                mydb.commit()
+                return dict(status=True)
+            except Exception as e:
+                mydb.rollback()
+                print(str(e))
+                return dict(status=False)
+    except Exception as e:
+        mydb.rollback()
+        print(str(e))
+        return dict(status=False)
+
+def db_admin__(date: str):
+    try:
+        query = "SELECT COUNT(*) FROM users"
+        cursor.execute(query)
+        result = cursor.fetchone()
+        count = result[0]
+        query1 = "SELECT deposit FROM users"
+        cursor.execute(query1)
+        rows = cursor.fetchall()
+        sum_value = 0
+        for row in rows:
+            amount = re.sub('[^\d.]', '', row[0])
+            sum_value += float(amount)
+        query2 = "SELECT COUNT(*) FROM users WHERE created LIKE %s"
+        cursor.execute(query2, (f"%{date}%",))
+        counts = cursor.fetchone()[0]
+        cursor.close()
+        mydb.close()
+        return dict(user=count, deposit=f"${sum_value}0", newUser=counts, status=True)
+    except Exception as e:
+        print(str(e))
+        cursor.close()
+        mydb.close()
+        return except_func('Admin request')

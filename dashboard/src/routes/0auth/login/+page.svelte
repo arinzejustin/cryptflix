@@ -106,7 +106,7 @@
 </script>
 
 <svelte:head>
-	<title>App Sign In | cryptflixinvest.com</title>
+	<title>Log In | cryptflixinvest.com</title>
 </svelte:head>
 
 <cryptflixinvest-login class="md:mx-10">

@@ -14,7 +14,7 @@
 			to!.route.id == '/0auth/login' ||
 			to!.route.id == '/0auth/onboard' ||
 			to!.route.id == '/0auth/forget' ||
-			to!.route.id == '/0auth/logout' || to!.route.id == '/ref/'
+			to!.route.id == '/0auth/logout' || to!.route.id == '/ref/[:id]'
 		)
 			return;
 		else {
@@ -24,15 +24,13 @@
 
 	var user = async () => {
 		try {
-			const user = await API.post('/user_details', JSON.stringify({ uuid: '' }), {
+			const user = await API.post('/user_details', JSON.stringify({ uuid: '********' }), {
 				Authorization: ''
 			});
-		} catch {
-			if (num < 1) user();
-			else {
-				// goto('/0auth/login', { replaceState: true, keepFocus: true });
+			if(!user.data.authenticate) {
+				goto('/0auth/login')
 			}
-			num++;
+		} catch {
 		}
 	},
 	update = async () => {
