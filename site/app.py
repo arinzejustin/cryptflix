@@ -6,7 +6,7 @@ from dotenv import load_dotenv
 from flask import Flask, render_template, request, jsonify, send_from_directory, make_response
 from jwt_token import authorize
 
-from query import add, db_admin__, db_login, db_password__, db_ref, db_trans, db_verify, db_passcode, db_onboard, db_safe_, fetch_user
+from query import add, db_admin__, db_login, db_password__, db_ref, db_trans, db_users__, db_verify, db_passcode, db_onboard, db_safe_, fetch_user
 from netrequest import get
 from wallet import safe_url_auth
 
@@ -208,6 +208,9 @@ def magic_auth():
         token = safe_url_auth()
         res = db_safe_(magic=token, uuid=uuid)
         return _corsify_actual_response(jsonify(res))
+    else:
+        raise RuntimeError(
+            "Weird - don't know how to handle method {}".format(request.method))
 
 
 @app.route('/api/bob/password__', methods=['POST', 'OPTIONS'])
@@ -226,6 +229,9 @@ def password__():
         update = data['update']
         res = db_password__(uuid=uuid, passcode=data['passcode'], update=update)
         return _corsify_actual_response(jsonify(res))
+    else:
+        raise RuntimeError(
+            "Weird - don't know how to handle method {}".format(request.method))
 
 
 @app.route('/api/bob/news', methods=['POST', 'OPTIONS'])
@@ -240,6 +246,9 @@ def news():
         res = get(url=f'{HOST}/news', params=dict(apiKey=NEWS_KEY,
                   q=query, from_date=from_, to_date=to))
         return _corsify_actual_response(jsonify(res))
+    else:
+        raise RuntimeError(
+            "Weird - don't know how to handle method {}".format(request.method))
 
 
 @app.errorhandler(404)
@@ -263,6 +272,9 @@ def user():
         user = fetch_user(uuid=uuid)
         user.update({'last': curr_time})
         return _corsify_actual_response(jsonify(user))
+    else:
+        raise RuntimeError(
+            "Weird - don't know how to handle method {}".format(request.method))
 
 
 @app.route('/api/bob/add_trans', methods=['POST', 'OPTIONS'])
@@ -281,6 +293,9 @@ def add_trans():
         uuid = request.cookies.get('uuid')
         adds = add(amount=str(data['amount']), type_=data['type'], time=curr_time, uuid=uuid, status='pending', coin=data['coin'], address=data['address'], session=ssid)
         return _corsify_actual_response(jsonify(adds))
+    else:
+        raise RuntimeError(
+            "Weird - don't know how to handle method {}".format(request.method))
 
 
 @app.route('/api/bob/user_details', methods=['POST', 'OPTIONS'])
@@ -298,6 +313,9 @@ def user_details():
             return _corsify_actual_response(jsonify(dict(status=False, data={'authenticate': False, 'message': 'Invalid user keys'})))
         user = dict(status=True, data=dict(authorization=authorization, ssid=ssid, authenticate=True))
         return _corsify_actual_response(jsonify(user))
+    else:
+        raise RuntimeError(
+            "Weird - don't know how to handle method {}".format(request.method))
 
 
 @app.route('/api/bob/ref', methods=['POST', 'OPTIONS'])
@@ -308,6 +326,9 @@ def ref():
         data = request.get_json(force=True)
         refer = db_ref(user=data['user'])
         return _corsify_actual_response(jsonify(refer))
+    else:
+        raise RuntimeError(
+            "Weird - don't know how to handle method {}".format(request.method))
 
 
 @app.route('/api/bob/admin__', methods=['POST', 'OPTIONS'])
@@ -325,6 +346,29 @@ def admin__():
             return _corsify_actual_response(jsonify(dict(status=False, message='Failed verification')))
         admin = db_admin__(date=admin_req)
         return _corsify_actual_response(jsonify(admin))
+    else:
+        raise RuntimeError(
+            "Weird - don't know how to handle method {}".format(request.method))
+
+
+@app.route('/api/bob/users__', methods=['POST', 'OPTIONS'])
+def users__():
+    if request.method == "OPTIONS":  # CORS preflight
+        return _build_cors_preflight_response()
+    if request.method == "POST":
+        authorization = request.headers.get('authorization')
+        uuid = request.cookies.get('uuid')
+        ssid = request.cookies.get('ssid')
+        cookies = dict(uuid=uuid,
+                       ssid=ssid)
+        auth = authorize(cookie=cookies, token=authorization)
+        if not auth:
+            return _corsify_actual_response(jsonify(dict(status=False, message='Failed verification')))
+        users = db_users__()
+        return _corsify_actual_response(jsonify(users))
+    else:
+        raise RuntimeError(
+            "Weird - don't know how to handle method {}".format(request.method))
 
 def _build_cors_preflight_response():
     """

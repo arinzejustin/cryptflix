@@ -6,9 +6,12 @@ let gravatar: string,
     error: boolean = false,
     find: boolean = false,
     name: string,
-    user: string,
+    users: string,
     newUser: string,
-    amount: string;
+    balance: string,
+    user: string,
+    deposit: string,
+    date: string;
 
 export const load = (async ({ cookies }) => {
 
@@ -36,8 +39,7 @@ export const load = (async ({ cookies }) => {
         const req = await API.post('/user', JSON.stringify({ uuid: '******' }), { Authorization: token, UUID: uuid, SSID: ssid })
         if (!req.status) throw redirect(307, '/0auth/login');
         user = req.user;
-        newUser = req.newUser;
-        amount = req.amount
+        name = req.name
     } catch (err: any) {
         console.log(err)
         throw redirect(307, '/0auth/login');
@@ -47,8 +49,11 @@ export const load = (async ({ cookies }) => {
         const req = await API.post('/admin__', JSON.stringify({ uuid: '******' }), { Authorization: token, UUID: uuid, SSID: ssid })
         console.log(req)
         if (!req.status) throw redirect(307, '/0auth/login');
-        user = req.users;
-        amount = req.amount
+        users = req.user;
+        balance = req.balance;
+        newUser = req.newUser;
+        deposit = req.deposit;
+        date = req.date
     } catch (err: any) {
         console.log(err)
         throw redirect(307, '/0auth/login');
@@ -62,9 +67,14 @@ export const load = (async ({ cookies }) => {
             find: find,
             name: name,
             admin: true,
-            amount: amount,
-            newUser: newUser,
             user: user
+        },
+        admin : {
+            balance: balance,
+            newUser: newUser,
+            users: users,
+            deposit: deposit,
+            date: date
         }
     }
 

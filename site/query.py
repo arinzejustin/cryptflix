@@ -249,7 +249,6 @@ def db_trans(uuid: str):
         if rows:
             columns = [desc[0] for desc in cursor.description]
             result = [dict(zip(columns, row)) for row in rows]
-            print(result)
             return {'data': result, 'status': True}
         else:
             return {'data': None, 'status': False}
@@ -461,21 +460,42 @@ def db_admin__(date: str):
         cursor.execute(query)
         result = cursor.fetchone()
         count = result[0]
-        query1 = "SELECT deposit FROM users"
-        cursor.execute(query1)
-        rows = cursor.fetchall()
-        sum_value = 0
-        for row in rows:
+        query_deposit = "SELECT deposit FROM users"
+        cursor.execute(query_deposit)
+        rows_deposit = cursor.fetchall()
+        sum_depsoit = 0
+        for row in rows_deposit:
             amount = re.sub('[^\d.]', '', row[0])
-            sum_value += float(amount)
+            sum_depsoit += float(amount)
         query2 = "SELECT COUNT(*) FROM users WHERE created LIKE %s"
         cursor.execute(query2, (f"%{date}%",))
         counts = cursor.fetchone()[0]
-        cursor.close()
-        mydb.close()
-        return dict(user=count, deposit=f"${sum_value}0", newUser=counts, status=True)
+        query_balance = "SELECT deposit FROM users"
+        cursor.execute(query_balance)
+        rows_balance = cursor.fetchall()
+        sum_balance = 0
+        for row in rows_balance:
+            amount = re.sub('[^\d.]', '', row[0])
+            sum_balance += float(amount)
+        return dict(user=count, deposit=f"${sum_depsoit}0", balance=f"${sum_balance}0", newUser=counts, date=date, status=True)
     except Exception as e:
         print(str(e))
-        cursor.close()
-        mydb.close()
         return except_func('Admin request')
+
+
+def db_users__():
+    try:
+        query = f"SELECT id, name, email, a_type, uuid, country FROM users WHERE role = %s"
+        value = ('user', )
+        cursor.execute(query, value)
+        rows = cursor.fetchall()
+        if rows:
+            columns = [desc[0] for desc in cursor.description]
+            result = [dict(zip(columns, row)) for row in rows]
+            return {'users': result, 'status': True}
+        else:
+            return {'users': None, 'status': False}
+    except Exception as e:
+        print(f"An error occurred: {e}")
+        mydb.rollback()
+        return {'data': None, 'status': False}

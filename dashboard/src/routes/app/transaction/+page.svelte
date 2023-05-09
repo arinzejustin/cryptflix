@@ -173,7 +173,7 @@
 							</div>
 							<div class="ml-2 overflow-hidden">
 								<div
-									class="p-0 m-0 text-black dark:text-white upperacse font-open text-base md:text-xl overflow-hidden font-semibold text-ellipsis whitespace-nowrap"
+									class="p-0 m-0 text-black dark:text-white uppercase font-open text-base md:text-xl overflow-hidden font-semibold text-ellipsis whitespace-nowrap"
 								>
 									{act.TYPE}
 								</div>

@@ -1,18 +1,20 @@
 import { redirect } from '@sveltejs/kit';
 import type { LayoutServerLoad } from './$types';
+let admin: string;
 
 export const load = (async ({ cookies, locals, getClientAddress }) => {
 
-    // const UUID = cookies.get('uuid');
+    const role = cookies.get('card');
 
-    // const ip = getClientAddress() ?? '';
+    if (role && role == 'admin')
+        admin = 'admin';
+    else
+        admin = '';
 
-    // cookies.set('client', ip, {
-    //     httpOnly: true,
-    //     maxAge: 60 * 60 * 24 * 14,
-    //     path: '/',
-    //     priority: 'high',
-    //     secure: true
-    // })
+    return {
+        role: {
+            admin: admin
+        }
+    }
 
 }) satisfies LayoutServerLoad;
