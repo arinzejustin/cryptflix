@@ -4,6 +4,7 @@
 	import API from '$lib/api';
 	import Loader from '$lib/Loader.svelte';
 	import { getStorage } from '$lib/storage';
+	import gravatar from 'gravatar';
 
 	let loading = true,
 		token: string,
@@ -36,9 +37,9 @@
 			}
 		},
 		users: any[] = [],
-		gravatar = (email: string) => {
-			var hash = '';
-			return hash;
+		dp = (email: string) => {
+			var url = gravatar.url(email, { s: '50', r: 'x', d: 'robohash', f: 'y' }, true);
+			return url;
 		};
 
 	onMount(() => {
@@ -49,7 +50,7 @@
 
 <svelte:head>
 	<title>Users List | cryptflixinvest.com</title>
-    <link rel="stylesheet" href="/css/intlTelInput.min.css" />
+	<link rel="stylesheet" href="/css/intlTelInput.min.css" />
 </svelte:head>
 
 <div in:fly={{ x: 300, delay: 1000 }} out:fly={{ x: -400, duration: 800 }} class="mt-4 pt-5">
@@ -86,8 +87,14 @@
 								<div
 									class="rounded-full p-2 border-solid border-color border bg-transparent flex justify-center items-center m-1 object-contain"
 								>
-                                <img class="w-10 h-10" loading="lazy" src={gravatar(user.email)} srcset={`${gravatar(user.email)} 2x`} alt={`${user.name} profile pics`}/>
-                            </div>
+									<img
+										class="w-10 h-10"
+										loading="lazy"
+										src={dp(user.email)}
+										srcset={`${dp(user.email)} 2x`}
+										alt={`${user.name} profile pics`}
+									/>
+								</div>
 								<div class="ml-2 overflow-hidden">
 									<div
 										class="p-0 m-0 font-nunito text-black dark:text-white uppercase text-base md:text-xl overflow-hidden font-semibold text-ellipsis whitespace-nowrap"
@@ -103,12 +110,14 @@
 							</div>
 							<div class="flex flex-col items-end align-middle gap-4">
 								<p class="text-sm font-open">
-                                    <a href={`./edit/${user.uuid}`} class="theme-text-app hover:underline">Edit User</a>
-                                </p>
+									<a href={`./edit/${user.uuid}`} class="theme-text-app hover:underline"
+										>Edit User</a
+									>
+								</p>
 								<div class="flex flex-row justify-start items-center align-middle">
-                                    <div class="iti__flag iti__{user.country ?? 'us'} mr-1 h-scale" />
-                                    <span class="text-sm">{user.country.toUpperCase()}</span>
-                                </div>
+									<div class="iti__flag iti__{user.country ?? 'us'} mr-1 h-scale" />
+									<span class="text-sm">{user.country.toUpperCase()}</span>
+								</div>
 							</div>
 						</div>
 					</div>

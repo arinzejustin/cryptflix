@@ -15,11 +15,11 @@
 	class="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2"
 >
 	<Loader width={'80px'} height={'80px'} />
-	<div class="mt-8 text-center">
-		<p
-			class="uppercase mt-2 text-base md:text-lg lg:text-xl text-slate-700 dark:text-slate-50 font-mono font-semibold lg:font-extrabold"
-		>
-			Loading {data.role.admin} Dashboard .....
-		</p>
-	</div>
+</div>
+<div class="mt-8 text-center absolute bottom-1/3 w-full">
+	<p
+		class="uppercase text-center mt-2 text-base md:text-lg lg:text-xl text-slate-700 dark:text-slate-50 font-mono font-semibold lg:font-extrabold"
+	>
+		Loading {data.role.admin} Dashboard .....
+	</p>
 </div>
