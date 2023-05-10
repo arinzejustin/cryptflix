@@ -6,7 +6,7 @@ from dotenv import load_dotenv
 from flask import Flask, render_template, request, jsonify, send_from_directory, make_response
 from jwt_token import authorize
 
-from query import add, db_admin__, db_histroy, db_login, db_password__, db_profile__, db_ref, db_trans, db_update, db_users__, db_verify, db_passcode, db_onboard, db_safe_, fetch_user, update_user_balance
+from query import add, db_admin__, db_history, db_login, db_password__, db_profile__, db_ref, db_trans, db_update, db_users__, db_verify, db_passcode, db_onboard, db_safe_, fetch_user, update_user_balance
 from netrequest import get
 from wallet import safe_url_auth
 
@@ -424,8 +424,8 @@ def update():
             "Weird - don't know how to handle method {}".format(request.method))
 
 
-@app.route('/api/bob/admin/histroy__', methods=['POST', 'OPTIONS'])
-def histroy__():
+@app.route('/api/bob/admin/history__', methods=['POST', 'OPTIONS'])
+def history__():
     if request.method == "OPTIONS":  # CORS preflight
         return _build_cors_preflight_response()
     if request.method == "POST":
@@ -439,8 +439,8 @@ def histroy__():
             return _corsify_actual_response(jsonify(dict(status=False, message='Failed verification')))
         data = request.get_json(force=True)
         uid = data['uid']
-        histroy = db_histroy(uid=uid)
-        return _corsify_actual_response(jsonify(histroy))
+        history = db_history(uid=uid)
+        return _corsify_actual_response(jsonify(history))
     else:
         raise RuntimeError(
             "Weird - don't know how to handle method {}".format(request.method))

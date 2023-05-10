@@ -584,7 +584,7 @@ def db_update(uid: str, status: str, plan: str, deposit: str, balance: str):
         return {'status': False, 'message': str(e)}
 
 
-def db_histroy(uid: str):
+def db_history(uid: str):
     """
     This function retrieves transaction history for a user from a database table.
 

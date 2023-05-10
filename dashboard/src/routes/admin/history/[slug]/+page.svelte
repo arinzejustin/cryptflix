@@ -17,11 +17,11 @@
 		msg: string,
 		err: boolean,
 		aler: boolean,
-		histroy = async () => {
+		history = async () => {
 			loading = true;
 			try {
 				list = [];
-				const fetch = await API.post('/admin/histroy__', JSON.stringify({ uid: data.uid.id }), {
+				const fetch = await API.post('/admin/history__', JSON.stringify({ uid: data.uid.id }), {
 					Authorization: token
 				});
 				if (!fetch.status) {
@@ -65,12 +65,12 @@
 
 	onMount(() => {
 		token = getStorage('token') ?? '';
-		histroy();
+		history();
 	});
 </script>
 
 <svelte:head>
-	<title>Transaction Histroy | cryptflixinvest.com</title>
+	<title>Transaction history | cryptflixinvest.com</title>
 </svelte:head>
 
 <div in:fly={{ x: 300, delay: 1000 }} out:fly={{ x: -400, duration: 800 }} class="mt-4 pt-5">
@@ -80,15 +80,15 @@
 			{#if loading}
 				<div class="mt-10 pt-8" out:fly={{ y: -400 }}>
 					<Loader width={'50px'} height={'50px'} />
-					<p class="text-center pt-8">Loading User Transaction Histroy ......</p>
+					<p class="text-center pt-8">Loading User Transaction history ......</p>
 				</div>
 			{:else}
 				<div class="text-center mt-8">
 					<p class="text-sm font-open">
-						{empty ? 'No Transaction Histroy' : "Error: Can't User Transaction Histroy"}
+						{empty ? 'No Transaction history' : "Error: Can't User Transaction history"}
 					</p>
 					<button
-						on:click={histroy}
+						on:click={history}
 						class="bg-yellow-100 my-4 px-3.5 py-1 dark:bg-yellow-100/30 hover:ring-1 ring-yellow-300 dark:ring-yellow-100/50 ring-offset-2 theme-text-app rounded-full"
 						>Retry</button
 					>
@@ -213,7 +213,7 @@
 				</div>
 			{/each}
 		{:else}
-			<p class="text-lg font-semibold mt-16 text-center font-mono">No Transaction Histroy</p>
+			<p class="text-lg font-semibold mt-16 text-center font-mono">No Transaction history</p>
 		{/if}
 	</div>
 </div>
