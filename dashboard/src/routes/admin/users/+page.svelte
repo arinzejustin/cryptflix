@@ -25,7 +25,6 @@
 					return;
 				}
 				users = [...users, fetch.users];
-				console.log(users);
 				setTimeout(() => {
 					error = false;
 					loading = false;
@@ -115,10 +114,22 @@
 									>
 								</p>
 								<div class="flex flex-row justify-start items-center align-middle">
-									<div class="iti__flag iti__{user.country ?? 'us'} mr-1 h-scale" />
+									<div class="iti__flag iti__{user.country ? user.country : 'us'} mr-1 h-scale" />
 									<span class="text-sm">{user.country.toUpperCase()}</span>
 								</div>
 							</div>
+						</div>
+						<div class="mt-3 mb-0.5 flex flex-row items-center align-middle justify-between">
+							<p class="text-sm font-open">
+								<a href={`./history/${user.uuid}`} class="theme-text-app hover:underline"
+									>Transaction History</a
+								>
+							</p>
+							<p class="text-sm font-open">
+								<a href={`./deposit/${user.uuid}`} class="theme-text-app hover:underline"
+									>Add Deposit</a
+								>
+							</p>
 						</div>
 					</div>
 				</div>

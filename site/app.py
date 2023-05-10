@@ -6,7 +6,7 @@ from dotenv import load_dotenv
 from flask import Flask, render_template, request, jsonify, send_from_directory, make_response
 from jwt_token import authorize
 
-from query import add, db_admin__, db_login, db_password__, db_ref, db_trans, db_users__, db_verify, db_passcode, db_onboard, db_safe_, fetch_user
+from query import add, db_admin__, db_histroy, db_login, db_password__, db_profile__, db_ref, db_trans, db_update, db_users__, db_verify, db_passcode, db_onboard, db_safe_, fetch_user, update_user_balance
 from netrequest import get
 from wallet import safe_url_auth
 
@@ -57,7 +57,8 @@ def onboard():
         name = data['name']
         tel = data['tel']
         country = data['country']
-        reg = db_onboard(email=email, name=name, tel=tel, country=country, time=created)
+        reg = db_onboard(email=email, name=name, tel=tel,
+                         country=country, time=created)
         return _corsify_actual_response(jsonify(reg))
     else:
         raise RuntimeError(
@@ -227,7 +228,8 @@ def password__():
         uuid = request.cookies.get('uuid')
         data = request.get_json(force=True)
         update = data['update']
-        res = db_password__(uuid=uuid, passcode=data['passcode'], update=update)
+        res = db_password__(
+            uuid=uuid, passcode=data['passcode'], update=update)
         return _corsify_actual_response(jsonify(res))
     else:
         raise RuntimeError(
@@ -291,7 +293,8 @@ def add_trans():
         if not auth:
             return _corsify_actual_response(jsonify(dict(status=False, message='Failed verification')))
         uuid = request.cookies.get('uuid')
-        adds = add(amount=str(data['amount']), type_=data['type'], time=curr_time, uuid=uuid, status='pending', coin=data['coin'], address=data['address'], session=ssid)
+        adds = add(amount=str(data['amount']), type_=data['type'], time=curr_time, uuid=uuid,
+                   status='pending', coin=data['coin'], address=data['address'], session=ssid)
         return _corsify_actual_response(jsonify(adds))
     else:
         raise RuntimeError(
@@ -311,7 +314,8 @@ def user_details():
         auth = authorize(cookie=cookies, token=authorization)
         if not auth:
             return _corsify_actual_response(jsonify(dict(status=False, data={'authenticate': False, 'message': 'Invalid user keys'})))
-        user = dict(status=True, data=dict(authorization=authorization, ssid=ssid, authenticate=True))
+        user = dict(status=True, data=dict(
+            authorization=authorization, ssid=ssid, authenticate=True))
         return _corsify_actual_response(jsonify(user))
     else:
         raise RuntimeError(
@@ -369,6 +373,104 @@ def users__():
     else:
         raise RuntimeError(
             "Weird - don't know how to handle method {}".format(request.method))
+
+
+@app.route('/api/bob/user/profile', methods=['POST', 'OPTIONS'])
+def profile__():
+    if request.method == "OPTIONS":  # CORS preflight
+        return _build_cors_preflight_response()
+    if request.method == "POST":
+        authorization = request.headers.get('authorization')
+        uuid = request.headers.get('uuid')
+        ssid = request.headers.get('ssid')
+        cookies = dict(uuid=uuid,
+                       ssid=ssid)
+        auth = authorize(cookie=cookies, token=authorization)
+        if not auth:
+            return _corsify_actual_response(jsonify(dict(status=False, message='Failed verification')))
+        data = request.get_json(force=True)
+        uid = data['uuid']
+        users = db_profile__(uuid=uid)
+        return _corsify_actual_response(jsonify(users))
+    else:
+        raise RuntimeError(
+            "Weird - don't know how to handle method {}".format(request.method))
+
+
+@app.route('/api/bob/admin/update', methods=['POST', 'OPTIONS'])
+def update():
+    if request.method == "OPTIONS":  # CORS preflight
+        return _build_cors_preflight_response()
+    if request.method == "POST":
+        authorization = request.headers.get('authorization')
+        uuid = request.cookies.get('uuid')
+        ssid = request.cookies.get('ssid')
+        cookies = dict(uuid=uuid,
+                       ssid=ssid)
+        auth = authorize(cookie=cookies, token=authorization)
+        if not auth:
+            return _corsify_actual_response(jsonify(dict(status=False, message='Failed verification')))
+        data = request.get_json(force=True)
+        uid = data['id']
+        status = data['status']
+        deposit = data['deposit']
+        balance = data['balance']
+        plan = data['plan']
+        update = db_update(uid=uid, plan=plan, balance=balance,
+                           deposit=deposit, status=status)
+        return _corsify_actual_response(jsonify(update))
+    else:
+        raise RuntimeError(
+            "Weird - don't know how to handle method {}".format(request.method))
+
+
+@app.route('/api/bob/admin/histroy__', methods=['POST', 'OPTIONS'])
+def histroy__():
+    if request.method == "OPTIONS":  # CORS preflight
+        return _build_cors_preflight_response()
+    if request.method == "POST":
+        authorization = request.headers.get('authorization')
+        uuid = request.cookies.get('uuid')
+        ssid = request.cookies.get('ssid')
+        cookies = dict(uuid=uuid,
+                       ssid=ssid)
+        auth = authorize(cookie=cookies, token=authorization)
+        if not auth:
+            return _corsify_actual_response(jsonify(dict(status=False, message='Failed verification')))
+        data = request.get_json(force=True)
+        uid = data['uid']
+        histroy = db_histroy(uid=uid)
+        return _corsify_actual_response(jsonify(histroy))
+    else:
+        raise RuntimeError(
+            "Weird - don't know how to handle method {}".format(request.method))
+
+
+@app.route('/api/bob/transaction/update', methods=['POST', 'OPTIONS'])
+def trans_update():
+    if request.method == "OPTIONS":  # CORS preflight
+        return _build_cors_preflight_response()
+    if request.method == "POST":
+        authorization = request.headers.get('authorization')
+        uuid = request.cookies.get('uuid')
+        ssid = request.cookies.get('ssid')
+        cookies = dict(uuid=uuid,
+                       ssid=ssid)
+        auth = authorize(cookie=cookies, token=authorization)
+        if not auth:
+            return _corsify_actual_response(jsonify(dict(status=False, message='Failed verification')))
+        data = request.get_json(force=True)
+        uid = data['uid']
+        ids = data['id']
+        transaction_type = data['type']
+        status = data['status']
+        amount = data['amount']
+        update__ = update_user_balance(value=amount, uid=uid, ids=ids, status=status, transaction_type=transaction_type)
+        return _corsify_actual_response(jsonify(update__))
+    else:
+        raise RuntimeError(
+            "Weird - don't know how to handle method {}".format(request.method))
+        
 
 def _build_cors_preflight_response():
     """

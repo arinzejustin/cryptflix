@@ -10,6 +10,10 @@
 	onMount(() => goto('/app', { noScroll: true, keepFocus: true, replaceState: true }));
 </script>
 
+<svelte:head>
+	<title>Loading Dashboard | cryptflixinvest.com</title>
+</svelte:head>
+
 <div
 	out:fly={{ y: -200, opacity: 0 }}
 	class="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2"

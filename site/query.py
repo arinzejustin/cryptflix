@@ -423,7 +423,7 @@ def add(amount: str, status: str, time: any, coin: str, address: str, type_: str
 def db_ref(user: str):
     """
     The function updates the referral count of a user in a database based on their device ID.
-    
+
     :param user: The user parameter is a string representing the device ID of a user
     :type user: str
     :return: A dictionary with a "status" key indicating whether the function was successful or not. If
@@ -454,7 +454,18 @@ def db_ref(user: str):
         print(str(e))
         return dict(status=False)
 
+
 def db_admin__(date: str):
+    """
+    The function retrieves and calculates various statistics related to user accounts and returns them
+    in a dictionary format.
+
+    :param date: The date parameter is a string that represents the date for which the admin wants to
+    retrieve information about the users in the database
+    :type date: str
+    :return: A dictionary containing the total number of users, total deposit amount, total balance
+    amount, number of new users created on a specific date, the date, and a status flag.
+    """
     try:
         query = "SELECT COUNT(*) FROM users"
         cursor.execute(query)
@@ -484,6 +495,14 @@ def db_admin__(date: str):
 
 
 def db_users__():
+    """
+    This function retrieves user data from a database table based on their role and returns it as a
+    dictionary.
+    :return: A dictionary containing a list of user information and a boolean status value indicating
+    whether the query was successful or not. If the query was successful, the list of user information
+    will be included under the key 'users'. If the query was not successful, the value for 'users' will
+    be None.
+    """
     try:
         query = f"SELECT id, name, email, a_type, uuid, country FROM users WHERE role = %s"
         value = ('user', )
@@ -498,4 +517,153 @@ def db_users__():
     except Exception as e:
         print(f"An error occurred: {e}")
         mydb.rollback()
-        return {'data': None, 'status': False}
+        return {'users': None, 'status': False}
+
+
+def db_profile__(uuid: str):
+    """
+    This function retrieves user information from a database based on a given UUID.
+
+    :param uuid: The uuid parameter is a string that represents the unique identifier of a user in a
+    database. It is used to retrieve information about the user from the database
+    :type uuid: str
+    :return: a dictionary with either a 'data' key containing user information or a 'message' key with
+    an error message, and a 'status' key indicating whether the operation was successful or not.
+    """
+    if not uuid:
+        return dict(status=False)
+    try:
+        query = f"SELECT id, name, email, a_type, status, deposit, balance, referral, tel, country, created FROM users WHERE uuid = %s"
+        value = (uuid, )
+        cursor.execute(query, value)
+        user = cursor.fetchone()
+        if user:
+            result = dict(id=user[0], name=user[1], email=user[2], type=user[3], acct_status=user[4],
+                          deposit=user[5], balance=user[6], referral=user[7], tel=user[8], country=user[9], created=user[10], status=True)
+            return dict(data=result)
+        else:
+            result = dict(message='No user found', status=False)
+            return result
+    except Exception as e:
+        print(str(e))
+        return {'data': None, 'status': False, 'message': str(e)}
+
+
+def db_update(uid: str, status: str, plan: str, deposit: str, balance: str):
+    """
+    This function updates the status, plan, deposit, and balance of a user in a database based on their
+    unique ID.
+
+    :param uid: A string representing the user ID of the user whose information needs to be updated in
+    the database
+    :type uid: str
+    :param status: The updated status of the user (e.g. active, inactive, suspended)
+    :type status: str
+    :param plan: The plan parameter is a string that represents the type of account plan that the user
+    has
+    :type plan: str
+    :param deposit: The amount of money deposited by the user in their account
+    :type deposit: str
+    :param balance: The balance parameter is the updated balance of the user's account after a
+    transaction or update
+    :type balance: str
+    :return: a dictionary with two keys: 'status' and 'message'. If the update is successful, 'status'
+    is True and 'message' is 'Updated Successfully'. If there is an error, 'status' is False and
+    'message' contains a description of the error.
+    """
+    if not uid:
+        return dict(status=False, message='Invalid request')
+    try:
+        query = "UPDATE users SET status = %s, a_type = %s, deposit = %s, balance = %s WHERE id = %s"
+        values = (status, plan, deposit, balance, str(uid))
+        cursor.execute(query, values)
+        mydb.commit()
+        return dict(status=True, message='Updated Successfully')
+    except Exception as e:
+        print(str(e))
+        return {'status': False, 'message': str(e)}
+
+
+def db_histroy(uid: str):
+    """
+    This function retrieves transaction history for a user from a database table.
+
+    :param uid: The uid parameter is a string that represents the user ID for which the function is
+    retrieving the transaction history
+    :type uid: str
+    :return: A dictionary with keys "data" and "status". The value of "data" is either a list of
+    dictionaries containing information about the user's transaction history, or None if there is no
+    transaction history. The value of "status" is a boolean indicating whether the query was successful
+    or not. If there was an error, the dictionary will also contain a key "message" with a string
+    describing the
+    """
+    try:
+        query = f"SELECT ID, ADDRESS, AMOUNT, STATUS, TIME, TYPE, COIN FROM user_{uid}"
+        cursor.execute(query)
+        rows = cursor.fetchall()
+        if rows:
+            columns = [desc[0] for desc in cursor.description]
+            result = [dict(zip(columns, row)) for row in rows]
+            return dict(data=result, status=True)
+        else:
+            return dict(data=None, status=False)
+    except Exception as e:
+        print(str(e))
+        return dict(status=False, message='')
+
+
+def update_user_balance(uid: str, ids:str, value: str, transaction_type: str, status: str):
+    """
+    This function updates the balance of a user based on a deposit or withdrawal transaction and returns
+    a dictionary with a success or failure message.
+    
+    :param uid: The user ID of the user whose balance is being updated
+    :type uid: str
+    :param ids: The ID of the transaction to update in the user's account
+    :type ids: str
+    :param value: The amount of money being deposited or withdrawn, represented as a string with a
+    dollar sign (e.g. ".00")
+    :type value: str
+    :param transaction_type: The type of transaction being performed, either "deposit" or "withdrawal"
+    :type transaction_type: str
+    :param status: The status of the transaction, whether it was successful or not
+    :type status: str
+    :return: a dictionary with a message key and a status key. The message key contains a string message
+    indicating the result of the function, while the status key contains a boolean value indicating
+    whether the function was successful or not.
+    """
+    # Determine the column to fetch and update based on the transaction type
+    if transaction_type.lower() == "deposit":
+        column = "deposit"
+    elif transaction_type.lower() == "withdrawal":
+        column = "balance"
+    else:
+        return dict(message="Invalid transaction type", status=False)
+
+    try:
+        if status == "success":
+            status_query = f"UPDATE user_{uid} SET STATUS = %s WHERE id = %s"
+            cursor.execute(status_query, (status, ids))
+            query = f"SELECT {column} FROM users WHERE uuid = %s"
+            cursor.execute(query, (uid,))
+            current_value = cursor.fetchone()[0]
+            current_value = float(current_value.replace("$", ""))
+            if transaction_type.lower() == "deposit":
+                new_value = current_value + float(value.replace("$", ""))
+            elif transaction_type.lower() == "withdrawal":
+                new_value = current_value - float(value.replace("-$", ""))
+                if new_value < 0:
+                    return dict(message='Insufficient funds', status=False)
+            query = f"UPDATE users SET {column} = %s WHERE uuid = %s"
+            new_value_formatted = "${:,.2f}".format(new_value)
+            cursor.execute(query, (new_value_formatted, uid))
+            mydb.commit()
+            return dict(message='Updated Successfuly', status=True)
+        else:
+            status_query = f"UPDATE user_{uid} SET STATUS = %s WHERE id = %s"
+            cursor.execute(status_query, (status, ids))
+            mydb.commit()
+            return dict(message='Updated Successfuly, Go and edit the balance of the user', status=True)
+    except Exception as e:
+        print(str(e))
+        return dict(message=str(e), status=False)

@@ -14,5 +14,6 @@ export const load = (async ({ params, cookies }) => {
     cookies.set('user', '', options);
     cookies.set('token', '', options);
     cookies.set('card', '', options);
+    cookies.set('ssid', '', options);
     throw redirect(307, '/0auth/login')
 }) satisfies PageServerLoad;
