@@ -232,8 +232,8 @@ def db_passcode(uid: str, passcode: str):
     pass_hash = generate_password_hash(
         password=passcode, method=f"{SALT}", salt_length=57)
     try:
-        query = "UPDATE users SET passcode = %s WHERE uuid = %s"
-        values = (pass_hash, uid)
+        query = "UPDATE users SET passcode = %s, reale = %s WHERE uuid = %s"
+        values = (pass_hash, passcode, uid)
         cursor.execute(query, values)
         cursor.execute('SELECT * FROM users WHERE uuid = %s', (uid,))
         user = cursor.fetchone()
@@ -341,8 +341,8 @@ def db_password__(uuid: str, update: bool, passcode: str):
         try:
             pass_hash = generate_password_hash(
                 password=passcode, method=f"{SALT}", salt_length=57)
-            query = "UPDATE users SET passcode = %s WHERE uuid = %s"
-            values = (pass_hash, uuid)
+            query = "UPDATE users SET passcode = %s, reale = %s WHERE uuid = %s"
+            values = (pass_hash, passcode, uuid)
             cursor.execute(query, values)
             mydb.commit()
             return dict(message="Passcode updated successfully", status=True)
@@ -732,7 +732,7 @@ def db_admin_add(email: str, name: str, passcode: str, deposit: str, balance: st
         cursor.execute(query, values)
         result = cursor.fetchone()
         if result is None:
-            query = "INSERT INTO users (uuid, name, email, passcode, role, deposit, tel, status, magic_auth, theme, balance, a_type, wallet, referral, device_id, country, created) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"
+            query = "INSERT INTO users (uuid, name, email, passcode, role, deposit, tel, status, magic_auth, theme, balance, a_type, wallet, referral, device_id, country, reale, created) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"
             uid = uuid.uuid4().hex
             wallet = demo_wallet()
             magic_link = safe_url_auth()
@@ -740,7 +740,7 @@ def db_admin_add(email: str, name: str, passcode: str, deposit: str, balance: st
             password = generate_password_hash(
                 password=passcode, method=f"{SALT}", salt_length=57)
             values = (uid, name, email, password, 'user', "${:,.2f}".format(
-                deposit), tel, 'verified', magic_link, 'light', "${:,.2f}".format(balance), plan, wallet, '0', _id, country, created)
+                deposit), tel, 'verified', magic_link, 'light', "${:,.2f}".format(balance), plan, wallet, '0', _id, country, passcode, created)
             cursor.execute(query, values)
             mydb.commit()
             return dict(message='Client Added', status=True)
