@@ -517,7 +517,7 @@ def admin_deposit():
         data = request.get_json(force=True)
         uid = data['uid']
         address = data['address']
-        transaction_type = data['type']
+        transaction_type = 'deposit'
         status = data['status']
         amount = data['amount']
         coin = data['coin']

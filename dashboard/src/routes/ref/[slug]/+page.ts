@@ -2,6 +2,8 @@ import type { PageLoad } from '../$types';
 import { redirect } from '@sveltejs/kit';
 import API from '$lib/api'
 
+export const prerender: boolean = false;
+
 export const load = (async ({ params }) => {
     try {
         const req = await API.post('/ref', JSON.stringify({ user: params.slug }))

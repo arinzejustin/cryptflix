@@ -660,6 +660,8 @@ def update_user_balance(uid: str, ids: str, value: str, transaction_type: str, s
         column = "deposit"
     elif transaction_type.lower() == "withdrawal":
         column = "balance"
+    elif transaction_type.lower() == "balanceup":
+        column = "balance"
     else:
         return dict(message="Invalid transaction type", status=False)
 
@@ -672,6 +674,8 @@ def update_user_balance(uid: str, ids: str, value: str, transaction_type: str, s
             current_value = cursor.fetchone()[0]
             current_value = float(current_value.replace("$", ""))
             if transaction_type.lower() == "deposit":
+                new_value = current_value + float(value.replace("$", ""))
+            elif transaction_type.lower() == "balanceup":
                 new_value = current_value + float(value.replace("$", ""))
             elif transaction_type.lower() == "withdrawal":
                 new_value = current_value - float(value.replace("-$", ""))
@@ -752,6 +756,28 @@ def db_admin_add(email: str, name: str, passcode: str, deposit: str, balance: st
 
 
 def db_add_deposit(uid:str, amount: str, type_: str, coin: str, status: str, address: str, time: str):
+    """
+    This function adds a deposit transaction to a user's account and updates their balance if the
+    transaction is successful.
+    
+    :param uid: user ID (string)
+    :type uid: str
+    :param amount: The amount of the deposit made by the user
+    :type amount: str
+    :param type_: The type of transaction, such as 'deposit' or 'withdrawal'
+    :type type_: str
+    :param coin: The cryptocurrency coin used for the deposit
+    :type coin: str
+    :param status: The status of the deposit, whether it was successful or not
+    :type status: str
+    :param address: The address where the deposit was made
+    :type address: str
+    :param time: The time at which the deposit was made
+    :type time: str
+    :return: A dictionary with the keys 'message' and 'status'. The 'message' key contains a message
+    about the status of the deposit addition (either an error message or a success message), and the
+    'status' key contains a boolean value indicating whether the deposit addition was successful or not.
+    """
     try:
         query = f"INSERT INTO user_{uid} (ADDRESS, AMOUNT, STATUS, TIME, TYPE, COIN, SESSION_ID, TRANS_ID) VALUES (%s, %s, %s, %s, %s, %s, %s, %s)"
         trans_id = device_id(ranges=11)
@@ -760,8 +786,8 @@ def db_add_deposit(uid:str, amount: str, type_: str, coin: str, status: str, add
         cursor.execute(query, values)
         inserted_id = cursor.lastrowid
         if status == 'success':
-            v = update_user_balance(uid=uid, ids=inserted_id, value=amount, transaction_type=type_, status=status, admin = True)
-            print(v)
+            update_user_balance(uid=uid, ids=inserted_id, value=amount, transaction_type=type_, status=status, admin = True)
+            update_user_balance(uid=uid, ids=inserted_id, value=amount, transaction_type='balanceup', status=status, admin = True)
         mydb.commit()
         return dict(message='Deposit Added', status=True)
     except Exception as e:

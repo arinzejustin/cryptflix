@@ -1,3 +1,3 @@
 <svelte:head>
-	<title>Forget Passcode | cryptflixinvest.com</title>
+	<title>Forget Password | cryptoflixinvest.org</title>
 </svelte:head>

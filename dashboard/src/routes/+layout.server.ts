@@ -1,8 +1,7 @@
-import { redirect } from '@sveltejs/kit';
 import type { LayoutServerLoad } from './$types';
 let admin: string;
 
-export const load = (async ({ cookies, locals, getClientAddress }) => {
+export const load = (async ({ cookies }) => {
 
     const role = cookies.get('card');
 

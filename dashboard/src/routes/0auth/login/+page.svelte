@@ -106,7 +106,7 @@
 </script>
 
 <svelte:head>
-	<title>Log In | cryptflixinvest.com</title>
+	<title>Log In | cryptoflixinvest.org</title>
 </svelte:head>
 
 <cryptflixinvest-login class="md:mx-10">
@@ -431,7 +431,7 @@
 									on:click={() => (checked = !checked)}
 									class="mt-6 text-sm text-gray-600 text-center ml-4"
 								>
-									I agree to abide by cryptflixinvest's
+									I agree to abide by cryptoflixinvest's
 									<a href="/" class="border-b border-gray-500 border-dotted"> Terms of Service </a>
 									and
 									<a href="/" class="border-b border-gray-500 border-dotted"> Privacy Policy </a>

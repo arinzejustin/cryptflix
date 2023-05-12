@@ -82,7 +82,7 @@
 </script>
 
 <svelte:head>
-	<title>Client Add Deposit | cryptflixinvest.com</title>
+	<title>Client Add Deposit | cryptoflixinvest.org</title>
 </svelte:head>
 
 <div in:fly={{ x: 300, delay: 1000 }} out:fly={{ x: -400, duration: 800 }} class="mt-4 pt-5">
