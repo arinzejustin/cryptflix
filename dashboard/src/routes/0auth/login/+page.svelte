@@ -270,11 +270,6 @@
 											>Your Email</label
 										>
 									</div>
-									{#if !valid}
-										<p transition:slide class="text-red-500 text-sm text-center pt-3">
-											Ouch !!! Invalid E-mail address
-										</p>
-									{/if}
 								</div>
 								<button
 									on:click={() => (

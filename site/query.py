@@ -556,14 +556,14 @@ def db_profile__(uuid: str):
     if not uuid:
         return dict(status=False)
     try:
-        query = f"SELECT id, name, email, a_type, status, deposit, balance, referral, tel, country, created FROM users WHERE uuid = %s"
+        query = f"SELECT id, name, email, a_type, status, deposit, balance, referral, tel, country, wallet, created FROM users WHERE uuid = %s"
         value = (uuid, )
         cursor.execute(query, value)
         user = cursor.fetchone()
         if user:
-            result = dict(id=user[0], name=user[1], wallet=user[14], email=user[2], type=user[3], acct_status=user[4],
-                          deposit=user[5], balance=user[6], referral=user[7], tel=user[8], country=user[9], created=user[10], status=True)
-            return dict(data=result)
+            result = dict(id=user[0], name=user[1], wallet=user[10], email=user[2], type=user[3], acct_status=user[4],
+                          deposit=user[5], balance=user[6], referral=user[7], tel=user[8], country=user[9], created=user[11])
+            return dict(data=result, status=True)
         else:
             result = dict(message='No user found', status=False)
             return result
@@ -635,7 +635,7 @@ def db_history(uid: str):
         return dict(status=False, message='')
 
 
-def update_user_balance(uid: str, ids: str, value: str, transaction_type: str, status: str):
+def update_user_balance(uid: str, ids: str, value: str, transaction_type: str, status: str, admin: bool = False):
     """
     This function updates the balance of a user based on a deposit or withdrawal transaction and returns
     a dictionary with a success or failure message.
@@ -664,7 +664,7 @@ def update_user_balance(uid: str, ids: str, value: str, transaction_type: str, s
         return dict(message="Invalid transaction type", status=False)
 
     try:
-        if status == "success":
+        if status == "success" or admin:
             status_query = f"UPDATE user_{uid} SET STATUS = %s WHERE id = %s"
             cursor.execute(status_query, (status, ids))
             query = f"SELECT {column} FROM users WHERE uuid = %s"
@@ -749,3 +749,21 @@ def db_admin_add(email: str, name: str, passcode: str, deposit: str, balance: st
     except Exception as e:
         print(str(e))
         return dict(data=None, message=str(e), status=False)
+
+
+def db_add_deposit(uid:str, amount: str, type_: str, coin: str, status: str, address: str, time: str):
+    try:
+        query = f"INSERT INTO user_{uid} (ADDRESS, AMOUNT, STATUS, TIME, TYPE, COIN, SESSION_ID, TRANS_ID) VALUES (%s, %s, %s, %s, %s, %s, %s, %s)"
+        trans_id = device_id(ranges=11)
+        sid = uuid.uuid4().hex
+        values = (address, amount, status, time, type_, coin, sid, trans_id)
+        cursor.execute(query, values)
+        inserted_id = cursor.lastrowid
+        if status == 'success':
+            v = update_user_balance(uid=uid, ids=inserted_id, value=amount, transaction_type=type_, status=status, admin = True)
+            print(v)
+        mydb.commit()
+        return dict(message='Deposit Added', status=True)
+    except Exception as e:
+        print(str(e))
+        return {'message': str(e), 'status': False}
