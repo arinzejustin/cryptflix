@@ -1,4 +1,4 @@
-import bech32, random, secrets
+import random, string, secrets
 
 
 def demo_wallet():
@@ -7,10 +7,9 @@ def demo_wallet():
     :return: The function `demo_wallet()` returns a Bitcoin address generated from a randomly generated
     private key using the bech32 encoding scheme.
     """
-    private_key = secrets.token_bytes(32)
-    public_key = bech32.bech32_encode('bc', bech32.convertbits(private_key, 8, 5))
-    address = bech32.bech32_encode('bc', bech32.convertbits(bech32.bech32_decode(public_key)[1], 15, 15))
-    return address
+    public_key = string.ascii_letters + string.digits
+    address = ''.join(secrets.choice(public_key) for _ in range(42))
+    return f"bc1{address}"
 
 
 def safe_url_auth():
