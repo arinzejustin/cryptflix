@@ -71,18 +71,30 @@ def db_login(email: str, password: str):
         return except_func('Login')
 
 
-def db_onboard(email: str, name: str, tel: str, country: str, time: str):
+def db_onboard(email: str, name: str, tel: str, country: str, time: str, admin: bool = False):
     """
-    It inserts a new user into the database
+    This function adds a new user to a database, generating a unique ID and wallet for them, and
+    creating a new table for their transactions.
 
-    :param email: str, name: str, tel: str
+    :param email: The email address of the user being onboarded
     :type email: str
-    :param name: str, email: str, tel: str, insert: bool
+    :param name: The name of the user being onboarded
     :type name: str
-    :param tel: str
+    :param tel: The "tel" parameter is a string that represents the user's telephone number
     :type tel: str
-    :return: A dictionary with the keys 'message' and 'status'
+    :param country: The country parameter is a string that represents the user's country of residence
+    :type country: str
+    :param time: The time parameter is a string that represents the date and time when the user is
+    onboarded into the system
+    :type time: str
+    :param admin: The admin parameter is a boolean value that is set to False by default. It is used to
+    indicate whether the user being onboarded is an admin or not. If it is set to True, the user will be
+    given admin privileges, defaults to False
+    :type admin: bool (optional)
+    :return: either a dictionary with a success message and status or an error message if an exception
+    occurs. The dictionary may contain the UUID of the user if the user is successfully onboarded.
     """
+
     try:
         cursor.execute('SELECT * FROM users WHERE email = %s', (email,))
         account = cursor.fetchone()
@@ -137,19 +149,28 @@ def db_onboard(email: str, name: str, tel: str, country: str, time: str):
         return except_func('Sign up')
 
 
-def db_verify(email: str, insert: bool, code: str = ''):
+def db_verify(email: str, insert: bool, admin: bool = False, code: str = ''):
     """
-    It takes an email, a boolean, and a code. If the boolean is true, it inserts a token into the
-    database. If the boolean is false, it checks if the code is valid.
+    The function `db_verify` verifies a user's email by updating the user's code in the database and
+    sending an email with a verification token, and also checks if the verification code is valid and
+    updates the user's status in the database accordingly.
 
-    :param email: str = The email of the user
+    :param email: A string representing the email address of the user to be verified
     :type email: str
-    :param insert: bool
+    :param insert: A boolean parameter that indicates whether to insert a verification code for the
+    given email or to verify an existing code
     :type insert: bool
-    :param code: str = ''
+    :param admin: The admin parameter is a boolean value that indicates whether the user performing the
+    verification is an admin or not. It is used to determine whether to include additional information
+    in the response if the verification is successful
+    :type admin: bool
+    :param code: The code parameter is a string that represents the verification code that the user has
+    entered to verify their account
     :type code: str
-    :return: A dictionary with the keys 'message' and 'status'
+    :return: either a dictionary with a message and status (True or False) or the output of the
+    `except_func` function.
     """
+
     if insert:
         try:
             query = "UPDATE users SET code = %s WHERE email = %s"
@@ -160,6 +181,8 @@ def db_verify(email: str, insert: bool, code: str = ''):
             params = dict(email=email, token=f'C-{token["token"]}')
             headers = dict(authorization=f'Bearer {SERVER_KEY}')
             request = post(url=EMAIL_URL, params=params, headers=headers)
+            if admin:
+                request.update({'token': token})
             return request
         except:
             mydb.rollback()
@@ -538,7 +561,7 @@ def db_profile__(uuid: str):
         cursor.execute(query, value)
         user = cursor.fetchone()
         if user:
-            result = dict(id=user[0], name=user[1], email=user[2], type=user[3], acct_status=user[4],
+            result = dict(id=user[0], name=user[1], wallet=user[14], email=user[2], type=user[3], acct_status=user[4],
                           deposit=user[5], balance=user[6], referral=user[7], tel=user[8], country=user[9], created=user[10], status=True)
             return dict(data=result)
         else:
@@ -612,11 +635,11 @@ def db_history(uid: str):
         return dict(status=False, message='')
 
 
-def update_user_balance(uid: str, ids:str, value: str, transaction_type: str, status: str):
+def update_user_balance(uid: str, ids: str, value: str, transaction_type: str, status: str):
     """
     This function updates the balance of a user based on a deposit or withdrawal transaction and returns
     a dictionary with a success or failure message.
-    
+
     :param uid: The user ID of the user whose balance is being updated
     :type uid: str
     :param ids: The ID of the transaction to update in the user's account
@@ -667,3 +690,62 @@ def update_user_balance(uid: str, ids:str, value: str, transaction_type: str, st
     except Exception as e:
         print(str(e))
         return dict(message=str(e), status=False)
+
+
+def db_admin_add(email: str, name: str, passcode: str, deposit: str, balance: str, country: str, plan: str, tel: str, created: str):
+    """
+    This function adds a new user to a database if their email does not already exist.
+    
+    :param email: The email of the user being added to the system
+    :type email: str
+    :param name: The name of the user being added to the system
+    :type name: str
+    :param passcode: The password for the user account, which will be hashed and stored securely in the
+    database
+    :type passcode: str
+    :param deposit: The deposit parameter is a string that represents the amount of money deposited by
+    the user during registration. It is formatted as a currency string with a dollar sign, comma
+    separators, and two decimal places. For example, ",000.00"
+    :type deposit: str
+    :param balance: The balance parameter is the current balance of the user's account. It is a string
+    value that represents a monetary amount in USD
+    :type balance: str
+    :param country: The country parameter is a string that represents the country of the user being
+    added to the database
+    :type country: str
+    :param plan: The plan parameter is a string that represents the type of plan the user has subscribed
+    to
+    :type plan: str
+    :param tel: The parameter "tel" is a string that represents the telephone number of the user being
+    added to the database
+    :type tel: str
+    :param created: The date and time when the user account was created
+    :type created: str
+    :return: It depends on the execution of the code. If the code successfully adds a new user to the
+    database, nothing is returned. If the email already exists in the database, a dictionary with the
+    message "Account already exists!" and a status of False is returned. If there is an exception during
+    execution, a dictionary with the error message and a status of False is returned.
+    """
+    try:
+        query = "SELECT * FROM users WHERE email = %s"
+        values = (email,)
+        cursor.execute(query, values)
+        result = cursor.fetchone()
+        if result is None:
+            query = "INSERT INTO users (uuid, name, email, passcode, role, deposit, tel, status, magic_auth, theme, balance, a_type, wallet, referral, device_id, country, created) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"
+            uid = uuid.uuid4().hex
+            wallet = demo_wallet()
+            magic_link = safe_url_auth()
+            _id = device_id()
+            password = generate_password_hash(
+                password=passcode, method=f"{SALT}", salt_length=57)
+            values = (uid, name, email, password, 'user', "${:,.2f}".format(
+                deposit), tel, 'verified', magic_link, 'light', "${:,.2f}".format(balance), plan, wallet, '0', _id, country, created)
+            cursor.execute(query, values)
+            mydb.commit()
+            return dict(message='Client Added', status=True)
+        else:
+            return dict(message='Account already exists!', status=False)
+    except Exception as e:
+        print(str(e))
+        return dict(data=None, message=str(e), status=False)

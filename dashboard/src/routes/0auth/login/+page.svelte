@@ -283,7 +283,7 @@
 											emailGif = false;
 											a = true;
 											pass = true;
-										}, 5000)
+										}, 2500)
 									)}
 									{disabled}
 									transition:fade={{

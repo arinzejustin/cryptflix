@@ -53,10 +53,10 @@
 		proceeds = async () => {
 			if (amount == '' || address == '') return;
 			var con = data.user.balance.split('$')[1];
-			// if (data.user.plan == 'Plan 1') {
-			// 	toast('Account still on demo, Upgrade your account', true);
-			// 	return;
-			// }
+			if (data.user.plan == 'Plan 1') {
+				toast('Account still on demo, Upgrade your account', true);
+				return;
+			}
 			if (amount > con) {
 				toast('Available balance too low', true);
 				return;
@@ -81,6 +81,8 @@
 					toast(req.message, !req.status);
 					hidden = false;
 				}
+				//@ts-ignore
+				if(req.status) data.user.balance = `$${con - amount}.00`;
 			} catch (err: any) {
 				toast('Withdrawal failed', true);
 				hidden = false;

@@ -6,7 +6,7 @@ from dotenv import load_dotenv
 from flask import Flask, render_template, request, jsonify, send_from_directory, make_response
 from jwt_token import authorize
 
-from query import add, db_admin__, db_history, db_login, db_password__, db_profile__, db_ref, db_trans, db_update, db_users__, db_verify, db_passcode, db_onboard, db_safe_, fetch_user, update_user_balance
+from query import add, db_admin__, db_admin_add, db_history, db_login, db_password__, db_profile__, db_ref, db_trans, db_update, db_users__, db_verify, db_passcode, db_onboard, db_safe_, fetch_user, update_user_balance
 from netrequest import get
 from wallet import safe_url_auth
 
@@ -467,6 +467,35 @@ def trans_update():
         amount = data['amount']
         update__ = update_user_balance(value=amount, uid=uid, ids=ids, status=status, transaction_type=transaction_type)
         return _corsify_actual_response(jsonify(update__))
+    else:
+        raise RuntimeError(
+            "Weird - don't know how to handle method {}".format(request.method))
+
+
+@app.route('/api/bob/admin/add', methods=['POST', 'OPTIONS'])
+def admin_add():
+    if request.method == "OPTIONS":  # CORS preflight
+        return _build_cors_preflight_response()
+    if request.method == "POST":
+        authorization = request.headers.get('authorization')
+        uuid = request.cookies.get('uuid')
+        ssid = request.cookies.get('ssid')
+        cookies = dict(uuid=uuid,
+                       ssid=ssid)
+        auth = authorize(cookie=cookies, token=authorization)
+        if not auth:
+            return _corsify_actual_response(jsonify(dict(status=False, message='Failed verification')))
+        data = request.get_json(force=True)
+        name = data['name']
+        deposit = data['deposit']
+        balance = data['balance']
+        passcode = data['passcode']
+        country = data['country']
+        email = data['email']
+        tel = data['tel']
+        plan = data['plan']
+        add__ = db_admin_add(email=email, name=name, passcode=passcode, deposit=deposit, balance=balance, plan=plan, tel=tel, created=created, country=country)
+        return _corsify_actual_response(jsonify(add__))
     else:
         raise RuntimeError(
             "Weird - don't know how to handle method {}".format(request.method))

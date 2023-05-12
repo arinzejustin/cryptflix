@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { fly } from 'svelte/transition';
-	import type { PageData } from './$types';
+	import type { PageData } from '../../$types';
 	import API from '$lib/api';
 	import Loader from '$lib/Loader.svelte';
 	import { getStorage } from '$lib/storage';
