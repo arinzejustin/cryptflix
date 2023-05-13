@@ -21,7 +21,8 @@ ALLOWED_HOST = os.getenv('ALLOWED_HOST')
 AVI_URL = os.getenv('AVI_URL')
 NEWS_KEY = os.getenv('NEWS_KEY')
 HOST = os.getenv('NEWS_HOST')
-cookie_domain = os.getenv('COOKIE_DOMAIN')
+# cookie_domain = os.getenv('COOKIE_DOMAIN')
+cookie_domain = '.arieducationportal.com'
 
 
 @app.route('/index')
