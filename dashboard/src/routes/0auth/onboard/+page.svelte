@@ -124,7 +124,7 @@
 			if (v_code == '' || !checked) return;
 			loadGif = true;
 			try {
-				const req = await Api.post('/verify', JSON.stringify({ verify: v_code, email: e_mail }));
+				const req = await Api.post('/verify', JSON.stringify({ verify: v_code, name: `${first} ${last}`, email: e_mail }));
 				if ('status' in req) {
 					verification = req.status;
 					toast(req.message, !req.status);

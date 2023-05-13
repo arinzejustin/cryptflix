@@ -8,6 +8,7 @@ from dotenv import load_dotenv
 from werkzeug.security import check_password_hash, generate_password_hash
 
 from jwt_token import generate, acct_token
+from mail import mail
 from netrequest import post, get
 from wallet import demo_wallet, device_id, safe_url_auth
 
@@ -149,7 +150,7 @@ def db_onboard(email: str, name: str, tel: str, country: str, time: str, admin: 
         return except_func('Sign up')
 
 
-def db_verify(email: str, insert: bool, admin: bool = False, code: str = ''):
+def db_verify(email: str, insert: bool, name: str = '', admin: bool = False, code: str = ''):
     """
     The function `db_verify` verifies a user's email by updating the user's code in the database and
     sending an email with a verification token, and also checks if the verification code is valid and
@@ -180,7 +181,7 @@ def db_verify(email: str, insert: bool, admin: bool = False, code: str = ''):
             mydb.commit()
             params = dict(email=email, token=f'C-{token["token"]}')
             headers = dict(authorization=f'Bearer {SERVER_KEY}')
-            request = post(url=EMAIL_URL, params=params, headers=headers)
+            request = mail(email=email, name=name, code=f'C-{token["token"]}')
             if admin:
                 request.update({'token': token})
             return request

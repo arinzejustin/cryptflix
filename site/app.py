@@ -73,7 +73,8 @@ def verify():
         data = request.get_json(force=True)
         code = data['verify']
         email = data['email']
-        response = db_verify(email=email, code=code, insert=False)
+        name = data['name']
+        response = db_verify(email=email, code=code, name=name, insert=False)
         return _corsify_actual_response(jsonify(response))
     else:
         raise RuntimeError(
