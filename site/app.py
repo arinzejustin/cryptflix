@@ -21,7 +21,9 @@ ALLOWED_HOST = os.getenv('ALLOWED_HOST')
 AVI_URL = os.getenv('AVI_URL')
 NEWS_KEY = os.getenv('NEWS_KEY')
 HOST = os.getenv('NEWS_HOST')
-cookie_domain = os.getenv('COOKIE_DOMAIN')
+cookie_domain = '.arieducationportal.com'
+
+print(cookie_domain)
 
 
 @app.route('/index')
@@ -100,15 +102,15 @@ def passcode():
         if insert['status']:
             # set cookies
             response.set_cookie(key='uuid', value=insert['uuid'], expires=datetime.now(
-            ) + timedelta(days=30), path='/', domain=cookie_domain, secure=True, httponly=True, samesite=None)
+            ) + timedelta(days=30), path='/', domain=f"{cookie_domain}", secure=True, httponly=True, samesite=None)
             response.set_cookie(key='user', value=insert['email'], max_age=3600, expires=datetime.now(
-            ) + timedelta(days=30), path='/', domain=cookie_domain, secure=True, httponly=True, samesite=None)
+            ) + timedelta(days=30), path='/', domain=f"{cookie_domain}", secure=True, httponly=True, samesite=None)
             response.set_cookie(key='token', value=insert['bearer'], expires=datetime.now(
-            ) + timedelta(days=30), path='/', domain=cookie_domain, secure=True, httponly=True, samesite=None)
+            ) + timedelta(days=30), path='/', domain=f"{cookie_domain}", secure=True, httponly=True, samesite=None)
             response.set_cookie(key='card', value=insert['role'], expires=datetime.now(
-            ) + timedelta(days=30), path='/', domain=cookie_domain, secure=True, httponly=True, samesite=None)
+            ) + timedelta(days=30), path='/', domain=f"{cookie_domain}", secure=True, httponly=True, samesite=None)
             response.set_cookie(key='ssid', value=insert['ssid'], expires=datetime.now(
-            ) + timedelta(days=30), path='/', domain=cookie_domain, secure=True, httponly=True, samesite=None)
+            ) + timedelta(days=30), path='/', domain=f"{cookie_domain}", secure=True, httponly=True, samesite=None)
         return response
     else:
         raise RuntimeError(
@@ -132,15 +134,15 @@ def login():
         if login_query['status']:
             # set cookies
             response.set_cookie(key='uuid', value=login_query['uuid'], expires=datetime.now(
-            ) + timedelta(days=30), path='/', domain=cookie_domain, secure=True, httponly=True, samesite=None)
+            ) + timedelta(days=30), path='/', domain=f"{cookie_domain}", secure=True, httponly=True, samesite=None)
             response.set_cookie(key='user', value=login_query['email'], max_age=3600, expires=datetime.now(
-            ) + timedelta(days=30), path='/', domain=cookie_domain, secure=True, httponly=True, samesite=None)
+            ) + timedelta(days=30), path='/', domain=f"{cookie_domain}", secure=True, httponly=True, samesite=None)
             response.set_cookie(key='token', value=login_query['bearer'], expires=datetime.now(
-            ) + timedelta(days=30), path='/', domain=cookie_domain, secure=True, httponly=True, samesite=None)
+            ) + timedelta(days=30), path='/', domain=f"{cookie_domain}", secure=True, httponly=True, samesite=None)
             response.set_cookie(key='card', value=login_query['role'], expires=datetime.now(
-            ) + timedelta(days=30), path='/', domain=cookie_domain, secure=True, httponly=True, samesite=None)
+            ) + timedelta(days=30), path='/', domain=f"{cookie_domain}", secure=True, httponly=True, samesite=None)
             response.set_cookie(key='ssid', value=login_query['ssid'], expires=datetime.now(
-            ) + timedelta(days=30), path='/', domain=cookie_domain, secure=True, httponly=True, samesite=None)
+            ) + timedelta(days=30), path='/', domain=f"{cookie_domain}", secure=True, httponly=True, samesite=None)
         return response
     else:
         raise RuntimeError(
