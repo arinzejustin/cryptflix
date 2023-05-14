@@ -276,7 +276,7 @@
 			on:click={upload}
 			class="my-5 tracking-wide font-semibold bg-black/90 text-gray-100 hak0fbu py-4 shadow rounded-lg hover:bg-black transition-all duration-300 ease-in-out flex items-center justify-center border border-solid border-slate-300 focus:shadow-outline focus:outline-none"
 		>
-			<span class="mr-3"> Login </span>
+			<span class="mr-3"> Add Client </span>
 			{#if loading}
 				<div class="ml-3">
 					<img class="w-5 h-5" src="/gif.gif" srcset="/gif.gif 2x" alt="" />

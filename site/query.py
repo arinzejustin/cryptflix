@@ -1,4 +1,5 @@
 import json
+import mysql.connector.pooling as pooling
 import re
 import mysql.connector as mc
 import os
@@ -30,6 +31,18 @@ mydb = mc.connect(
     port=PORT,
     database=DB_NAME
 )
+
+pool_config = {
+    "pool_name": "my_pool",
+    "pool_size": 50,
+    "host": HOST,
+    "user": USER,
+    "password": PASSWORD,
+    "port": PORT,
+    "database": DB_NAME
+}
+
+connection_pool = pooling.MySQLConnectionPool(**pool_config)
 
 cursor = mydb.cursor()
 
