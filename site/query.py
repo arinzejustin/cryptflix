@@ -27,6 +27,8 @@ mydb = mc.connect(
 
 cursor = mydb.cursor()
 
+print(cursor)
+
 
 def db_login(email: str, password: str):
     """
@@ -485,7 +487,7 @@ def db_admin__(date: str):
     amount, number of new users created on a specific date, the date, and a status flag.
     """
     try:
-        query = "SELECT COUNT(*) FROM users"
+        query = "SELECT COUNT(*) FROM users WHERE role != 'admin'"
         cursor.execute(query)
         result = cursor.fetchone()
         count = result[0]
