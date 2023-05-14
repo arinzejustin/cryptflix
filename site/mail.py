@@ -1,4 +1,5 @@
-import smtplib, os
+import smtplib
+import os
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 from dotenv import load_dotenv
@@ -8,6 +9,7 @@ load_dotenv()
 MAIL_PASSCODE = os.getenv('MAIL_PASSCODE')
 MAIL_EMAIL = os.getenv('MAIL_EMAIL')
 MAIL_SERVER = os.getenv('MAIL_SERVER')
+
 
 def mail(email: str, name: str, code: str):
     """
@@ -27,7 +29,7 @@ def mail(email: str, name: str, code: str):
     </body>
     </html>
     """
-    
+
     sender = MAIL_EMAIL
     password = MAIL_PASSCODE
     recipient = email

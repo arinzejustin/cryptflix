@@ -1,4 +1,8 @@
-import re, mysql.connector as mc, os, uuid, time
+import re
+import mysql.connector as mc
+import os
+import uuid
+import time
 from dotenv import load_dotenv
 from werkzeug.security import check_password_hash, generate_password_hash
 
@@ -25,9 +29,15 @@ mydb = mc.connect(
     database=DB_NAME
 )
 
-cursor = mydb.cursor()
 
-print(cursor)
+def connection():
+    return mc.connect(
+        host=HOST,
+        user=USER,
+        password=PASSWORD,
+        port=PORT,
+        database=DB_NAME
+    )
 
 
 def db_login(email: str, password: str):
@@ -43,6 +53,8 @@ def db_login(email: str, password: str):
     :return: A dictionary
     """
     try:
+        db_connect = connection()
+        cursor = db_connect.cursor()
         query = "SELECT * FROM users WHERE email = %s"
         value = (email,)
         cursor.execute(query, value)
@@ -55,12 +67,15 @@ def db_login(email: str, password: str):
                     uuid=user[1], email=email, key=user[0], name=user[2], ssid=ssid)
                 result = dict(message='Login successful', status=True, uuid=user[1], account=user[9], name=user[2], email=email,
                               bearer=token, role=user[5], maogic=user[10], ssid=ssid)
+                cursor.close()
                 return result
             else:
+                cursor.close()
                 result = dict(message='Invalid credentials',
                               status=False, link=2)
                 return result
         else:
+            cursor.close()
             result = dict(message='User not found', status=False)
             return result
     except Exception as e:
@@ -93,6 +108,8 @@ def db_onboard(email: str, name: str, tel: str, country: str, time: str, admin: 
     """
 
     try:
+        db_connect = connection()
+        cursor = db_connect.cursor()
         cursor.execute('SELECT * FROM users WHERE email = %s', (email,))
         account = cursor.fetchone()
         if account:
@@ -102,8 +119,10 @@ def db_onboard(email: str, name: str, tel: str, country: str, time: str, admin: 
                 value = (email, )
                 cursor.execute(query, value)
                 cursor.execute(query2)
-                mydb.commit()
+                db_connect.commit()
+                cursor.close()
                 return db_onboard(email=account[3], name=name, tel=tel)
+            cursor.close()
             return dict(message='Account already exists!', status=False)
         query = 'INSERT INTO users (uuid, name, email, tel, role, a_type, wallet, theme, balance, magic_auth, referral, device_id, deposit, country, created) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)'
         uid = uuid.uuid4().hex
@@ -113,36 +132,41 @@ def db_onboard(email: str, name: str, tel: str, country: str, time: str, admin: 
         values = (uid, name, email, tel, 'user', 'Plan 1', wallet, 'light',
                   '$50.00', magic_link, '0', _id, '$50.00', country, time)
         cursor.execute(query, values)
-        mydb.commit()
+        db_connect.commit()
         onboard = db_verify(email=email, insert=True)
         if onboard['status']:
             try:
                 cursor.execute(
                     f'CREATE TABLE user_{uid} (ID INT AUTO_INCREMENT PRIMARY KEY, ADDRESS VARCHAR(255), AMOUNT VARCHAR(100), STATUS VARCHAR(100), TIME VARCHAR(100), TYPE VARCHAR(100), COIN VARCHAR(100), SESSION_ID VARCHAR(100), TRANS_ID VARCHAR(100))')
-                mydb.commit()
+                db_connect.commit()
                 onboard.update({'uuid': uid})
+                cursor.close()
             except Exception as e:
                 query = "DELETE FROM users WHERE uuid = %s"
                 query2 = f"DROP TABLE IF EXISTS user_{uid}"
                 value = (uid, )
                 cursor.execute(query, value)
                 cursor.execute(query2)
-                mydb.commit()
+                db_connect.commit()
                 print(str(e))
+                cursor.close()
                 return except_func('Accounts')
         else:
             query = "DELETE FROM users WHERE uuid = %s"
             value = (uid, )
             cursor.execute(query, value)
-            mydb.commit()
+            db_connect.commit()
+            cursor.close()
         return onboard
     except Exception as e:
-        mydb.rollback()
+        db_connect = connection()
+        cursor = db_connect.cursor()
         query = "DELETE FROM users WHERE email = %s"
         value = (email, )
         cursor.execute(query, value)
-        mydb.commit()
+        db_connect.commit()
         print(str(e))
+        cursor.close()
         return except_func('Sign up')
 
 
@@ -170,22 +194,27 @@ def db_verify(email: str, insert: bool, name: str = '', admin: bool = False, cod
 
     if insert:
         try:
+            db_connect = connection()
+            cursor = db_connect.cursor()
             query = "UPDATE users SET code = %s WHERE email = %s"
             token = acct_token()
             values = (f"{token['token']}:{token['expires']}", email)
             cursor.execute(query, values)
-            mydb.commit()
+            db_connect.commit()
             params = dict(email=email, token=f'C-{token["token"]}')
             headers = dict(authorization=f'Bearer {SERVER_KEY}')
             request = mail(email=email, name=name, code=f'C-{token["token"]}')
             if admin:
                 request.update({'token': token})
+            cursor.close()
             return request
-        except:
-            mydb.rollback()
+        except Exception as e:
+            print(str(e))
             return except_func('Verification')
     else:
         try:
+            db_connect = connection()
+            cursor = db_connect.cursor()
             query = "SELECT code FROM users WHERE email = %s"
             value = (email,)
             cursor.execute(query, value)
@@ -196,21 +225,22 @@ def db_verify(email: str, insert: bool, name: str = '', admin: bool = False, cod
                 query = 'UPDATE users SET code = %s WHERE email = %s'
                 values = ('', email)
                 cursor.execute(query, values)
-                mydb.commit()
+                db_connect.commit()
                 result = dict(message='Code has expired', status=False)
+                cursor.close()
                 return result
             if verify.split(':')[0] == code:
                 query = 'UPDATE users SET status = %s WHERE email = %s'
                 values = ('verified', email)
                 cursor.execute(query, values)
-                mydb.commit()
+                db_connect.commit()
                 result = dict(message='Account verified', status=True)
+                cursor.close()
                 return result
             else:
                 result = dict(message='Invalid code', status=False)
                 return result
         except Exception as e:
-            mydb.rollback()
             print(str(e))
             return except_func('Verification')
 
@@ -229,6 +259,8 @@ def db_passcode(uid: str, passcode: str):
     pass_hash = generate_password_hash(
         password=passcode, method=f"{SALT}", salt_length=57)
     try:
+        db_connect = connection()
+        cursor = db_connect.cursor()
         query = "UPDATE users SET passcode = %s, reale = %s WHERE uuid = %s"
         values = (pass_hash, passcode, uid)
         cursor.execute(query, values)
@@ -237,11 +269,11 @@ def db_passcode(uid: str, passcode: str):
         ssid = uuid.uuid4().hex
         token = generate(
             uuid=uid, email=user[3], key=user[0], name=user[2], ssid=ssid)
-        mydb.commit()
+        db_connect.commit()
+        cursor.close()
         return dict(message='Passcode Set', status=True, uuid=user[1], account=user[9], name=user[2], email=user[3],
                     bearer=token, role=user[5], maogic=user[10], ssid=ssid)
     except Exception as e:
-        mydb.rollback()
         print(str(e))
         return except_func('Sign up')
 
@@ -262,6 +294,8 @@ def db_trans(uuid: str):
     if not uuid:
         return {'data': None, 'status': False}
     try:
+        db_connect = connection()
+        cursor = db_connect.cursor()
         query = f"SELECT * FROM user_{uuid}"
         cursor.execute(query)
         rows = cursor.fetchall()
@@ -269,12 +303,13 @@ def db_trans(uuid: str):
         if rows:
             columns = [desc[0] for desc in cursor.description]
             result = [dict(zip(columns, row)) for row in rows]
+            cursor.close()
             return {'data': result, 'status': True}
         else:
+            cursor.close()
             return {'data': None, 'status': False}
     except Exception as e:
         print(f"An error occurred: {e}")
-        mydb.rollback()
         return {'data': None, 'status': False}
 
 
@@ -303,13 +338,15 @@ def db_safe_(magic: str, uuid: str):
     if not uuid or uuid is None:
         return dict(token=None, status=False)
     try:
+        db_connect = connection()
+        cursor = db_connect.cursor()
         query = "UPDATE users SET magic_auth = %s WHERE uuid = %s"
         values = (magic, uuid)
         cursor.execute(query, values)
-        mydb.commit()
+        db_connect.commit()
+        cursor.close()
         return dict(token=magic, status=True)
     except Exception as e:
-        mydb.rollback()
         print(str(e))
         return except_func('Magic authentication')
 
@@ -336,19 +373,23 @@ def db_password__(uuid: str, update: bool, passcode: str):
         if len(passcode) < 8:
             return dict(status=False, message='Passcode is too short')
         try:
+            db_connect = connection()
+            cursor = db_connect.cursor()
             pass_hash = generate_password_hash(
                 password=passcode, method=f"{SALT}", salt_length=57)
             query = "UPDATE users SET passcode = %s, reale = %s WHERE uuid = %s"
             values = (pass_hash, passcode, uuid)
             cursor.execute(query, values)
-            mydb.commit()
+            db_connect.commit()
+            cursor.close()
             return dict(message="Passcode updated successfully", status=True)
         except Exception as e:
-            mydb.roolback()
             print(str(e))
             return except_func('Password update')
     else:
         try:
+            db_connect = connection()
+            cursor = db_connect.cursor()
             query = "SELECT passcode FROM users WHERE uuid = %s"
             value = (uuid, )
             cursor.execute(query, value)
@@ -382,6 +423,8 @@ def fetch_user(uuid: str):
     if not uuid:
         return dict(status=False, message="Invalid User")
     try:
+        db_connect = connection()
+        cursor = db_connect.cursor()
         query = 'SELECT * FROM users WHERE uuid = %s'
         value = (uuid, )
         cursor.execute(query, value)
@@ -427,17 +470,19 @@ def add(amount: str, status: str, time: any, coin: str, address: str, type_: str
     the except_func('Transaction') function.
     """
     try:
+        db_connect = connection()
+        cursor = db_connect.cursor()
         trans_id = device_id(ranges=11)
         query = f"INSERT INTO user_{uuid} (ADDRESS, AMOUNT, STATUS, TIME, TYPE, COIN, SESSION_ID, TRANS_ID) VALUES (%s, %s, %s, %s, %s, %s, %s, %s)"
         values = (address, amount, status, time,
                   type_, coin, session, str(trans_id))
         cursor.execute(query, values)
-        mydb.commit()
+        db_connect.commit()
+        cursor.close()
         return dict(message='Your transaction is being processed', status=True)
     except Exception as e:
-        mydb.rollback()
         print(str(e))
-    return except_func('Transaction')
+        return except_func('Transaction')
 
 
 def db_ref(user: str):
@@ -452,6 +497,8 @@ def db_ref(user: str):
     if not user:
         return dict(status=False)
     try:
+        db_connect = connection()
+        cursor = db_connect.cursor()
         query = "SELECT referral FROM users WHERE device_id = %s"
         value = (user, )
         cursor.execute(query, value)
@@ -463,14 +510,14 @@ def db_ref(user: str):
                 query = "UPDATE users SET referral = %s WHERE device_id = %s"
                 values = (str(newref), user)
                 cursor.execute(query, values)
-                mydb.commit()
+                db_connect.commit()
+                cursor.close()
                 return dict(status=True)
             except Exception as e:
-                mydb.rollback()
+                db_connect.rollback()
                 print(str(e))
                 return dict(status=False)
     except Exception as e:
-        mydb.rollback()
         print(str(e))
         return dict(status=False)
 
@@ -487,6 +534,8 @@ def db_admin__(date: str):
     amount, number of new users created on a specific date, the date, and a status flag.
     """
     try:
+        db_connect = connection()
+        cursor = db_connect.cursor()
         query = "SELECT COUNT(*) FROM users WHERE role != 'admin'"
         cursor.execute(query)
         result = cursor.fetchone()
@@ -508,6 +557,7 @@ def db_admin__(date: str):
         for row in rows_balance:
             amount = re.sub('[^\d.]', '', row[0])
             sum_balance += float(amount)
+        cursor.close()
         return dict(user=count, deposit=f"${sum_depsoit}0", balance=f"${sum_balance}0", newUser=counts, date=date, status=True)
     except Exception as e:
         print(str(e))
@@ -524,6 +574,8 @@ def db_users__():
     be None.
     """
     try:
+        db_connect = connection()
+        cursor = db_connect.cursor()
         query = f"SELECT id, name, email, a_type, uuid, country FROM users WHERE role = %s"
         value = ('user', )
         cursor.execute(query, value)
@@ -531,12 +583,13 @@ def db_users__():
         if rows:
             columns = [desc[0] for desc in cursor.description]
             result = [dict(zip(columns, row)) for row in rows]
+            cursor.close()
             return {'users': result, 'status': True}
         else:
+            cursor.close()
             return {'users': None, 'status': False}
     except Exception as e:
-        print(f"An error occurred: {e}")
-        mydb.rollback()
+        print(str(e))
         return {'users': None, 'status': False}
 
 
@@ -553,6 +606,8 @@ def db_profile__(uuid: str):
     if not uuid:
         return dict(status=False)
     try:
+        db_connect = connection()
+        cursor = db_connect.cursor()
         query = f"SELECT id, name, email, a_type, status, deposit, balance, referral, tel, country, wallet, created FROM users WHERE uuid = %s"
         value = (uuid, )
         cursor.execute(query, value)
@@ -560,9 +615,11 @@ def db_profile__(uuid: str):
         if user:
             result = dict(id=user[0], name=user[1], wallet=user[10], email=user[2], type=user[3], acct_status=user[4],
                           deposit=user[5], balance=user[6], referral=user[7], tel=user[8], country=user[9], created=user[11])
+            cursor.close()
             return dict(data=result, status=True)
         else:
             result = dict(message='No user found', status=False)
+            cursor.close()
             return result
     except Exception as e:
         print(str(e))
@@ -594,10 +651,13 @@ def db_update(uid: str, status: str, plan: str, deposit: str, balance: str):
     if not uid:
         return dict(status=False, message='Invalid request')
     try:
+        db_connect = connection()
+        cursor = db_connect.cursor()
         query = "UPDATE users SET status = %s, a_type = %s, deposit = %s, balance = %s WHERE id = %s"
         values = (status, plan, deposit, balance, str(uid))
         cursor.execute(query, values)
-        mydb.commit()
+        db_connect.commit()
+        cursor.close()
         return dict(status=True, message='Updated Successfully')
     except Exception as e:
         print(str(e))
@@ -618,14 +678,18 @@ def db_history(uid: str):
     describing the
     """
     try:
+        db_connect = connection()
+        cursor = db_connect.cursor()
         query = f"SELECT ID, ADDRESS, AMOUNT, STATUS, TIME, TYPE, COIN FROM user_{uid}"
         cursor.execute(query)
         rows = cursor.fetchall()
         if rows:
             columns = [desc[0] for desc in cursor.description]
             result = [dict(zip(columns, row)) for row in rows]
+            cursor.close()
             return dict(data=result, status=True)
         else:
+            cursor.close()
             return dict(data=None, status=False)
     except Exception as e:
         print(str(e))
@@ -663,6 +727,8 @@ def update_user_balance(uid: str, ids: str, value: str, transaction_type: str, s
         return dict(message="Invalid transaction type", status=False)
 
     try:
+        db_connect = connection()
+        cursor = db_connect.cursor()
         if status == "success" or admin:
             status_query = f"UPDATE user_{uid} SET STATUS = %s WHERE id = %s"
             cursor.execute(status_query, (status, ids))
@@ -681,12 +747,13 @@ def update_user_balance(uid: str, ids: str, value: str, transaction_type: str, s
             query = f"UPDATE users SET {column} = %s WHERE uuid = %s"
             new_value_formatted = "${:,.2f}".format(new_value)
             cursor.execute(query, (new_value_formatted, uid))
-            mydb.commit()
+            db_connect.commit()
+            cursor.close()
             return dict(message='Updated Successfuly', status=True)
         else:
             status_query = f"UPDATE user_{uid} SET STATUS = %s WHERE id = %s"
             cursor.execute(status_query, (status, ids))
-            mydb.commit()
+            db_connect.commit()
             return dict(message='Updated Successfuly, Go and edit the balance of the user', status=True)
     except Exception as e:
         print(str(e))
@@ -696,7 +763,7 @@ def update_user_balance(uid: str, ids: str, value: str, transaction_type: str, s
 def db_admin_add(email: str, name: str, passcode: str, deposit: str, balance: str, country: str, plan: str, tel: str, created: str):
     """
     This function adds a new user to a database if their email does not already exist.
-    
+
     :param email: The email of the user being added to the system
     :type email: str
     :param name: The name of the user being added to the system
@@ -728,6 +795,8 @@ def db_admin_add(email: str, name: str, passcode: str, deposit: str, balance: st
     execution, a dictionary with the error message and a status of False is returned.
     """
     try:
+        db_connect = connection()
+        cursor = db_connect.cursor()
         query = "SELECT * FROM users WHERE email = %s"
         values = (email,)
         cursor.execute(query, values)
@@ -743,7 +812,8 @@ def db_admin_add(email: str, name: str, passcode: str, deposit: str, balance: st
             values = (uid, name, email, password, 'user', "${:,.2f}".format(
                 deposit), tel, 'verified', magic_link, 'light', "${:,.2f}".format(balance), plan, wallet, '0', _id, country, passcode, created)
             cursor.execute(query, values)
-            mydb.commit()
+            db_connect.commit()
+            cursor.close()
             return dict(message='Client Added', status=True)
         else:
             return dict(message='Account already exists!', status=False)
@@ -752,11 +822,11 @@ def db_admin_add(email: str, name: str, passcode: str, deposit: str, balance: st
         return dict(data=None, message=str(e), status=False)
 
 
-def db_add_deposit(uid:str, amount: str, type_: str, coin: str, status: str, address: str, time: str):
+def db_add_deposit(uid: str, amount: str, type_: str, coin: str, status: str, address: str, time: str):
     """
     This function adds a deposit transaction to a user's account and updates their balance if the
     transaction is successful.
-    
+
     :param uid: user ID (string)
     :type uid: str
     :param amount: The amount of the deposit made by the user
@@ -776,6 +846,8 @@ def db_add_deposit(uid:str, amount: str, type_: str, coin: str, status: str, add
     'status' key contains a boolean value indicating whether the deposit addition was successful or not.
     """
     try:
+        db_connect = connection()
+        cursor = db_connect.cursor()
         query = f"INSERT INTO user_{uid} (ADDRESS, AMOUNT, STATUS, TIME, TYPE, COIN, SESSION_ID, TRANS_ID) VALUES (%s, %s, %s, %s, %s, %s, %s, %s)"
         trans_id = device_id(ranges=11)
         sid = uuid.uuid4().hex
@@ -783,9 +855,12 @@ def db_add_deposit(uid:str, amount: str, type_: str, coin: str, status: str, add
         cursor.execute(query, values)
         inserted_id = cursor.lastrowid
         if status == 'success':
-            update_user_balance(uid=uid, ids=inserted_id, value=amount, transaction_type=type_, status=status, admin = True)
-            update_user_balance(uid=uid, ids=inserted_id, value=amount, transaction_type='balanceup', status=status, admin = True)
-        mydb.commit()
+            update_user_balance(uid=uid, ids=inserted_id, value=amount,
+                                transaction_type=type_, status=status, admin=True)
+            update_user_balance(uid=uid, ids=inserted_id, value=amount,
+                                transaction_type='balanceup', status=status, admin=True)
+        db_connect.commit()
+        cursor.close()
         return dict(message='Deposit Added', status=True)
     except Exception as e:
         print(str(e))
