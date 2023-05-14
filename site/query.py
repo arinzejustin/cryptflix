@@ -1,16 +1,9 @@
-import json
-import mysql.connector.pooling as pooling
-import re
-import mysql.connector as mc
-import os
-import uuid
-import time
+import re, mysql.connector as mc, os, uuid, time
 from dotenv import load_dotenv
 from werkzeug.security import check_password_hash, generate_password_hash
 
 from jwt_token import generate, acct_token
 from mail import mail
-from netrequest import post, get
 from wallet import demo_wallet, device_id, safe_url_auth
 
 load_dotenv()
@@ -31,18 +24,6 @@ mydb = mc.connect(
     port=PORT,
     database=DB_NAME
 )
-
-pool_config = {
-    "pool_name": "my_pool",
-    "pool_size": 50,
-    "host": HOST,
-    "user": USER,
-    "password": PASSWORD,
-    "port": PORT,
-    "database": DB_NAME
-}
-
-connection_pool = pooling.MySQLConnectionPool(**pool_config)
 
 cursor = mydb.cursor()
 
