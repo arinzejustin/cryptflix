@@ -1,0 +1,541 @@
+<html>
+
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <link href="{{ url_for('static', filename='css/bootstrap.min.css') }}" rel="stylesheet" type="text/css">
+  <link href="https://fonts.googleapis.com/css?family=Nunito|Roboto|Roboto+Mono|Open+Sans&display=swap" rel="stylesheet"
+    type="text/css">
+  <link href="{{ url_for('static', filename='styles/custom.css') }}" rel="stylesheet" type="text/css">
+  <link href="{{ url_for('static', filename='css/animate.css') }}" rel="stylesheet" type="text/css">
+  <title>crypto-trading.org</title>
+  <script src="{{ url_for('static', filename='js/jquery.js') }}" type="text/javascript"></script>
+  <script type="text/javascript" src="{{ url_for('static', filename='js/bootstrap.min.js') }}"></script>
+  <script src="{{ url_for('static', filename='js/setting2.js') }}" type="text/javascript"></script>
+  <script src="{{ url_for('static', filename='js/wow.js') }}" type="text/javascript"></script>
+  <meta name="viewport" content="width=1150, user-scalable=1">
+  <link rel="icon" type="image/png" href="{{ url_for('static', filename='logo.png') }}">
+  <script type="text/javascript"
+    src="{{ url_for('static', filename='js/element_cd_googleTranslateElementinit.js.js') }}"></script>
+
+  <script type="text/javascript">
+    var tday = new Array("Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday");
+    var tmonth = new Array("January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December");
+
+    function GetClock() {
+      var tzOffset = 0;//set this to the number of hours offset from UTC
+
+      var d = new Date();
+      var dx = d.toGMTString();
+      dx = dx.substr(0, dx.length - 3);
+      d.setTime(Date.parse(dx))
+      d.setHours(d.getHours() + tzOffset);
+      var nday = d.getDay(), nmonth = d.getMonth(), ndate = d.getDate();
+      var nhour = d.getHours(), nmin = d.getMinutes(), ap;
+      if (nhour == 0) { ap = " AM"; nhour = 12; }
+      else if (nhour < 12) { ap = " AM"; }
+      else if (nhour == 12) { ap = " PM"; }
+      else if (nhour > 12) { ap = " PM"; nhour -= 12; }
+
+      if (nmin <= 9) nmin = "0" + nmin;
+
+      document.getElementById('clockbox').innerHTML = "" + tday[nday] + ", " + tmonth[nmonth] + " " + ndate + " " + nhour + ":" + nmin + ap + "";
+    }
+
+    window.onload = function () {
+      GetClock();
+      setInterval(GetClock, 1000);
+    }
+  </script>
+
+  <!-- MS, fb & Whatsapp -->
+
+  <!-- MS Tile - for Microsoft apps-->
+  <meta name="msapplication-TileImage" content="https://universalfortuneminers.com/images/main-img-1.png">
+
+  <!-- fb & Whatsapp -->
+  <meta name="description"
+    content="giantwin was founded in April 2013 by Vladimir Tenev and Baiju Bhatt, who had previously built high-frequency trading platforms for financial institutions in Switzerland">
+  <meta name="keywords" content="Investment Crypto, BitCoin, Investment">
+  <meta name="author" content="crypto-trading">
+
+  <!-- Site Name, Title, and Description to be displayed -->
+  <meta property="og:site_name" content="crypto-trading investment">
+  <meta property="og:title" content="crypto-trading investment Investment">
+  <meta property="og:description"
+    content="crypto-trading investment is a fairly visible player on the modern market of cryptocurrency investments">
+
+  <!-- Image to display -->
+  <!-- Replace   &#171;example.com/image01.jpg&#187; with your own -->
+  <meta property="og:image" content="https://universalfortuneminers.com/images/main-img-1.png">
+
+  <!-- No need to change anything here -->
+  <meta property="og:type" content="website">
+  <meta property="og:image:type" content="image/jpeg">
+
+  <!-- Size of image. Any size up to 300. Anything above 300px will not work in WhatsApp -->
+  <meta property="og:image:width" content="300">
+  <meta property="og:image:height" content="300">
+
+  <!-- Website to visit when clicked in fb or WhatsApp-->
+  <meta property="og:url" content="https://crypto-trading.org/">
+  <style>
+    @media only screen and (max-width:50em) {
+      .hyde {
+        display: none !important;
+      }
+
+      .hiddenn {
+        display: block !important;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="headerTopContainer">
+    <div class="headerTopInner zoomIn wow">
+      <div class="hdTop-row1">
+        <p> <img src="styles/images/hd-top-ic1.png">phone:<span>+13464402692 </span> </p>
+        <p> <img src="styles/images/hd-top-ic2.png">e-mail:<span>
+            support@crypto-trading.org
+          </span> </p>
+        <p> <img src="styles/images/hd-top-ic3.png"><span id="clockbox"></span> </p><br>
+        <p></p>
+        <div id="google_translate_element"></div>
+      </div>
+      <div class="hdTop-row2">
+        <div class="solid">
+          <a href="https://www.facebook.com/" target="_blank" class="solidTop1"></a>
+          <a href="https://instagram.com/" target="_blank" class="solidTop2"></a>
+          <a href="https://t.me/" target="_blank" class="solidTop3"></a>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="headerContainer">
+    <div class="headerInner fadeInLeft wow"> <a href="home" id="logo"></a>
+      <div class="hdRight">
+        <div class="mainNavRight">
+          <div class="navbar">
+            <div class="navbar-inner">
+              <ul class="nav">
+                <li><a href="./">Home</a></li>
+                <li><a href="./">About Us </a></li>
+                <li><a href="./">Get Started </a></li>
+
+                <li><a href="./">FAQ </a></li>
+                <li><a href="./">Rate us </a></li>
+                <li><a href="./">Contact</a></li>
+
+                <li><a href="login" class="login">Login</a></li>
+                <li><a href="signup" class="signup">signup</a></li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="bannerContainer">
+    <div class="bannerInner">
+      <br>
+      <div class="ctn-banner-left zoomIn wow">
+        <h3>We trade, <span>You</span> Profit.</h3>
+        <p>Crypto-trading traverses the amazon of crypto &amp; forex trading, all you need is a vision and desire for
+          satisfaction.<br>
+          Welcome to crypto-trading.org, the autonomous trust management regularity that equips you with a hassle-free
+          effective one-stop explication to improve your economic securities.
+        </p>
+        <div class="banner-btt"> <a href="signup" class="bn-btt1"> Register </a> </div>
+      </div>
+      <div class="ctn-banner-right">
+        <div class="bn-right-part1 fadeInLeft wow">
+          <h3>What is crypto-trading.org?</h3>
+          <p style="font-size: 16px;">Crypto-trading ltd is the cryptocurrency &amp; forex trading firm, concentrated in producing favourable
+            financing solutions. The strenuous exercise in this domain has admitted the company to form an adequate team
+            of experts to get a great solid experience in this extravaganza extent. Market speculations are equipped to
+            bring in the value numerous times surpassing the profitability of banking securities and other opportunities
+            to acquire acquisition. We greatly believe in the possibilities of foreign &amp; cryptocurrency exchange
+            trading since it is the largest syndicate in the business and consequently it has the highest liquidity and
+            volatility by volume. With proven strategies and advance audit technology, our experts can able to draw the
+            assured resolutions on the grounds of variations in the field. crypto-trading.org is the best way to make
+            your
+            business portfolio mature faster. Our investment platform is offering profitable financing opportunities to
+            everyone who endeavours.</p>
+        </div>
+        <!--bg-off5.png-->
+        <div class="bn-right-part2 fadeInDown wow"> <img src="styles/images/bgoff3.gif" width="500"> </div>
+      </div>
+      <br> <br> <br>
+      <div class="ctn-proofs fadeInRight wow">
+
+
+
+
+        <div class="proofs-part proofs-part2">
+          <h3 style="font-size: 16px"><a href="styles/images/cert.pdf">company <br> profile</a></h3>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="statistContainer">
+    <div class="statistInner fadeInDown wow">
+      <div
+        style="display: flex; flex-direction: row; justify-content: space-between; align-items: center; vertical-align: middle;">
+        <div class="ctn-statist statist-part4">
+          <h3>Regitered:</h3>
+          <p>May 2, 2018</p>
+        </div>
+        <div class="ctn-statist statist-part1">
+          <h3>crypto-trading.org Limited</h3>
+          <p>8100 Cherry Ln, Laurel, MD <br> 20707, United States </p>
+        </div>
+        <div class="ctn-statist statist-part2">
+          <h3>Phone Number:</h3>
+          <p>+13464402692 <br> </p>
+        </div>
+        <div class="ctn-statist statist-part3">
+          <h3>Director:</h3>
+          <p>ANTHONY JACOBS and FRED WELLINGTON.</p>
+        </div>
+      </div><br> <br> <br>
+
+    </div>
+    <center>
+      <div
+        style="padding-top: 10px; padding-bottom: 10px; width: 30%; margin: 0 auto; border-radius: 9999px; background-color: rgb(255, 240, 72)">
+        <a href="styles/images/cert.pdf" target="_blank">Certificate PDF</a>
+      </div>
+    </center>
+  </div>
+  <div class="text-dox" style="margin-bottom: 10px;">
+    <h1>....</h1>
+  </div>
+  <div class="clearfix"></div>
+  <div class="invesmentContainer">
+    <div class="container"><br><br>
+      <div class="section-title center text-center">
+        <h2 class="wow fadeInDown" style="color: white; text-transform: uppercase; padding-bottom: 10px;">What is
+          cryptocurrency: <span class="yellow">Bitcoin as a case
+            study</span></h2><br>
+      </div>
+      <div class="row">
+        <div class="col-md-12 col-xs-12">
+          <iframe width="100%" height="500" src="styles/images/giantwin-intro.mp4" frameborder="0"
+            allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+        </div>
+      </div>
+    </div><br><br>
+  </div>
+  <div class="text-dox" style="padding: 10px 0; margin: 10px 0;">
+    <h1>....</h1>
+  </div>
+  <div class="clearfix"></div>
+  <div class="invesmentContainer">
+    <div class="invesmentInner">
+      <h1 style="text-transform: uppercase;">Investment Solutions</h1>
+      <div id="myCarousel" class="carousel slide" data-ride="carousel">
+        <!-- Left and right controls -->
+
+        <!-- Wrapper for slides -->
+        <div class="carousel-inner">
+          <div class="item active bannerSlide1 invesment-slide">
+
+
+            <div class="ctn-invesment-part invesment-part1">
+              <h3>First Plan</h3>
+              <h2>20%</h2>
+              <h3>After 24 Hours</h3>
+              <div class="ctn-invesment-part1">
+                <h4>Min. Deposit: <span>$100</span></h4>
+                <h4>Max. Deposit: <span>$499</span></h4>
+              </div>
+              <p><img src="styles/images/call-ic2.png">Deposit Included</p>
+            </div>
+
+            <div class="ctn-invesment-part invesment-part1">
+              <h3>Second Plan</h3>
+              <h2>50%</h2>
+              <h3>After 48 Hours</h3>
+              <div class="ctn-invesment-part1">
+                <h4>Min. Deposit: <span>$500</span></h4>
+                <h4>Max. Deposit: <span>$999</span></h4>
+              </div>
+              <p><img src="styles/images/call-ic2.png">Deposit Included</p>
+            </div>
+
+            <div class="ctn-invesment-part invesment-part1">
+              <h3>Third Plan</h3>
+              <h2>100%</h2>
+              <h3>After 72 Hours</h3>
+              <div class="ctn-invesment-part1">
+                <h4>Min. Deposit: <span>$1000</span></h4>
+                <h4>Max. Deposit: <span>$100000</span></h4>
+              </div>
+              <p><img src="styles/images/call-ic2.png">Deposit Included</p>
+            </div>
+
+            <div class="ctn-invesment-part invesment-part1">
+              <h3>Retirement Plan</h3>
+              <h2>200%</h2>
+              <h3>After 6 Months</h3>
+              <div class="ctn-invesment-part1">
+                <h4>Min. Deposit: <span>$100</span></h4>
+                <h4>Max. Deposit: <span>$1000000</span></h4>
+              </div>
+              <p><img src="styles/images/call-ic2.png">Deposit Included</p>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+  <div class="text-dox" style="padding: 10px 0; margin: 10px 0;">
+    <h1>....</h1>
+  </div>
+
+  <div class="aboutContainer">
+    <div class="aboutInner">
+      <h1 style="text-transform: uppercase;">Crypto-trading securities</h1>
+      <div class="aboutLeft fadeInLeft wow">
+        <div class="ctn-about ctn-about-part1">
+          <h3>Powerful DDoS <br>
+            Protection</h3>
+        </div>
+        <div class="ctn-about ctn-about-part2">
+          <h3>TrustWave <br>
+            Security</h3>
+        </div>
+        <div class="ctn-about ctn-about-part3">
+          <h3>Cloudflare <br>
+            Protection</h3>
+        </div>
+      </div>
+      <div class="aboutMid zoomIn wow"> <img src="styles/images/coin.avif"> </div>
+      <div class="aboutRight fadeInRight wow">
+        <div class="ctn-about ctn-about-part1">
+          <h3>Comodo SSL <br>
+            Security</h3>
+        </div>
+        <div class="ctn-about ctn-about-part2">
+          <h3>Norton <br>
+            Secured</h3>
+        </div>
+        <div class="ctn-about ctn-about-part3">
+          <h3>UK Company <br>
+          </h3>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="text-dox">
+    <h1>....</h1>
+  </div>
+  <div class="contentContainer">
+    <div class="contentInner">
+      <h3 style="text-transform: uppercase;">Why Choose Crypto-trading.org?</h3>
+      <div class="ctn-inves-row invers-part1 fadeInLeft wow">
+        <h1>Incorporated</h1>
+        <p>We are a legal company registered in the United Kingdom providing its services to the members all around the
+          world.</p>
+      </div>
+      <div class="ctn-inves-row invers-part2 zoomIn wow">
+        <h1>Stable Profit</h1>
+        <p>Crypto-trading.org guarantees you the stable and secured risk free income at best of your selected investment
+          package. </p>
+      </div>
+      <div class="ctn-inves-row invers-part3 zoomIn wow ">
+        <h1>24/7 Support</h1>
+        <p>Crypto-trading.org support team will be available to you for your every counselling that you seek at any
+          stage.
+        </p>
+      </div>
+      <div class="ctn-inves-row invers-part4 fadeInRight wow">
+        <h1>Fast Payments</h1>
+        <p>At Crypto-trading.org, all the payments perform within 24 hours with alleged security and efficiency in real
+          time.
+        </p>
+      </div>
+    </div>
+  </div>
+  <div class="text-dox">
+    <h1>....</h1>
+  </div>
+  <div class="programContainer">
+    <div class="programInner">
+      <h1 style="text-transform: uppercase;">Affiliate Program</h1>
+      <div class="ctn-program">
+        <div class="programLeft fadeInLeft wow">
+          <h3>5%</h3>
+        </div>
+        <div class="programMid fadeInUp wow">
+          <p style="font-family: 'Nunito', sans-serif">Referral Commission <br>
+            for all members. <br>
+            Investment not required.</p>
+        </div>
+        <div class="programRight fadeInRight wow"> <img src="styles/images/video.png"> </div>
+      </div>
+    </div>
+  </div>
+  <div class="">
+    <div class="hyde">
+      <!-- TradingView Widget BEGIN -->
+      <div class="tradingview-widget-container">
+        <div id="tradingview_31e22"></div>
+        <div class="tradingview-widget-copyright"><a href="https://www.tradingview.com/symbols/NASDAQ-AAPL/"
+            rel="noopener" target="_blank"><span class="blue-text">AAPL Chart</span></a> by TradingView</div>
+        <script type="text/javascript" src="https://s3.tradingview.com/tv.js"></script>
+        <script type="text/javascript">
+          new TradingView.widget(
+            {
+              "width": 1000,
+              "height": 610,
+              "symbol": "NASDAQ:AAPL",
+              "interval": "D",
+              "timezone": "Etc/UTC",
+              "theme": "dark",
+              "style": "1",
+              "locale": "en",
+              "toolbar_bg": "#f1f3f6",
+              "enable_publishing": false,
+              "allow_symbol_change": true,
+              "container_id": "tradingview_31e22"
+            }
+          );
+        </script>
+      </div>
+      <!-- TradingView Widget END -->
+    </div>
+    <div class="hiddenn" style="display: none;">
+      <!-- TradingView Widget BEGIN -->
+      <div class="tradingview-widget-container">
+        <div id="tradingview_31e222"></div>
+        <div class="tradingview-widget-copyright"><a href="https://www.tradingview.com/symbols/NASDAQ-AAPL/"
+            rel="noopener" target="_blank"><span class="blue-text">AAPL Chart</span></a> by TradingView</div>
+        <script type="text/javascript" src="https://s3.tradingview.com/tv.js"></script>
+        <script type="text/javascript">
+          new TradingView.widget(
+            {
+              "autosize": true,
+              "symbol": "NASDAQ:AAPL",
+              "interval": "D",
+              "timezone": "Etc/UTC",
+              "theme": "dark",
+              "style": "1",
+              "locale": "en",
+              "toolbar_bg": "#f1f3f6",
+              "enable_publishing": false,
+              "allow_symbol_change": true,
+              "container_id": "tradingview_31e222"
+            }
+          );
+        </script>
+      </div>
+      <!-- TradingView Widget END -->
+    </div>
+  </div>
+  <div class="visualhyipContainer">
+    <div class="text-dox">
+      <h1>....</h1>
+    </div>
+    <div class="visualhyipInner zoomIn wow">
+      <h2 style="text-transform: uppercase;">Crypto-trading.org real time statistics</h2>
+      <div class="visualhyipTop">
+        <div class="visualhyip-part crypto-trading.org-part1">
+          <h3>3844</h3>
+          <p>Running Days</p>
+        </div>
+        <div class="visualhyip-part crypto-trading.org-part2">
+          <h3>3340</h3>
+          <p>Total Members</p>
+        </div>
+        <div class="visualhyip-part crypto-trading.org-part3">
+          <h3>$ 6827004.88</h3>
+          <p>Total Deposit</p>
+        </div>
+        <div class="visualhyip-part crypto-trading.org-part4">
+          <h3>$ 4711563.59</h3>
+          <p>Total Withdraw</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <div class="footerContainer">
+    <div class="footerInner">
+      <div class="footerLeft"> <a href="home"><img src="styles/images/logo.png" width="200px" height="200px"></a>
+        <h3 style="text-transform: uppercase">Crypto-trading LTD <span></span></h3>
+        <p>&#169; 2023 crypto-trading.org. All Rights Reserved</p>
+      </div>
+      <div class="footer-part1">
+        <!---- <h1>Bitcoin price Today: <span>1 BTC =3600 USD</span></h1>---->
+        <ul>
+          <li><a href="./">About Us</a></li>
+          <li><a href="./">Rules</a></li>
+          <li><a href="./">FAQ</a></li>
+        </ul>
+        <ul>
+
+          <li><a href="./">News</a></li>
+          <li><a href="./">RateUs</a></li>
+          <li><a href="./">Support</a></li>
+        </ul>
+      </div>
+      <div class="footer-part2">
+        <div class="solid"> <a href="https://facebook.com" target="_blank" class="solidTop1"></a>
+          <a href="https://instagram.com/" target="_blank" class="solidTop2"></a> <a href="https://t.me/"
+            target="_blank" class="solidTop3"></a>
+        </div>
+        <p style="font-size: 14px;">support@crypto-trading.org</p>
+      </div>
+      <div class="footerRight">
+        <div class="ctn-footer"> <a href="#" class="solidTop1"></a> <a href="#" class="solidTop2"></a> <a href="#"
+            class="solidTop3"></a> </div>
+      </div>
+    </div>
+  </div>
+
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-toast-plugin/1.3.2/jquery.toast.min.css"
+    integrity="sha512-wJgJNTBBkLit7ymC6vvzM1EcSWeM9mmOu+1USHaRBbHkm6W9EgM0HY27+UtUaprntaYQJF75rc8gjxllKs5OIQ=="
+    crossorigin="anonymous" referrerpolicy="no-referrer">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-toast-plugin/1.3.2/jquery.toast.min.js"
+    integrity="sha512-zlWWyZq71UMApAjih4WkaRpikgY9Bz1oXIW5G0fED4vk14JjGlQ1UmkGM392jEULP8jbNMiwLWdM8Z87Hu88Fw=="
+    crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+  <script>
+    jQuery(function () {
+      var intervalId = window.setInterval(function () {
+        popps();
+      }, 20000);
+    });
+    function popps() {
+      jQuery.ajax({
+        type: 'GET',
+        url: '/investors__',
+        processData: false,
+        contentType: false,
+        dataType: 'json',
+        success: function (response) {
+          jQuery.toast({
+            text: '<p style="color: #fff; font-size: 13px; line-height: 24px;"><i>' + response.name + '</i> from <b><span style="color: #ff0;">' + response.country + '</span></b> just withdrew <span style="color: yellow;">' + response.amount + '</span></p>',
+            showHideTransition: 'slide',
+            bgColor: 'black',
+            textColor: '#eee',
+            allowToastClose: false,
+            hideAfter: 5000,
+            stack: 15,
+            textAlign: 'left',
+            position: 'bottom-left'
+          });
+        }
+      });
+    }
+  </script>
+
+  <script src="https://code.tidio.co/lwzsygzwedfd6gccpafddvpeiz1bp71v.js" async></script>
+</body>
+
+</html>

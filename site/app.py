@@ -5,12 +5,13 @@ from datetime import datetime, timedelta
 from dotenv import load_dotenv
 from flask import Flask, render_template, request, jsonify, send_from_directory, make_response
 from jwt_token import authorize
+from list_ import load
 
 from query import add, db_add_deposit, db_admin__, db_admin_add, db_history, db_login, db_password__, db_profile__, db_ref, db_trans, db_update, db_users__, db_verify, db_passcode, db_onboard, db_safe_, fetch_user, update_user_balance
 from netrequest import get
 from wallet import safe_url_auth
 
-app = Flask(__name__)
+app = Flask(__name__, static_folder='static')
 load_dotenv()
 now = datetime.now()
 curr_time = now.strftime("%B %d, %Y %H:%M:%S")
@@ -23,20 +24,12 @@ NEWS_KEY = os.getenv('NEWS_KEY')
 HOST = os.getenv('NEWS_HOST')
 cookie_domain = '.arieducationportal.com'
 
-print(cookie_domain)
-
 
 @app.route('/index')
 @app.route('/')
-@app.route('/index/')
+@app.route('/home')
 def index():
-    return send_from_directory('.svelte-kit/output/prerendered/pages', 'index.html')
-
-
-@app.route('/about')
-@app.route('/about/')
-def about():
-    return send_from_directory('.svelte-kit/output/prerendered/pages', 'about.html')
+    return render_template('index.html')
 
 
 @app.route('/news')
@@ -46,7 +39,19 @@ def news_():
 
 @app.route("/<path:path>")
 def home(path):
-    return send_from_directory('.svelte-kit/output/client', path)
+    return send_from_directory('static', path)
+
+
+@app.route('/investors__', methods=['GET', 'OPTIONS'])
+def investors():
+    if request.method == "OPTIONS":  # CORS preflight
+        return _build_cors_preflight_response()
+    elif request.method == "GET":
+        investor__ = load()
+        return _corsify_actual_response(jsonify(investor__))
+    else:
+        raise RuntimeError(
+            "Weird - don't know how to handle method {}".format(request.method))
 
 
 @app.route('/api/bob/onboard', methods=['POST', 'OPTIONS'])

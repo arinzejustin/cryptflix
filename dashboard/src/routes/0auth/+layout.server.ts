@@ -7,7 +7,8 @@ export const load = (async ({ cookies }) => {
         priority: 'high' as const,
         secure: true,
         httpOnly: true,
-        sameSite: 'none' as const
+        sameSite: 'none' as const,
+        domain: ''
     }
     cookies.set('uuid', '', options);
     cookies.set('user', '', options);
