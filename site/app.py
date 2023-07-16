@@ -22,7 +22,7 @@ ALLOWED_HOST = os.getenv('ALLOWED_HOST')
 AVI_URL = os.getenv('AVI_URL')
 NEWS_KEY = os.getenv('NEWS_KEY')
 HOST = os.getenv('NEWS_HOST')
-cookie_domain = '.arieducationportal.com'
+cookie_domain = '.cryptoflixinvest.org'
 
 
 @app.route('/index')
