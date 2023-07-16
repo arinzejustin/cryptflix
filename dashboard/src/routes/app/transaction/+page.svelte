@@ -67,7 +67,7 @@
 </script>
 
 <svelte:head>
-	<title>Transaction Histroy | cryptflixinvest.com</title>
+	<title>Transaction Histroy | cryptoflixinvest.org</title>
 </svelte:head>
 
 <div in:fly={{ x: 400, delay: 1000 }} out:fly={{ x: -400, duration: 800 }} class="container">

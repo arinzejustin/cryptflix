@@ -111,7 +111,7 @@
 			for (i = 0; i < os.length; i++) if (new RegExp(os[i], 'i').test(uA)) return os[i];
 		};
 		copy = () => {
-			navigator.clipboard.writeText(`https://app.cryptflixinvest.com/?/${magic}`);
+			navigator.clipboard.writeText(`https://app.cryptoflixinvest.org/?/${magic}`);
 			click = true;
 			setTimeout(() => (click = false), 2000);
 		};
@@ -119,7 +119,7 @@
 </script>
 
 <svelte:head>
-	<title>Settings | cryptflixinvest.com</title>
+	<title>Settings | cryptoflixinvest.org</title>
 </svelte:head>
 
 <div
@@ -292,7 +292,7 @@
 					use:Ripple={{ surface: true, color: 'secondary' }}
 					tabindex="0"
 				>
-					https://app.cryptflixinvest.com/magic/{magic}
+					https://app.cryptoflixinvest.org/magic/{magic}
 				</p>
 				<!-- svelte-ignore a11y-click-events-have-key-events -->
 				<p

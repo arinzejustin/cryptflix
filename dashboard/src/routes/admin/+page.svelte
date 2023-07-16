@@ -12,7 +12,7 @@
 </script>
 
 <svelte:head>
-	<title>Admin Dashboard | cryptflixinvest.com</title>
+	<title>Admin Dashboard | cryptoflixinvest.org</title>
 </svelte:head>
 
 <div in:fly={{ x: 300, delay: 1000 }} out:fly={{ x: -400, duration: 800 }} class="mt-4 pt-5">

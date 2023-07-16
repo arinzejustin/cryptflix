@@ -207,11 +207,11 @@
 </script>
 
 <svelte:head>
-	<title>Sign Up | cryptflixinvest.com</title>
+	<title>Sign Up | cryptoflixinvest.org</title>
 	<link rel="stylesheet" href="/css/intlTelInput.min.css" />
 </svelte:head>
 
-<cryptflixinvest-onboard class="md:mx-10">
+<cryptoflixinvest-onboard class="md:mx-10">
 	<Alert {alert} message={msg} error={err} onClose={() => (alert = false)} />
 	<div class="pg9a5nd hak0fbu">
 		<div class="jonfdgct mx-4 sm:mx-20 sm:my-5 md:mt-2">
@@ -740,7 +740,7 @@
 		</div>
 	</div>
 	<img class="hidden" src="/gif.gif" srcset="/gif.gif 2x" alt="" />
-</cryptflixinvest-onboard>
+</cryptoflixinvest-onboard>
 
 <style>
 	:disabled {

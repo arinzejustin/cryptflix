@@ -6,9 +6,9 @@
 	});
 </script>
 
-<cryptflixinvest-auth>
+<cryptoflixinvest-auth>
 	<slot />
-</cryptflixinvest-auth>
+</cryptoflixinvest-auth>
 
 <style>
 	:global(body) {

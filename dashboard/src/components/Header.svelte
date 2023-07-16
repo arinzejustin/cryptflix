@@ -115,7 +115,8 @@
 			</div>
 			<div class="flex md:hidden -mr-2">
 				<a href="/">
-					<img src="/logo.png" alt="app logo" class="w-9 h-9" />
+					<img src="/logo_light.png" alt="app logo" class="w-9 h-9 hidden dark:block" />
+					<img src="/logo_dark.png" alt="app logo" class="w-9 h-9 block dark:hidden" />
 				</a>
 			</div>
 			<div class="md:mr-4 relative">

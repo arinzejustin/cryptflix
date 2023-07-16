@@ -50,7 +50,7 @@
 </script>
 
 <svelte:head>
-	<title>Profile | cryptflixinvest.com</title>
+	<title>Profile | cryptoflixinvest.org</title>
 	<link rel="stylesheet" href="/css/intlTelInput.min.css" />
 </svelte:head>
 

@@ -222,8 +222,7 @@ input[type="button"]:hover,
 }
 
 #logo {
-	display: inline-block;
-	float: left;
+	display: block;
 	height: 10px;
 	width: 20px;
 	background: url('images/logo.png') transparent no-repeat center;

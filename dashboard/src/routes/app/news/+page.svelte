@@ -52,7 +52,7 @@
 </script>
 
 <svelte:head>
-	<title>Latest news about crypto market | cryptflixinvest.com</title>
+	<title>Latest news about crypto market | cryptoflixinvest.org</title>
 </svelte:head>
 
 <div

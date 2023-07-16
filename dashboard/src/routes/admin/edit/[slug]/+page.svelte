@@ -50,7 +50,7 @@
 </script>
 
 <svelte:head>
-	<title>{data.user.title} | cryptflixinvest.com</title>
+	<title>{data.user.title} | cryptoflixinvest.org</title>
 	<link rel="stylesheet" href="/css/intlTelInput.min.css" />
 </svelte:head>
 

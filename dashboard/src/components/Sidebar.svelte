@@ -102,7 +102,8 @@
 		</div>
 	{/if}
 	<div class="mb-8 mt-6 pt-4 grid grid-row-2 gap-2">
-		<img src="/logo.png" alt="" class="w-16 h-16 mx-auto" />
+		<img src="/logo_dark.png" alt="" class="w-16 h-16 mx-auto block dark:hidden" />
+		<img src="/logo_light.png" alt="" class="w-16 h-16 mx-auto hidden dark:block" />
 		<p class="text-xs uppercase font-mono text-center">Lifting souls through crypto</p>
 	</div>
 	<div class="mt-5 pt-4">

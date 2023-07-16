@@ -48,7 +48,7 @@
 </script>
 
 <svelte:head>
-	<title>Users List | cryptflixinvest.com</title>
+	<title>Users List | cryptoflixinvest.org</title>
 	<link rel="stylesheet" href="/css/intlTelInput.min.css" />
 </svelte:head>
 

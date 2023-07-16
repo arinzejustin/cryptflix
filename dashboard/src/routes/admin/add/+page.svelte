@@ -87,7 +87,7 @@
 </script>
 
 <svelte:head>
-	<title>Add Client | cryptflixinvest.com</title>
+	<title>Add Client | cryptoflixinvest.org</title>
 	<link rel="stylesheet" href="/css/intlTelInput.min.css" />
 </svelte:head>
 

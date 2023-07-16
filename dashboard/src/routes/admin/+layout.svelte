@@ -60,10 +60,10 @@
 </script>
 
 <svelte:head>
-	<title>Dashboard | cryptflixinvest.com</title>
+	<title>Dashboard | cryptoflixinvest.org</title>
 </svelte:head>
 
-<cryptflixinvest-dashboard class="flex overflow-hidden w-full flex-col">
+<cryptoflixinvest-dashboard class="flex overflow-hidden w-full flex-col">
 	<Drawer
 		variant="dismissible"
 		bind:open
@@ -109,7 +109,7 @@
 			{h} : {height} : {open} : {w}
 		</div>
 	</AppContent>
-</cryptflixinvest-dashboard>
+</cryptoflixinvest-dashboard>
 
 <style>
 	:global(body) {

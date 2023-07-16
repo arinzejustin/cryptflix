@@ -11,7 +11,7 @@
 </script>
 
 <svelte:head>
-	<title>Loading Dashboard | cryptflixinvest.com</title>
+	<title>Loading Dashboard | cryptoflixinvest.org</title>
 </svelte:head>
 
 <div

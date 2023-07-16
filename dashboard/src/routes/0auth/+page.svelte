@@ -8,7 +8,7 @@
 </script>
 
 <svelte:head>
-	<title>Log In | cryptflixinvest.com</title>
+	<title>Log In | cryptoflixinvest.org</title>
 </svelte:head>
 
 <div>

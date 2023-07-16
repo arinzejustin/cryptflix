@@ -40,7 +40,7 @@
 </script>
 
 <svelte:head>
-	<title>Deposit | cryptflixinvest.com</title>
+	<title>Deposit | cryptoflixinvest.org</title>
 </svelte:head>
 
 <div

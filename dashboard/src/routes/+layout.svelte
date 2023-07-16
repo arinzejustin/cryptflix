@@ -45,7 +45,7 @@
 </script>
 
 <div>
-	<cryptflixinvest-app class="[--app:100%]">
+	<cryptoflixinvest-app class="[--app:100%]">
 		<slot />
-	</cryptflixinvest-app>
+	</cryptoflixinvest-app>
 </div>
