@@ -124,7 +124,7 @@ def db_onboard(email: str, name: str, tel: str, country: str, time: str, admin: 
                 return db_onboard(email=account[3], name=name, tel=tel)
             cursor.close()
             return dict(message='Account already exists!', status=False)
-        query = 'INSERT INTO users (uuid, name, email, tel, role, a_type, wallet, theme, balance, magic_auth, referral, device_id, deposit, country, created) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)'
+        query = 'INSERT INTO users (uuid, name, email, tel, role, a_type, wallet, theme, balance, magic_auth, referral, device_id, deposit, country, created) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)'
         uid = uuid.uuid4().hex
         wallet = demo_wallet()
         magic_link = safe_url_auth()
@@ -201,8 +201,6 @@ def db_verify(email: str, insert: bool, name: str = '', admin: bool = False, cod
             values = (f"{token['token']}:{token['expires']}", email)
             cursor.execute(query, values)
             db_connect.commit()
-            params = dict(email=email, token=f'C-{token["token"]}')
-            headers = dict(authorization=f'Bearer {SERVER_KEY}')
             request = mail(email=email, name=name, code=f'C-{token["token"]}')
             if admin:
                 request.update({'token': token})
