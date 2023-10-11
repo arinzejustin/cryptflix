@@ -11,6 +11,7 @@ Faker==18.9.0
 Flask==2.2.2
 Flask-Cors==3.0.10
 Flask-MySQL==1.5.2
+google_auth_oauthlib
 idna==3.3
 itsdangerous==2.1.2
 Jinja2==3.1.2
