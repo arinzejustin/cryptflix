@@ -8,7 +8,7 @@ colorama==0.4.6
 dnspython==2.3.0
 ecdsa==0.18.0
 Faker==18.9.0
-googleapiclient
+google-api-python-client
 Flask==2.2.2
 Flask-Cors==3.0.10
 Flask-MySQL==1.5.2
